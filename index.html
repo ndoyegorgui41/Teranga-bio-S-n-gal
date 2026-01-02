@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teranga Bio Sénégal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-accueil">
+    <header>
+        <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
+        <div>
+        <h1>Teranga Bio Sénégal</h1>
+        </div>
+    </header>
+    <main>
+        <section id="accueil">
+            <h2>Bienvenue</h2>
+            <p>Découvrez des vendeurs de produits bio locaux. Commandez via WhatsApp et organisez paiement et livraison directement.</p>
+            <div class="boutons-accueil">
+            <a href="vendeurs.html" class="btn">Voir les vendeurs</a>
+                <div class="bouton-formulaire-wrapper">
+                    <button id="btn-devenir-vendeur" class="btn">Devenir vendeur</button>
+                </div>
+            </div>
+        </section>
+        <section id="inscription-vendeur" style="display: none;">
+            <p>Vous vendez des produits bio locaux ? Inscrivez-vous pour apparaître sur notre plateforme.</p>
+            <form id="form-inscription">
+                <label for="nom-vendeur">Nom du vendeur :</label>
+                <input type="text" id="nom-vendeur" required>
+                
+                <label for="description-vendeur">Description :</label>
+                <textarea id="description-vendeur" required></textarea>
+                
+                <label for="zone-vendeur">Zone de production :</label>
+                <input type="text" id="zone-vendeur" placeholder="Ex: Région de Dakar" required>
+                
+                <label for="telephone-vendeur">Téléphone :</label>
+                <input type="text" id="telephone-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
+                
+                <label for="whatsapp-vendeur">Numéro WhatsApp :</label>
+                <input type="text" id="whatsapp-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
+                
+                <label for="disponibilite-vendeur">Disponibilité :</label>
+                <input type="text" id="disponibilite-vendeur" placeholder="Ex: Ouvert de 8h à 18h" required>
+                
+                <label for="password-vendeur">Mot de passe (pour accès vendeur) :</label>
+                <input type="password" id="password-vendeur" required>
+                
+                <button type="submit" class="btn">S'inscrire</button>
+            </form>
+            <div id="message-inscription" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+        </section>
+        <section id="statistiques">
+            <h2>Notre plateforme en chiffres:</h2>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Vendeurs actifs</span>
+                    <span class="stat-number" id="nombre-vendeurs">-</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-label">Produits disponibles</span>
+                    <span class="stat-number" id="nombre-produits">-</span>
+                </div>
+            </div>
+        </section>
+        <section id="comment-ca-marche">
+            <h2>Comment ça marche ?</h2>
+            <div class="etapes">
+                <div class="etape">
+                    <span class="etape-numero">1</span>
+                    <div class="etape-content">
+                        <h3>Explorez</h3>
+                        <p>Parcourez la liste des vendeurs et leurs produits bio locaux</p>
+                    </div>
+                </div>
+                <div class="etape">
+                    <span class="etape-numero">2</span>
+                    <div class="etape-content">
+                        <h3>Contactez</h3>
+                        <p>Cliquez sur "Contacter" pour ouvrir WhatsApp et discuter directement</p>
+                    </div>
+                </div>
+                <div class="etape">
+                    <span class="etape-numero">3</span>
+                    <div class="etape-content">
+                        <h3>Commandez</h3>
+                        <p>Organisez paiement et livraison directement avec le vendeur</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="produits-vedettes">
+            <h2>Produits vedettes</h2>
+            <div class="produits-container" id="produits-vedettes-container">
+                <!-- Les produits seront chargés dynamiquement -->
+            </div>
+        </section>
+        <section id="zones-couvertes">
+            <h2>Zones couvertes</h2>
+            <p>Notre plateforme connecte les producteurs bio de différentes régions du Sénégal :</p>
+            <div class="zones-container" id="zones-container">
+                <!-- Les zones seront chargées dynamiquement -->
+            </div>
+        </section>
+        <section id="valeurs">
+            <h2>Nos valeurs</h2>
+            <div class="valeurs-container">
+                <div class="valeur-item">
+                    <h3>🌱 Bio & Naturel</h3>
+                    <p>Des produits cultivés sans pesticides ni produits chimiques, respectueux de l'environnement et de votre santé.</p>
+                </div>
+                <div class="valeur-item">
+                    <h3>📍 Local & Proximité</h3>
+                    <p>Soutenez les producteurs locaux sénégalais et réduisez l'empreinte carbone de vos achats.</p>
+                </div>
+                <div class="valeur-item">
+                    <h3>🤝 Transparence</h3>
+                    <p>Contact direct avec les vendeurs, pas d'intermédiaire. Vous négociez directement avec le producteur.</p>
+                </div>
+                <div class="valeur-item">
+                    <h3>💚 Teranga</h3>
+                    <p>L'esprit de l'hospitalité sénégalaise : accueil chaleureux, confiance et qualité garantie.</p>
+                </div>
+            </div>
+        </section>
+        <section id="mentions">
+            <p><strong>Mention importante :</strong> Cette plateforme ne gère ni les paiements ni les livraisons. Toute transaction est à la responsabilité du vendeur et de l'acheteur.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Teranga Bio Sénégal</p>
+        <p class="footer-admin-link"><a href="admin.html">Administration</a></p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

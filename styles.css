@@ -1,0 +1,1724 @@
+/* Styles pour Marketplace Bio Sénégal - Mobile-first */
+
+/* Reset et base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    padding: 10px;
+    position: relative;
+}
+
+body.page-accueil {
+    color: white;
+    background-image: url('images/arrière plan.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-size: 1.3em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+}
+
+/* Header */
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-header {
+    max-width: 140px;
+    max-height: 140px;
+    margin-bottom: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+header > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+body.page-accueil header {
+    padding: 40px 20px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    border-radius: 10px;
+    background-color: transparent;
+    backdrop-filter: blur(1px);
+}
+
+body.page-accueil .logo-header {
+    max-width: 150px;
+    max-height: 150px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+body.page-accueil header>div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+body.page-accueil header h1 {
+    margin-bottom: 5px;
+}
+
+body.page-accueil header p {
+    margin: 0;
+}
+
+header h1 {
+    font-size: 1.5em;
+}
+
+body.page-accueil header h1 {
+    font-size: 2.8em;
+    color: #FF8C00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+}
+
+header a:focus {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+header a:focus:not(:focus-visible) {
+    outline: none;
+}
+
+header a:focus-visible {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+body.page-accueil header a {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+/* Main */
+main {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+section {
+    background-color: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+body.page-accueil section {
+    background-color: transparent;
+    backdrop-filter: blur(1px);
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+body.page-accueil section p {
+    font-weight: 500;
+    font-size: 1.05em;
+}
+
+body.page-accueil section#accueil {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+body.page-accueil section#inscription-vendeur {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+    color: #333;
+    padding: 25px 30px;
+    border-radius: 8px;
+    text-shadow: none;
+    backdrop-filter: none;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+h2 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+body.page-accueil h2 {
+    color: white;
+    font-size: 1.7em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+body.page-accueil section#inscription-vendeur h2 {
+    color: #333;
+    text-shadow: none;
+}
+
+body.page-accueil section#inscription-vendeur p {
+    color: #333;
+    text-shadow: none;
+}
+
+/* Boutons */
+.btn {
+    display: inline-block;
+    background-color: rgba(150, 186, 151, 0.8);
+    color: white;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px 0;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+
+.btn:hover {
+    background-color: rgba(71, 106, 72, 0.9);
+}
+
+.btn:focus {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+    background-color: rgba(71, 106, 72, 0.9);
+}
+
+.btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.btn:focus-visible {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+}
+
+/* Conteneur des boutons d'accueil */
+.boutons-accueil {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.page-accueil .boutons-accueil {
+    font-size: 1.15em;
+}
+
+.boutons-accueil .btn {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 12px 18px;
+    font-size: 1.1em;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+/* Wrapper pour le bouton et le formulaire */
+.bouton-formulaire-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+body.page-accueil .bouton-formulaire-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    min-height: 0;
+}
+
+/* Liste vendeurs */
+.vendeur-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.vendeur-card .btn:focus,
+.vendeur-card a:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+.vendeur-card .btn:focus:not(:focus-visible),
+.vendeur-card a:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.vendeur-card .btn:focus-visible,
+.vendeur-card a:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+body.page-accueil .vendeur-card {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    background-color: transparent;
+    font-size: 1.1em;
+    backdrop-filter: blur(1px);
+}
+
+.vendeur-card h3 {
+    color: #4CAF50;
+}
+
+body.page-accueil .vendeur-card h3 {
+    color: white;
+    font-weight: bold;
+    font-size: 1.6em;
+}
+
+/* Produits */
+.produit {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+body.page-accueil .produit {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    background-color: transparent;
+    font-size: 1.1em;
+    backdrop-filter: blur(1px);
+}
+
+.produit img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Formulaire ajout produit */
+#form-produit,
+#form-inscription {
+    display: flex;
+    flex-direction: column;
+}
+
+#form-produit label,
+#form-inscription label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+body.page-accueil #form-produit label {
+    color: white;
+    font-size: 1.15em;
+}
+
+body.page-accueil #form-inscription label {
+    color: #333;
+    font-size: 1.15em;
+}
+
+#form-produit input,
+#form-produit textarea,
+#form-inscription input,
+#form-inscription textarea {
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: white;
+}
+
+#form-produit input:focus,
+#form-produit textarea:focus,
+#form-inscription input:focus,
+#form-inscription textarea:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+    box-shadow: 0 0 0 1px #45a049;
+}
+
+#form-produit input:focus:not(:focus-visible),
+#form-produit textarea:focus:not(:focus-visible),
+#form-inscription input:focus:not(:focus-visible),
+#form-inscription textarea:focus:not(:focus-visible) {
+    outline: none;
+}
+
+#form-produit input:focus-visible,
+#form-produit textarea:focus-visible,
+#form-inscription input:focus-visible,
+#form-inscription textarea:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+}
+
+
+body.page-accueil #form-inscription input,
+body.page-accueil #form-inscription textarea {
+    color: #333;
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+#form-inscription button[type="submit"],
+#form-inscription .btn {
+    padding: 8px 16px;
+    font-size: 0.95em;
+    width: auto;
+    align-self: flex-start;
+}
+
+#form-inscription textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+#message-inscription {
+    text-align: center;
+}
+
+#message-inscription.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+body.page-accueil #message-inscription.success {
+    background-color: rgba(212, 237, 218, 0.4);
+    color: white;
+    border: 1px solid rgba(195, 230, 203, 0.5);
+}
+
+#message-inscription.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+body.page-accueil #message-inscription.error {
+    background-color: rgba(248, 215, 218, 0.4);
+    color: white;
+    border: 1px solid rgba(245, 198, 203, 0.5);
+}
+
+/* Recherche et Filtres */
+#recherche-filtres {
+    margin-bottom: 20px;
+}
+
+.recherche-container {
+    margin-bottom: 15px;
+}
+
+.input-recherche {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.input-recherche:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+    box-shadow: 0 0 0 1px #45a049;
+}
+
+.input-recherche:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.input-recherche:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+}
+
+.filtres-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.filtres-container label {
+    font-weight: bold;
+    color: #333;
+}
+
+.select-filtre {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.select-filtre:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+    box-shadow: 0 0 0 1px #45a049;
+}
+
+.select-filtre:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.select-filtre:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+}
+
+.compteur-resultats {
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+    border-radius: 4px;
+    font-size: 0.95em;
+    color: #2e7d32;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.message-aucun-resultat {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border: 1px dashed #ddd;
+    border-radius: 5px;
+}
+
+.vendeur-zone {
+    margin-top: 8px;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.vendeur-zone strong {
+    color: #4CAF50;
+}
+
+/* Recherche produits */
+.recherche-produits-container {
+    margin-bottom: 20px;
+}
+
+#produits .input-recherche {
+    margin-bottom: 10px;
+}
+
+#produits .compteur-resultats {
+    margin-top: 0;
+}
+
+/* Styles de focus pour éléments de formulaire file */
+input[type="file"]:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+input[type="file"]:focus:not(:focus-visible) {
+    outline: none;
+}
+
+input[type="file"]:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    margin-top: 20px;
+}
+
+body.page-accueil footer {
+    background-color: transparent;
+    font-size: 1.2em;
+    backdrop-filter: blur(1px);
+}
+
+.footer-admin-link {
+    margin-top: 8px;
+    font-size: 0.7em;
+    opacity: 0.3;
+    line-height: 1.2;
+}
+
+.footer-admin-link a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.footer-admin-link a:hover {
+    opacity: 0.6;
+    text-decoration: none;
+}
+
+body.page-accueil .footer-admin-link {
+    opacity: 0.25;
+}
+
+body.page-accueil .footer-admin-link a {
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+body.page-accueil .footer-admin-link a:hover {
+    opacity: 0.5;
+}
+
+/* ===== STYLES ADMINISTRATION ===== */
+
+/* Page de connexion admin */
+.admin-login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.admin-login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.admin-login-box h1 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.admin-login-box h2 {
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 1.3em;
+}
+
+.admin-login-box label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    color: #333;
+    font-weight: bold;
+}
+
+.admin-login-box input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.admin-login-box input[type="password"]:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+    box-shadow: 0 0 0 1px #45a049;
+}
+
+.admin-login-box input[type="password"]:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.admin-login-box input[type="password"]:focus-visible {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+    border-color: #45a049;
+}
+
+/* Tableau de bord admin */
+#admin-dashboard header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#admin-dashboard header h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.admin-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.85em;
+}
+
+/* Statistiques admin */
+#admin-stats {
+    margin-bottom: 30px;
+}
+
+#admin-stats h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-stat-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.admin-stat-card h3 {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.admin-stat-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 0;
+}
+
+/* Liste des vendeurs admin */
+#admin-vendeurs {
+    margin-bottom: 30px;
+}
+
+#admin-vendeurs h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#liste-admin-vendeurs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-vendeur-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.admin-vendeur-info {
+    flex: 1;
+    min-width: 250px;
+}
+
+.admin-vendeur-info h3 {
+    margin: 0 0 10px 0;
+    color: #4CAF50;
+    font-size: 1.3em;
+}
+
+.admin-vendeur-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.admin-vendeur-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+/* Actions administratives */
+#admin-actions {
+    margin-bottom: 30px;
+}
+
+#admin-actions h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.admin-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#message-admin-actions {
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#message-admin-actions.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#message-admin-actions.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+#message-admin-login {
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#message-admin-login.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#message-admin-login.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Modal pour les produits */
+.admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.admin-modal-content {
+    background-color: white;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.admin-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+}
+
+.admin-modal-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.admin-modal-close {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.admin-modal-close:hover {
+    color: #333;
+}
+
+.admin-modal-body {
+    padding: 20px;
+}
+
+.admin-produit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.admin-produit-info {
+    flex: 1;
+}
+
+.admin-produit-info h4 {
+    margin: 0 0 8px 0;
+    color: #4CAF50;
+}
+
+.admin-produit-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Responsive pour admin */
+@media (max-width: 768px) {
+    .admin-login-box {
+        padding: 30px 20px;
+    }
+    
+    #admin-dashboard header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .admin-header-actions {
+        width: 100%;
+    }
+    
+    .admin-header-actions .btn,
+    .admin-header-actions .btn-secondary {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-vendeur-card {
+        flex-direction: column;
+    }
+    
+    .admin-vendeur-actions {
+        width: 100%;
+        align-items: stretch;
+    }
+    
+    .admin-vendeur-actions .btn,
+    .admin-vendeur-actions .btn-secondary,
+    .admin-vendeur-actions .btn-danger {
+        width: 100%;
+    }
+    
+    .admin-produit-item {
+        flex-direction: column;
+    }
+    
+.admin-produit-item .btn-danger {
+    width: 100%;
+    }
+}
+
+/* Styles pour les inscriptions en attente */
+.admin-en-attente-card {
+    border-left: 4px solid #ffc107;
+    background-color: #fffbf0;
+}
+
+.badge-en-attente {
+    background-color: #ffc107;
+    color: #333;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-success:focus {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+}
+
+.btn-success:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.btn-success:focus-visible {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+}
+
+#message-validation {
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#message-validation.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+#message-validation.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+    .admin-en-attente-card {
+        border-left-width: 3px;
+    }
+    
+    .btn-success {
+        width: 100%;
+    }
+}
+
+/* Mention légale */
+#mentions {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+#mentions p {
+    color: red;
+    padding: 15px 18px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid red;
+}
+
+body.page-accueil #mentions p {
+    color: #FF3333;
+    font-weight: bold;
+    font-size: 0.95em;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid #FF3333;
+    padding: 15px 20px;
+    line-height: 1.4;
+    text-shadow: none;
+}
+
+/* Animation au scroll pour la section mentions */
+body.page-accueil #mentions.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+body.page-accueil #mentions.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Statistiques */
+#statistiques {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding: 15px;
+    text-align: center;
+    display: block;
+    position: relative;
+}
+
+/* Animation au scroll pour les statistiques */
+/* Désactiver les animations si l'utilisateur préfère les mouvements réduits */
+@media (prefers-reduced-motion: reduce) {
+    body.page-accueil #statistiques.animate-on-scroll,
+    body.page-accueil #comment-ca-marche.animate-on-scroll,
+    body.page-accueil #produits-vedettes.animate-on-scroll,
+    body.page-accueil #zones-couvertes.animate-on-scroll,
+    body.page-accueil #valeurs.animate-on-scroll,
+    body.page-accueil #mentions.animate-on-scroll,
+    .etape {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
+
+body.page-accueil #statistiques.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+body.page-accueil #statistiques.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+body.page-accueil #statistiques h2 {
+    margin: 0 0 25px 0;
+    font-size: 1.7em;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.85em;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.stat-number {
+    font-size: 1em;
+    font-weight: bold;
+    color: #FF8C00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    line-height: 1;
+}
+
+.stat-divider {
+    width: 2px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+/* Comment ça marche */
+#comment-ca-marche {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+body.page-accueil #comment-ca-marche h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Animation au scroll pour la section "Comment ça marche" */
+body.page-accueil #comment-ca-marche.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.etapes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.etape {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(1px);
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.etape.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.etape-numero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FF8C00;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    flex-shrink: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.etape-content {
+    flex: 1;
+}
+
+.etape-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.etape:nth-child(3) .etape-content h3 {
+    text-align: center;
+}
+
+.etape-content p {
+    margin: 0;
+    font-size: 0.95em;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Section Produits vedettes */
+#produits-vedettes {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding: 25px 20px;
+    text-align: center;
+    backdrop-filter: blur(1px);
+}
+
+body.page-accueil #produits-vedettes h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 1.7em;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.produits-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.produit-vedette {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(1px);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.produit-vedette-image {
+    width: 100%;
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.produit-vedette h4 {
+    margin: 0 0 5px 0;
+    color: white;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.produit-vedette .produit-prix {
+    color: #FF8C00;
+    font-weight: bold;
+    font-size: 1.05em;
+    margin: 5px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.produit-vedette .produit-description {
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.produit-vedette .produit-vendeur {
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Section Zones couvertes */
+#zones-couvertes {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding: 25px 20px;
+    text-align: center;
+    backdrop-filter: blur(1px);
+}
+
+body.page-accueil #zones-couvertes h2 {
+    margin-bottom: 15px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 1.7em;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+body.page-accueil #zones-couvertes > p {
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.zones-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.zone-badge {
+    background-color: rgba(255, 140, 0, 0.3);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    border: 1px solid rgba(255, 140, 0, 0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(1px);
+}
+
+/* Section Valeurs */
+#valeurs {
+    width: 85%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    padding: 25px 20px;
+    text-align: center;
+    backdrop-filter: blur(1px);
+}
+
+body.page-accueil #valeurs h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 1.7em;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.valeurs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.valeur-item {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 8px;
+    backdrop-filter: blur(1px);
+    text-align: left;
+}
+
+.valeur-item h3 {
+    margin: 0 0 10px 0;
+    color: white;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.valeur-item p {
+    margin: 0;
+    font-size: 0.95em;
+    color: white;
+    line-height: 1.5;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Animations pour les nouvelles sections */
+body.page-accueil #produits-vedettes.animate-on-scroll,
+body.page-accueil #zones-couvertes.animate-on-scroll,
+body.page-accueil #valeurs.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+body.page-accueil #produits-vedettes.animate-on-scroll.visible,
+body.page-accueil #zones-couvertes.animate-on-scroll.visible,
+body.page-accueil #valeurs.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive pour desktop */
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+    }
+    
+    header {
+        padding: 80px 40px;
+        min-height: 400px;
+    }
+    
+    header h1 {
+        font-size: 3em;
+    }
+
+    .etapes {
+        flex-direction: row;
+        gap: 25px;
+        justify-content: center;
+        align-items: stretch;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    
+    .etape {
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        min-width: 250px;
+        display: flex;
+        justify-content: flex-start;
+    }
+    
+    .etape .etape-content {
+        text-align: center;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    .etape .etape-content h3 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+    
+    .etape:nth-child(3) .etape-content h3 {
+        text-align: center;
+    }
+    
+    .etape .etape-content p {
+        font-size: 1em;
+        line-height: 1.5;
+    }
+    
+    .etape .etape-numero {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .bouton-formulaire-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .bouton-formulaire-wrapper .btn {
+        width: auto;
+        min-width: 200px;
+        flex-shrink: 0;
+    }
+    
+    body.page-accueil section#inscription-vendeur {
+        width: 85%;
+        max-width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0;
+    }
+    
+    /* Alignement des boutons d'accueil pour même taille */
+    .boutons-accueil {
+        flex-direction: row;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .boutons-accueil .btn {
+        flex: 1;
+        width: auto;
+    }
+    
+    /* Alignement des étapes "Comment ça marche" */
+    
+    main {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    section {
+        flex: 1 1 45%;
+        margin: 10px;
+    }
+    
+    #statistiques {
+        flex: none;
+        width: 85%;
+        max-width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    
+    body.page-accueil #statistiques h2 {
+        text-align: center;
+    }
+    
+    /* Produits vedettes - Desktop */
+    .produits-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .produit-vedette {
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+    }
+    
+    /* Zones couvertes - Desktop */
+    .zones-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    /* Valeurs - Desktop */
+    .valeurs-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 25px;
+        justify-content: center;
+    }
+    
+    .valeur-item {
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+    }
+    
+    #produits-vedettes,
+    #zones-couvertes,
+    #valeurs {
+        flex: none;
+        width: 85%;
+        max-width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Recherche et filtres - Desktop */
+    .filtres-container {
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .filtres-container label {
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+    
+    .select-filtre {
+        width: auto;
+        min-width: 250px;
+        flex: 1;
+    }
+    
+    .input-recherche {
+        font-size: 1.1em;
+    }
+}

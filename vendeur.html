@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Vendeur - Teranga Bio Sénégal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
+        <div>
+            <h1 id="nom-vendeur">Profil Vendeur</h1>
+            <a href="vendeurs.html" class="btn">Retour à la liste</a>
+        </div>
+    </header>
+    <main>
+        <section id="profil-vendeur">
+            <!-- Profil généré par JS -->
+        </section>
+        <section id="produits">
+            <h2>Produits</h2>
+            <div class="recherche-produits-container">
+                <input type="text" id="recherche-produit" placeholder="Rechercher un produit..." class="input-recherche">
+                <div id="compteur-produits" class="compteur-resultats"></div>
+            </div>
+            <div id="liste-produits">
+                <!-- Produits générés par JS -->
+            </div>
+        </section>
+        <section id="acces-vendeur">
+            <button id="btn-acces" class="btn">Accès vendeur</button>
+        </section>
+        <section id="ajouter-produit" style="display: none;">
+            <h2>Ajouter un produit</h2>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">
+                Limite : 50 produits maximum par vendeur. Les images sont automatiquement compressées pour optimiser le stockage.
+            </p>
+            <form id="form-produit">
+                <label for="nom-produit">Nom du produit :</label>
+                <input type="text" id="nom-produit" required>
+                
+                <label for="prix-produit">Prix :</label>
+                <input type="text" id="prix-produit" required>
+                
+                <label for="desc-produit">Description :</label>
+                <textarea id="desc-produit" required></textarea>
+                
+                <label for="image-produit">Image :</label>
+                <input type="file" id="image-produit" accept="image/*">
+                <small style="display: block; margin-top: 5px; color: #666; font-size: 0.85em;">
+                    L'image sera automatiquement compressée pour réduire sa taille.
+                </small>
+                
+                <button type="submit" class="btn">Ajouter</button>
+            </form>
+        </section>
+        <section id="contact">
+            <a id="btn-whatsapp" href="#" class="btn">Contacter via WhatsApp</a>
+        </section>
+        <section id="mentions">
+            <p><strong>Mention importante :</strong> Cette plateforme ne gère ni les paiements ni les livraisons. Toute transaction est à la responsabilité du vendeur et de l'acheteur.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Teranga Bio Sénégal</p>
+        <p class="footer-admin-link"><a href="admin.html">Administration</a></p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

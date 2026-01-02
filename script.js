@@ -1,0 +1,1573 @@
+// Script pour Marketplace Bio Sénégal
+// Données stockées dans un tableau JavaScript
+
+const vendeurs = [
+    {
+        id: 1,
+        nom: "Fatou Bio",
+        description: "Vendeuse de légumes bio frais du Sénégal.",
+        zone: "Région de Dakar",
+        telephone: "77 123 45 67",
+        disponibilite: "Ouvert de 8h à 18h",
+        whatsapp: "221771234567", // Numéro WhatsApp (format international sans +)
+        password: "vendeur1", // Mot de passe simple pour accès vendeur
+        produits: [
+            { nom: "Tomates bio", prix: "5000 FCFA/kg", description: "Tomates cultivées sans pesticides." },
+            { nom: "Carottes bio", prix: "3000 FCFA/kg", description: "Carottes locales et saines." }
+        ]
+    },
+    {
+        id: 2,
+        nom: "Mamadou Fruits",
+        description: "Spécialiste en fruits tropicaux bio.",
+        zone: "Région de Thiès",
+        telephone: "78 234 56 78",
+        disponibilite: "Ouvert de 7h à 17h",
+        whatsapp: "221782345678",
+        password: "vendeur2",
+        produits: [
+            { nom: "Mangues bio", prix: "4000 FCFA/kg", description: "Mangues juteuses et naturelles." },
+            { nom: "Ananas bio", prix: "6000 FCFA/pièce", description: "Ananas frais du terroir." }
+        ]
+    }
+    // Ajouter plus de vendeurs ici
+];
+
+// Fonction pour charger tous les vendeurs (statiques + inscrits validés uniquement pour l'affichage public)
+function chargerTousVendeurs() {
+    let tousVendeurs = [...vendeurs]; // Copie des vendeurs statiques (toujours validés)
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    // Ajouter uniquement les vendeurs inscrits VALIDÉS (pour l'affichage public)
+    inscrits.forEach(vendeurInscrit => {
+        // Les vendeurs sans statut ou avec statut 'valide' sont considérés comme validés
+        if (!tousVendeurs.find(v => v.id === vendeurInscrit.id) && 
+            (!vendeurInscrit.statut || vendeurInscrit.statut === 'valide')) {
+            tousVendeurs.push(vendeurInscrit);
+        }
+    });
+    return tousVendeurs;
+}
+
+// Fonction pour charger TOUS les vendeurs (y compris en attente - pour l'admin)
+function chargerTousVendeursAdmin() {
+    let tousVendeurs = [...vendeurs]; // Copie des vendeurs statiques
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    // Ajouter tous les vendeurs inscrits (y compris en attente)
+    inscrits.forEach(vendeurInscrit => {
+        if (!tousVendeurs.find(v => v.id === vendeurInscrit.id)) {
+            tousVendeurs.push(vendeurInscrit);
+        }
+    });
+    return tousVendeurs;
+}
+
+// Fonction pour charger uniquement les vendeurs en attente
+function chargerVendeursEnAttente() {
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    return inscrits.filter(v => v.statut === 'en_attente');
+}
+
+// Fonction pour sauvegarder un vendeur inscrit
+function sauvegarderVendeur(vendeur) {
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    inscrits.push(vendeur);
+    localStorage.setItem('vendeurs_inscrits', JSON.stringify(inscrits));
+}
+
+// Fonction pour trouver un vendeur par ID (statique ou inscrit)
+function trouverVendeur(id) {
+    // Utiliser chargerTousVendeursAdmin pour trouver aussi les vendeurs en attente
+    const tousVendeurs = chargerTousVendeursAdmin();
+    return tousVendeurs.find(v => v.id === id);
+}
+
+// Fonction pour afficher la liste des vendeurs sur vendeurs.html
+function afficherListeVendeurs(vendeursFiltres = null) {
+    const liste = document.getElementById('liste-vendeurs');
+    if (!liste) return; // Si pas sur la page vendeurs.html
+
+    // Utiliser les vendeurs filtrés si fournis, sinon charger tous les vendeurs
+    const tousVendeurs = vendeursFiltres || chargerTousVendeurs();
+    
+    // Vider la liste
+    liste.textContent = '';
+    
+    // Afficher un message si aucun résultat
+    if (tousVendeurs.length === 0) {
+        const message = document.createElement('p');
+        message.className = 'message-aucun-resultat';
+        message.textContent = 'Aucun vendeur ne correspond à votre recherche.';
+        liste.appendChild(message);
+        return;
+    }
+    
+    tousVendeurs.forEach(vendeur => {
+        const card = document.createElement('div');
+        card.className = 'vendeur-card';
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = vendeur.nom;
+        card.appendChild(h3);
+        
+        const p = document.createElement('p');
+        p.textContent = vendeur.description;
+        card.appendChild(p);
+        
+        // Afficher la zone si disponible
+        if (vendeur.zone) {
+            const zoneP = document.createElement('p');
+            zoneP.className = 'vendeur-zone';
+            const strong = document.createElement('strong');
+            strong.textContent = 'Zone : ';
+            zoneP.appendChild(strong);
+            zoneP.appendChild(document.createTextNode(vendeur.zone));
+            card.appendChild(zoneP);
+        }
+        
+        const a = document.createElement('a');
+        a.href = `vendeur.html?id=${vendeur.id}`;
+        a.className = 'btn';
+        a.textContent = 'Voir le profil';
+        card.appendChild(a);
+        
+        liste.appendChild(card);
+    });
+}
+
+// Fonction pour filtrer et rechercher les vendeurs
+function filtrerEtRechercherVendeurs() {
+    const termeRecherche = document.getElementById('recherche-vendeur').value.toLowerCase().trim();
+    const zoneSelectionnee = document.getElementById('filtre-zone').value;
+    const compteur = document.getElementById('compteur-resultats');
+    
+    const tousVendeurs = chargerTousVendeurs();
+    let vendeursFiltres = [...tousVendeurs];
+    
+    // Filtrer par recherche (nom ou description)
+    if (termeRecherche) {
+        vendeursFiltres = vendeursFiltres.filter(vendeur => {
+            const nom = vendeur.nom ? vendeur.nom.toLowerCase() : '';
+            const description = vendeur.description ? vendeur.description.toLowerCase() : '';
+            return nom.includes(termeRecherche) || description.includes(termeRecherche);
+        });
+    }
+    
+    // Filtrer par zone
+    if (zoneSelectionnee) {
+        vendeursFiltres = vendeursFiltres.filter(vendeur => {
+            return vendeur.zone === zoneSelectionnee;
+        });
+    }
+    
+    // Afficher les résultats
+    afficherListeVendeurs(vendeursFiltres);
+    
+    // Mettre à jour le compteur
+    if (compteur) {
+        const total = tousVendeurs.length;
+        const filtres = vendeursFiltres.length;
+        if (termeRecherche || zoneSelectionnee) {
+            compteur.textContent = `${filtres} vendeur(s) trouvé(s) sur ${total}`;
+            compteur.style.display = 'block';
+        } else {
+            compteur.textContent = `${total} vendeur(s) au total`;
+            compteur.style.display = 'block';
+        }
+    }
+}
+
+// Fonction pour initialiser les filtres (remplir la liste des zones)
+function initialiserFiltres() {
+    const selectZone = document.getElementById('filtre-zone');
+    if (!selectZone) return;
+    
+    const tousVendeurs = chargerTousVendeurs();
+    const zones = new Set();
+    
+    // Collecter toutes les zones uniques
+    tousVendeurs.forEach(vendeur => {
+        if (vendeur.zone) {
+            zones.add(vendeur.zone);
+        }
+    });
+    
+    // Trier les zones par ordre alphabétique
+    const zonesTriees = Array.from(zones).sort();
+    
+    // Ajouter les options (en gardant "Toutes les zones" qui existe déjà)
+    zonesTriees.forEach(zone => {
+        const option = document.createElement('option');
+        option.value = zone;
+        option.textContent = zone;
+        selectZone.appendChild(option);
+    });
+}
+
+// Fonction pour initialiser la recherche et les filtres
+function initialiserRechercheFiltres() {
+    // Vérifier si on est sur la page vendeurs
+    if (!document.getElementById('recherche-vendeur')) return;
+    
+    // Initialiser les filtres (liste des zones)
+    initialiserFiltres();
+    
+    // Afficher la liste initiale
+    afficherListeVendeurs();
+    
+    // Événement sur le champ de recherche
+    const inputRecherche = document.getElementById('recherche-vendeur');
+    if (inputRecherche) {
+        inputRecherche.addEventListener('input', filtrerEtRechercherVendeurs);
+    }
+    
+    // Événement sur le filtre de zone
+    const selectZone = document.getElementById('filtre-zone');
+    if (selectZone) {
+        selectZone.addEventListener('change', filtrerEtRechercherVendeurs);
+    }
+}
+
+// Limite du nombre de produits par vendeur
+const MAX_PRODUITS_PAR_VENDEUR = 50;
+
+// Fonction pour charger les produits d'un vendeur (statiques + locaux)
+function chargerProduits(vendeurId) {
+    const vendeur = trouverVendeur(vendeurId);
+    if (!vendeur) return [];
+    
+    let produits = vendeur.produits ? [...vendeur.produits] : []; // Copie des produits initiaux
+    const locaux = JSON.parse(localStorage.getItem(`vendeur_${vendeurId}_produits`) || '[]');
+    produits = produits.concat(locaux);
+    return produits;
+}
+
+// Fonction pour comprimer une image avant stockage
+function compresserImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                // Calculer les nouvelles dimensions en gardant le ratio
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = (width * maxHeight) / height;
+                        height = maxHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Convertir en Base64 avec compression
+                const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+                resolve(compressedBase64);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Fonction pour obtenir le nombre de produits locaux d'un vendeur
+function obtenirNombreProduitsLocaux(vendeurId) {
+    const key = `vendeur_${vendeurId}_produits`;
+    const locaux = JSON.parse(localStorage.getItem(key) || '[]');
+    return locaux.length;
+}
+
+// Fonction pour sauvegarder un produit dans localStorage avec vérification de limite
+function sauvegarderProduit(vendeurId, produit) {
+    const key = `vendeur_${vendeurId}_produits`;
+    const locaux = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    // Vérifier la limite (uniquement pour les produits locaux, pas les statiques)
+    if (locaux.length >= MAX_PRODUITS_PAR_VENDEUR) {
+        throw new Error(`Limite atteinte : vous ne pouvez ajouter que ${MAX_PRODUITS_PAR_VENDEUR} produits maximum.`);
+    }
+    
+    locaux.push(produit);
+    localStorage.setItem(key, JSON.stringify(locaux));
+    return true;
+}
+
+// Fonction pour afficher le profil d'un vendeur sur vendeur.html
+function afficherProfilVendeur() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = parseInt(urlParams.get('id'));
+    if (!id) return;
+
+    const vendeur = trouverVendeur(id);
+    if (!vendeur) return;
+
+    // Mettre à jour le titre
+    document.getElementById('nom-vendeur').textContent = vendeur.nom;
+
+    // Afficher le profil
+    const profil = document.getElementById('profil-vendeur');
+    profil.textContent = ''; // Vider le contenu
+    
+    const p1 = document.createElement('p');
+    const strong1 = document.createElement('strong');
+    strong1.textContent = 'Description : ';
+    p1.appendChild(strong1);
+    p1.appendChild(document.createTextNode(vendeur.description));
+    profil.appendChild(p1);
+    
+    const p2 = document.createElement('p');
+    const strong2 = document.createElement('strong');
+    strong2.textContent = 'Zone de production : ';
+    p2.appendChild(strong2);
+    p2.appendChild(document.createTextNode(vendeur.zone));
+    profil.appendChild(p2);
+    
+    const p3 = document.createElement('p');
+    const strong3 = document.createElement('strong');
+    strong3.textContent = 'Téléphone : ';
+    p3.appendChild(strong3);
+    p3.appendChild(document.createTextNode(vendeur.telephone));
+    profil.appendChild(p3);
+    
+    const p4 = document.createElement('p');
+    const strong4 = document.createElement('strong');
+    strong4.textContent = 'Disponibilité : ';
+    p4.appendChild(strong4);
+    p4.appendChild(document.createTextNode(vendeur.disponibilite));
+    profil.appendChild(p4);
+
+    // Afficher les produits
+    const produits = chargerProduits(id);
+    afficherProduitsVendeur(id, produits);
+    
+    // Initialiser la recherche de produits
+    initialiserRechercheProduits(id);
+
+    // Bouton WhatsApp
+    const btnWhatsapp = document.getElementById('btn-whatsapp');
+    const message = encodeURIComponent(`Bonjour ${vendeur.nom}, je suis intéressé par vos produits bio.`);
+    btnWhatsapp.href = `https://wa.me/${vendeur.whatsapp}?text=${message}`;
+}
+
+// Fonction pour afficher les produits d'un vendeur (utilisée par afficherProfilVendeur et la recherche)
+function afficherProduitsVendeur(vendeurId, produitsAfficher = null) {
+    const listeProduits = document.getElementById('liste-produits');
+    if (!listeProduits) return;
+    
+    // Utiliser les produits fournis ou charger tous les produits
+    const produits = produitsAfficher || chargerProduits(vendeurId);
+    
+    // Vider la liste
+    listeProduits.textContent = '';
+    
+    // Afficher un message si aucun produit
+    if (produits.length === 0) {
+        const message = document.createElement('p');
+        message.className = 'message-aucun-resultat';
+        message.textContent = 'Aucun produit disponible.';
+        listeProduits.appendChild(message);
+        return;
+    }
+    
+    produits.forEach(produit => {
+        const div = document.createElement('div');
+        div.className = 'produit';
+        
+        const h4 = document.createElement('h4');
+        h4.textContent = produit.nom;
+        div.appendChild(h4);
+        
+        const pPrix = document.createElement('p');
+        const strongPrix = document.createElement('strong');
+        strongPrix.textContent = 'Prix : ';
+        pPrix.appendChild(strongPrix);
+        pPrix.appendChild(document.createTextNode(produit.prix));
+        div.appendChild(pPrix);
+        
+        const pDesc = document.createElement('p');
+        pDesc.textContent = produit.description;
+        div.appendChild(pDesc);
+        
+        if (produit.image) {
+            const img = document.createElement('img');
+            img.src = produit.image;
+            img.alt = produit.nom;
+            div.appendChild(img);
+        }
+        
+        listeProduits.appendChild(div);
+    });
+}
+
+// Fonction pour rechercher des produits
+function rechercherProduits(vendeurId) {
+    const termeRecherche = document.getElementById('recherche-produit').value.toLowerCase().trim();
+    const compteur = document.getElementById('compteur-produits');
+    
+    const tousProduits = chargerProduits(vendeurId);
+    let produitsFiltres = [...tousProduits];
+    
+    // Filtrer par recherche (nom, description ou prix)
+    if (termeRecherche) {
+        produitsFiltres = produitsFiltres.filter(produit => {
+            const nom = produit.nom ? produit.nom.toLowerCase() : '';
+            const description = produit.description ? produit.description.toLowerCase() : '';
+            const prix = produit.prix ? produit.prix.toLowerCase() : '';
+            return nom.includes(termeRecherche) || description.includes(termeRecherche) || prix.includes(termeRecherche);
+        });
+    }
+    
+    // Afficher les résultats
+    afficherProduitsVendeur(vendeurId, produitsFiltres);
+    
+    // Mettre à jour le compteur
+    if (compteur) {
+        const total = tousProduits.length;
+        const filtres = produitsFiltres.length;
+        const produitsLocaux = obtenirNombreProduitsLocaux(vendeurId);
+        
+        // Réinitialiser les styles
+        compteur.style.backgroundColor = '#e8f5e9';
+        compteur.style.borderLeftColor = '#4CAF50';
+        compteur.style.color = '#2e7d32';
+        
+        if (termeRecherche) {
+            compteur.textContent = `${filtres} produit(s) trouvé(s) sur ${total}`;
+            compteur.style.display = 'block';
+        } else {
+            let texteCompteur = `${total} produit(s) au total`;
+            if (produitsLocaux >= MAX_PRODUITS_PAR_VENDEUR) {
+                texteCompteur += ` (Limite de ${MAX_PRODUITS_PAR_VENDEUR} produits atteinte)`;
+                compteur.style.backgroundColor = '#fff3cd';
+                compteur.style.borderLeftColor = '#ffc107';
+                compteur.style.color = '#856404';
+            }
+            compteur.textContent = texteCompteur;
+            compteur.style.display = 'block';
+        }
+    }
+}
+
+// Fonction pour initialiser la recherche de produits
+function initialiserRechercheProduits(vendeurId) {
+    const inputRecherche = document.getElementById('recherche-produit');
+    if (!inputRecherche) return;
+    
+    // Afficher le compteur initial
+    const compteur = document.getElementById('compteur-produits');
+    const tousProduits = chargerProduits(vendeurId);
+    if (compteur && tousProduits.length > 0) {
+        compteur.textContent = `${tousProduits.length} produit(s) au total`;
+        compteur.style.display = 'block';
+    }
+    
+    // Événement sur le champ de recherche
+    inputRecherche.addEventListener('input', function() {
+        rechercherProduits(vendeurId);
+    });
+
+    // Gestion accès vendeur
+    const btnAcces = document.getElementById('btn-acces');
+    btnAcces.addEventListener('click', function() {
+        const password = prompt('Entrez le mot de passe vendeur :');
+        if (password === vendeur.password) {
+            document.getElementById('ajouter-produit').style.display = 'block';
+            document.getElementById('acces-vendeur').style.display = 'none';
+        } else {
+            alert('Mot de passe incorrect.');
+        }
+    });
+
+    // Gestion du formulaire d'ajout
+    const form = document.getElementById('form-produit');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        try {
+            // Vérifier la limite avant de traiter le formulaire
+            const nombreProduits = obtenirNombreProduitsLocaux(id);
+            if (nombreProduits >= MAX_PRODUITS_PAR_VENDEUR) {
+                alert(`Limite atteinte : vous ne pouvez ajouter que ${MAX_PRODUITS_PAR_VENDEUR} produits maximum.\n\nVeuillez supprimer des produits existants avant d'en ajouter de nouveaux.`);
+                return;
+            }
+            
+            const nom = sanitizeInput(document.getElementById('nom-produit').value);
+            const prix = sanitizeInput(document.getElementById('prix-produit').value);
+            const description = sanitizeInput(document.getElementById('desc-produit').value);
+            const imageInput = document.getElementById('image-produit');
+            
+            let image = '';
+            if (imageInput.files[0]) {
+                // Compresser l'image avant de l'utiliser
+                try {
+                    image = await compresserImage(imageInput.files[0]);
+                } catch (error) {
+                    alert('Erreur lors de la compression de l\'image : ' + error.message);
+                    return;
+                }
+            }
+            
+            const produit = { nom, prix, description, image };
+            sauvegarderProduit(id, produit);
+            
+            // Réinitialiser le formulaire et recharger la page
+            form.reset();
+            location.reload();
+        } catch (error) {
+            alert('Erreur : ' + error.message);
+        }
+    });
+}
+
+// Fonction pour gérer l'affichage du formulaire d'inscription
+function gererAffichageFormulaire() {
+    const btnDevenirVendeur = document.getElementById('btn-devenir-vendeur');
+    const sectionInscription = document.getElementById('inscription-vendeur');
+    
+    if (!btnDevenirVendeur || !sectionInscription) return;
+
+    btnDevenirVendeur.addEventListener('click', function() {
+        if (sectionInscription.style.display === 'none') {
+            sectionInscription.style.display = 'block';
+            // Faire défiler légèrement pour voir le formulaire
+            btnDevenirVendeur.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+            sectionInscription.style.display = 'none';
+        }
+    });
+}
+
+// Fonction pour gérer l'inscription d'un nouveau vendeur
+function gererInscription() {
+    const form = document.getElementById('form-inscription');
+    if (!form) return; // Si pas sur la page d'accueil
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Récupérer les valeurs du formulaire
+        const nom = document.getElementById('nom-vendeur').value.trim();
+        const description = document.getElementById('description-vendeur').value.trim();
+        const zone = document.getElementById('zone-vendeur').value.trim();
+        const telephone = document.getElementById('telephone-vendeur').value.trim();
+        let whatsapp = document.getElementById('whatsapp-vendeur').value.trim();
+        const disponibilite = document.getElementById('disponibilite-vendeur').value.trim();
+        const password = document.getElementById('password-vendeur').value;
+
+        // Validation basique
+        if (!nom || !description || !zone || !telephone || !whatsapp || !disponibilite || !password) {
+            afficherMessageInscription('Veuillez remplir tous les champs.', 'error');
+            return;
+        }
+
+        try {
+            // Convertir le format national WhatsApp en format international (enlever les espaces et ajouter 221)
+            whatsapp = whatsapp.replace(/\s/g, ''); // Enlever les espaces
+            if (!whatsapp.startsWith('221')) {
+                whatsapp = '221' + whatsapp; // Ajouter le préfixe 221 si absent
+            }
+
+            // Générer un ID unique (utiliser le timestamp + un nombre aléatoire)
+            const tousVendeurs = chargerTousVendeurs();
+            let nouvelId;
+            do {
+                nouvelId = Date.now() + Math.floor(Math.random() * 1000);
+            } while (tousVendeurs.find(v => v.id === nouvelId));
+
+            // Créer l'objet vendeur avec statut "en_attente"
+            const nouveauVendeur = {
+                id: nouvelId,
+                nom: sanitizeInput(nom),
+                description: sanitizeInput(description),
+                zone: sanitizeInput(zone),
+                telephone: sanitizeInput(telephone),
+                disponibilite: sanitizeInput(disponibilite),
+                whatsapp: whatsapp, // Sera nettoyé après conversion
+                password: password, // ⚠️ En production, devrait être hashé côté serveur
+                produits: [], // Liste vide de produits au départ
+                statut: 'en_attente', // En attente de validation par l'administrateur
+                dateInscription: new Date().toISOString() // Date d'inscription
+            };
+
+            // Sauvegarder le vendeur
+            sauvegarderVendeur(nouveauVendeur);
+
+            // Afficher message de succès avec information sur la validation
+            afficherMessageInscription(`Inscription réussie ! Votre demande a été enregistrée. Votre profil sera visible sur la plateforme une fois validé par l'administrateur. Votre ID vendeur est : ${nouvelId}`, 'success');
+            
+            // Réinitialiser le formulaire
+            form.reset();
+
+            // Optionnel : rediriger vers la liste des vendeurs après 3 secondes
+            setTimeout(function() {
+                window.location.href = 'vendeurs.html';
+            }, 3000);
+        } catch (error) {
+            afficherMessageInscription(error.message || 'Erreur de validation. Veuillez vérifier vos données.', 'error');
+            return;
+        }
+    });
+}
+
+// Fonction pour afficher un message d'inscription
+function afficherMessageInscription(message, type) {
+    const messageDiv = document.getElementById('message-inscription');
+    if (!messageDiv) return;
+    
+    messageDiv.textContent = message;
+    messageDiv.className = type;
+    messageDiv.style.display = 'block';
+    
+    // Faire défiler jusqu'au message
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Fonction pour calculer et afficher les statistiques
+function afficherStatistiques() {
+    const tousVendeurs = chargerTousVendeurs(); // Uniquement les validés pour les stats publiques
+    let totalProduits = 0;
+    
+    // Compter tous les produits (statiques + locaux)
+    tousVendeurs.forEach(vendeur => {
+        // Produits statiques
+        if (vendeur.produits && Array.isArray(vendeur.produits)) {
+            totalProduits += vendeur.produits.length;
+        }
+        // Produits dans localStorage
+        const produitsLocaux = JSON.parse(localStorage.getItem(`vendeur_${vendeur.id}_produits`) || '[]');
+        totalProduits += produitsLocaux.length;
+    });
+    
+    // Afficher les statistiques
+    const nombreVendeursEl = document.getElementById('nombre-vendeurs');
+    const nombreProduitsEl = document.getElementById('nombre-produits');
+    
+    if (nombreVendeursEl) {
+        nombreVendeursEl.textContent = tousVendeurs.length;
+    }
+    if (nombreProduitsEl) {
+        nombreProduitsEl.textContent = totalProduits;
+    }
+}
+
+// Fonction pour afficher les produits vedettes
+function afficherProduitsVedettes() {
+    const container = document.getElementById('produits-vedettes-container');
+    if (!container) return; // Si pas sur la page d'accueil
+
+    const tousVendeurs = chargerTousVendeurs();
+    const produitsVedettes = [];
+    
+    // Collecter quelques produits de différents vendeurs
+    tousVendeurs.forEach(vendeur => {
+        const produits = chargerProduits(vendeur.id);
+        if (produits.length > 0) {
+            // Prendre le premier produit de chaque vendeur
+            produitsVedettes.push({
+                ...produits[0],
+                vendeurNom: vendeur.nom
+            });
+        }
+    });
+    
+    // Limiter à 6 produits maximum
+    const produitsAffiches = produitsVedettes.slice(0, 6);
+    
+    container.textContent = ''; // Vider le contenu
+    
+    if (produitsAffiches.length === 0) {
+        const p = document.createElement('p');
+        p.style.color = 'white';
+        p.style.textShadow = '1px 1px 3px rgba(0, 0, 0, 0.7)';
+        p.textContent = 'Aucun produit disponible pour le moment.';
+        container.appendChild(p);
+        return;
+    }
+    
+    produitsAffiches.forEach(produit => {
+        const div = document.createElement('div');
+        div.className = 'produit-vedette';
+        
+        if (produit.image) {
+            const img = document.createElement('img');
+            img.src = produit.image;
+            img.alt = produit.nom;
+            img.className = 'produit-vedette-image';
+            div.appendChild(img);
+        }
+        
+        const h4 = document.createElement('h4');
+        h4.textContent = produit.nom;
+        div.appendChild(h4);
+        
+        const prixDiv = document.createElement('div');
+        prixDiv.className = 'produit-prix';
+        prixDiv.textContent = produit.prix;
+        div.appendChild(prixDiv);
+        
+        const pDesc = document.createElement('p');
+        pDesc.className = 'produit-description';
+        pDesc.textContent = produit.description;
+        div.appendChild(pDesc);
+        
+        const vendeurDiv = document.createElement('div');
+        vendeurDiv.className = 'produit-vendeur';
+        vendeurDiv.textContent = `Par ${produit.vendeurNom}`;
+        div.appendChild(vendeurDiv);
+        
+        container.appendChild(div);
+    });
+}
+
+// Fonction pour afficher les zones couvertes
+function afficherZonesCouvertes() {
+    const container = document.getElementById('zones-container');
+    if (!container) return; // Si pas sur la page d'accueil
+
+    const tousVendeurs = chargerTousVendeurs();
+    const zones = new Set(); // Utiliser un Set pour éviter les doublons
+    
+    tousVendeurs.forEach(vendeur => {
+        if (vendeur.zone) {
+            zones.add(vendeur.zone);
+        }
+    });
+    
+    const zonesArray = Array.from(zones).sort();
+    
+    if (zonesArray.length === 0) {
+        const p = document.createElement('p');
+        p.style.color = 'white';
+        p.style.textShadow = '1px 1px 3px rgba(0, 0, 0, 0.7)';
+        p.textContent = 'Aucune zone disponible pour le moment.';
+        container.appendChild(p);
+        return;
+    }
+    
+    zonesArray.forEach(zone => {
+        const span = document.createElement('span');
+        span.className = 'zone-badge';
+        span.textContent = zone;
+        container.appendChild(span);
+    });
+}
+
+// Animation au scroll
+function initialiserAnimationsScroll() {
+    // Vérifier si l'utilisateur préfère les animations réduites (accessibilité)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+        return; // Ne pas ajouter d'animations si l'utilisateur les préfère réduites
+    }
+
+    // Observer pour détecter quand les sections entrent dans la vue
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Une fois animé, ne plus observer cet élément (performance)
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { 
+        threshold: 0.1, // Déclencher quand 10% de l'élément est visible
+        rootMargin: '0px 0px -50px 0px' // Déclencher légèrement avant que l'élément soit complètement visible
+    });
+
+    // Observer les sections principales
+    const sections = document.querySelectorAll('#statistiques, #comment-ca-marche, #produits-vedettes, #zones-couvertes, #valeurs, #mentions');
+    sections.forEach(section => {
+        // Ajouter la classe initiale pour l'animation
+        section.classList.add('animate-on-scroll');
+        observer.observe(section);
+    });
+
+    // Observer le conteneur des étapes pour animer chaque étape séquentiellement
+    const etapesContainer = document.querySelector('.etapes');
+    if (etapesContainer) {
+        const etapesObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const etapes = entry.target.querySelectorAll('.etape');
+                    etapes.forEach((etape, index) => {
+                        setTimeout(() => {
+                            etape.classList.add('visible');
+                        }, index * 200); // Délai de 200ms entre chaque étape
+                    });
+                    etapesObserver.unobserve(entry.target);
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        etapesObserver.observe(etapesContainer);
+    }
+}
+
+// ===== SYSTÈME D'ADMINISTRATION =====
+
+// Mot de passe administrateur (peut être changé dans le code)
+// ⚠️ SÉCURITÉ : Pour une vraie sécurité, implémentez un backend avec hashage de mot de passe
+// Ce système frontend uniquement n'est pas sécurisé pour une production réelle
+
+// Hash simple du mot de passe (base64) pour éviter qu'il soit visible en clair
+// ⚠️ Ce n'est PAS une vraie sécurité, juste une obfuscation basique
+// Le hash de "admin123" en base64 : "YWRtaW4xMjM="
+const ADMIN_PASSWORD_HASH = btoa('admin123'); // Base64 encoding
+
+// Fonction pour hasher un mot de passe (simple obfuscation)
+function hashPassword(password) {
+    return btoa(password); // Base64 encoding (pas sécurisé, juste obfuscation)
+}
+
+// Fonction pour comparer les mots de passe
+function comparePassword(inputPassword, hashedPassword) {
+    return hashPassword(inputPassword) === hashedPassword;
+}
+
+// Clé pour stocker l'état de connexion admin
+const ADMIN_SESSION_KEY = 'admin_connected';
+
+// Fonction pour initialiser le mot de passe admin (première utilisation)
+function initialiserMotDePasseAdmin() {
+    if (!localStorage.getItem('admin_password_set')) {
+        // Le mot de passe est défini dans le code
+        localStorage.setItem('admin_password_set', 'true');
+    }
+}
+
+// Fonction pour vérifier si l'admin est connecté
+function estAdminConnecte() {
+    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+}
+
+// Clé pour les tentatives de connexion (protection basique contre brute force)
+const ADMIN_LOGIN_ATTEMPTS_KEY = 'admin_login_attempts';
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 15 * 60 * 1000; // 15 minutes en millisecondes
+
+// Fonction pour vérifier si l'admin est bloqué
+function estAdminBloque() {
+    const attemptsData = localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY);
+    if (!attemptsData) return false;
+    
+    const data = JSON.parse(attemptsData);
+    const now = Date.now();
+    
+    // Si le lockout a expiré, réinitialiser
+    if (now - data.lastAttempt > LOCKOUT_DURATION) {
+        localStorage.removeItem(ADMIN_LOGIN_ATTEMPTS_KEY);
+        return false;
+    }
+    
+    // Si trop de tentatives, bloquer
+    return data.count >= MAX_LOGIN_ATTEMPTS;
+}
+
+// Fonction pour enregistrer une tentative de connexion échouée
+function enregistrerTentativeEchouee() {
+    const attemptsData = localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY);
+    let data;
+    
+    if (attemptsData) {
+        data = JSON.parse(attemptsData);
+        const now = Date.now();
+        
+        // Si le lockout a expiré, réinitialiser
+        if (now - data.lastAttempt > LOCKOUT_DURATION) {
+            data = { count: 1, lastAttempt: now };
+        } else {
+            data.count++;
+            data.lastAttempt = now;
+        }
+    } else {
+        data = { count: 1, lastAttempt: Date.now() };
+    }
+    
+    localStorage.setItem(ADMIN_LOGIN_ATTEMPTS_KEY, JSON.stringify(data));
+}
+
+// Fonction pour réinitialiser les tentatives (après connexion réussie)
+function reinitialiserTentatives() {
+    localStorage.removeItem(ADMIN_LOGIN_ATTEMPTS_KEY);
+}
+
+// Fonction pour obtenir le temps restant de blocage
+function getTempsRestantBlocage() {
+    const attemptsData = localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY);
+    if (!attemptsData) return 0;
+    
+    const data = JSON.parse(attemptsData);
+    const now = Date.now();
+    const elapsed = now - data.lastAttempt;
+    const remaining = LOCKOUT_DURATION - elapsed;
+    
+    return Math.max(0, Math.ceil(remaining / 60000)); // Retourne en minutes
+}
+
+// Fonction pour connecter l'admin
+function connecterAdmin(password) {
+    // Vérifier si l'admin est bloqué
+    if (estAdminBloque()) {
+        const minutes = getTempsRestantBlocage();
+        throw new Error(`Trop de tentatives échouées. Veuillez réessayer dans ${minutes} minute(s).`);
+    }
+    
+    // Vérifier le mot de passe
+    if (comparePassword(password, ADMIN_PASSWORD_HASH)) {
+        reinitialiserTentatives();
+        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+        return true;
+    } else {
+        enregistrerTentativeEchouee();
+        return false;
+    }
+}
+
+// Fonction pour déconnecter l'admin
+function deconnecterAdmin() {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+}
+
+// Fonction pour afficher le tableau de bord admin
+function afficherTableauDeBordAdmin() {
+    const loginSection = document.getElementById('admin-login');
+    const dashboardSection = document.getElementById('admin-dashboard');
+    
+    if (loginSection) loginSection.style.display = 'none';
+    if (dashboardSection) dashboardSection.style.display = 'block';
+    
+    actualiserStatistiquesAdmin();
+    afficherListeVendeursAdmin();
+}
+
+// Fonction pour afficher la section de connexion
+function afficherConnexionAdmin() {
+    const loginSection = document.getElementById('admin-login');
+    const dashboardSection = document.getElementById('admin-dashboard');
+    
+    if (loginSection) loginSection.style.display = 'block';
+    if (dashboardSection) dashboardSection.style.display = 'none';
+}
+
+// Fonction pour actualiser les statistiques admin
+function actualiserStatistiquesAdmin() {
+    const tousVendeurs = chargerTousVendeurs(); // Validés uniquement pour les stats
+    const tousVendeursAdmin = chargerTousVendeursAdmin(); // Tous pour le comptage
+    const vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    const enAttente = chargerVendeursEnAttente();
+    
+    let totalProduits = 0;
+    const zones = new Set();
+    
+    tousVendeurs.forEach(vendeur => {
+        if (vendeur.zone) zones.add(vendeur.zone);
+        const produits = chargerProduits(vendeur.id);
+        totalProduits += produits.length;
+    });
+    
+    // Afficher les statistiques
+    const statVendeursTotaux = document.getElementById('stat-vendeurs-totaux');
+    const statVendeursInscrits = document.getElementById('stat-vendeurs-inscrits');
+    const statProduitsTotaux = document.getElementById('stat-produits-totaux');
+    const statZones = document.getElementById('stat-zones');
+    
+    if (statVendeursTotaux) statVendeursTotaux.textContent = tousVendeurs.length;
+    if (statVendeursInscrits) statVendeursInscrits.textContent = vendeursInscrits.filter(v => v.statut === 'valide' || !v.statut).length;
+    if (statProduitsTotaux) statProduitsTotaux.textContent = totalProduits;
+    if (statZones) statZones.textContent = zones.size;
+}
+
+// Fonction pour afficher les inscriptions en attente
+function afficherInscriptionsEnAttente() {
+    const container = document.getElementById('liste-en-attente');
+    if (!container) return;
+    
+    const enAttente = chargerVendeursEnAttente();
+    
+    container.textContent = ''; // Vider le contenu
+    
+    if (enAttente.length === 0) {
+        const p = document.createElement('p');
+        p.style.color = '#666';
+        p.style.padding = '20px';
+        p.style.backgroundColor = '#f9f9f9';
+        p.style.borderRadius = '5px';
+        p.textContent = 'Aucune inscription en attente de validation.';
+        container.appendChild(p);
+        return;
+    }
+    
+    enAttente.forEach(vendeur => {
+        const dateInscription = vendeur.dateInscription ? new Date(vendeur.dateInscription).toLocaleDateString('fr-FR') : 'Date inconnue';
+        
+        const card = document.createElement('div');
+        card.className = 'admin-vendeur-card admin-en-attente-card';
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'admin-vendeur-info';
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = vendeur.nom + ' ';
+        const badge = document.createElement('span');
+        badge.className = 'badge-en-attente';
+        badge.textContent = 'En attente';
+        h3.appendChild(badge);
+        infoDiv.appendChild(h3);
+        
+        const addInfo = (label, value) => {
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = label;
+            p.appendChild(strong);
+            p.appendChild(document.createTextNode(value));
+            infoDiv.appendChild(p);
+        };
+        
+        addInfo('ID: ', vendeur.id);
+        addInfo('Description: ', vendeur.description);
+        addInfo('Zone: ', vendeur.zone);
+        addInfo('Téléphone: ', vendeur.telephone);
+        addInfo('WhatsApp: ', vendeur.whatsapp || 'Non renseigné');
+        addInfo('Disponibilité: ', vendeur.disponibilite);
+        addInfo('Date d\'inscription: ', dateInscription);
+        
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'admin-vendeur-actions';
+        
+        const btnValider = document.createElement('button');
+        btnValider.className = 'btn-success';
+        btnValider.textContent = '✓ Valider';
+        btnValider.addEventListener('click', () => validerVendeur(vendeur.id, vendeur.nom));
+        actionsDiv.appendChild(btnValider);
+        
+        const btnRejeter = document.createElement('button');
+        btnRejeter.className = 'btn-danger';
+        btnRejeter.textContent = '✗ Rejeter';
+        btnRejeter.addEventListener('click', () => rejeterVendeur(vendeur.id, vendeur.nom));
+        actionsDiv.appendChild(btnRejeter);
+        
+        const a = document.createElement('a');
+        a.href = `vendeur.html?id=${vendeur.id}`;
+        a.className = 'btn';
+        a.target = '_blank';
+        a.textContent = 'Voir le profil';
+        actionsDiv.appendChild(a);
+        
+        card.appendChild(infoDiv);
+        card.appendChild(actionsDiv);
+        container.appendChild(card);
+    });
+}
+
+// Fonction pour afficher la liste des vendeurs dans l'admin
+function afficherListeVendeursAdmin() {
+    const container = document.getElementById('liste-admin-vendeurs');
+    if (!container) return;
+    
+    // Charger uniquement les vendeurs validés
+    const tousVendeurs = chargerTousVendeursAdmin().filter(v => {
+        // Les vendeurs statiques ou ceux avec statut 'valide' ou sans statut (anciens)
+        return !v.statut || v.statut === 'valide' || v.id <= 1000;
+    });
+    
+    container.textContent = ''; // Vider le contenu
+    
+    if (tousVendeurs.length === 0) {
+        const p = document.createElement('p');
+        p.textContent = 'Aucun vendeur enregistré.';
+        container.appendChild(p);
+        return;
+    }
+    
+    tousVendeurs.forEach(vendeur => {
+        const produits = chargerProduits(vendeur.id);
+        const estInscrit = vendeur.id > 1000; // Les vendeurs inscrits ont des ID > 1000
+        
+        const card = document.createElement('div');
+        card.className = 'admin-vendeur-card';
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'admin-vendeur-info';
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = vendeur.nom;
+        infoDiv.appendChild(h3);
+        
+        const addInfo = (label, value) => {
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = label;
+            p.appendChild(strong);
+            p.appendChild(document.createTextNode(value));
+            infoDiv.appendChild(p);
+        };
+        
+        addInfo('ID: ', vendeur.id);
+        addInfo('Zone: ', vendeur.zone);
+        addInfo('Téléphone: ', vendeur.telephone);
+        addInfo('WhatsApp: ', vendeur.whatsapp || 'Non renseigné');
+        addInfo('Produits: ', produits.length);
+        
+        const pType = document.createElement('p');
+        const strongType = document.createElement('strong');
+        strongType.textContent = 'Type: ';
+        pType.appendChild(strongType);
+        const spanType = document.createElement('span');
+        spanType.textContent = estInscrit ? 'Inscrit et validé' : 'Statique';
+        spanType.style.color = estInscrit ? '#4CAF50' : '#2196F3';
+        pType.appendChild(spanType);
+        infoDiv.appendChild(pType);
+        
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'admin-vendeur-actions';
+        
+        const a = document.createElement('a');
+        a.href = `vendeur.html?id=${vendeur.id}`;
+        a.className = 'btn';
+        a.target = '_blank';
+        a.textContent = 'Voir le profil';
+        actionsDiv.appendChild(a);
+        
+        if (produits.length > 0) {
+            const btnProduits = document.createElement('button');
+            btnProduits.className = 'btn-secondary';
+            btnProduits.textContent = `Voir les produits (${produits.length})`;
+            btnProduits.addEventListener('click', () => afficherProduitsVendeur(vendeur.id, vendeur.nom));
+            actionsDiv.appendChild(btnProduits);
+        }
+        
+        if (estInscrit) {
+            const btnSupprimer = document.createElement('button');
+            btnSupprimer.className = 'btn-danger';
+            btnSupprimer.textContent = 'Supprimer ce vendeur';
+            btnSupprimer.addEventListener('click', () => supprimerVendeur(vendeur.id, vendeur.nom));
+            actionsDiv.appendChild(btnSupprimer);
+        } else {
+            const p = document.createElement('p');
+            p.style.color = '#999';
+            p.style.fontSize = '0.9em';
+            p.textContent = 'Vendeur statique (ne peut pas être supprimé)';
+            actionsDiv.appendChild(p);
+        }
+        
+        card.appendChild(infoDiv);
+        card.appendChild(actionsDiv);
+        container.appendChild(card);
+    });
+}
+
+// Fonction pour afficher les produits d'un vendeur dans une modal
+function afficherProduitsVendeur(vendeurId, vendeurNom) {
+    const vendeur = trouverVendeur(vendeurId);
+    if (!vendeur) {
+        alert('Vendeur introuvable.');
+        return;
+    }
+    
+    // Récupérer uniquement les produits locaux (ceux qui peuvent être supprimés)
+    const produitsLocaux = JSON.parse(localStorage.getItem(`vendeur_${vendeurId}_produits`) || '[]');
+    
+    if (produitsLocaux.length === 0) {
+        alert('Ce vendeur n\'a pas de produits ajoutés (seulement des produits statiques qui ne peuvent pas être supprimés).');
+        return;
+    }
+    
+    const modal = document.createElement('div');
+    modal.className = 'admin-modal';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'admin-modal-content';
+    
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'admin-modal-header';
+    
+    const h2 = document.createElement('h2');
+    h2.textContent = `Produits de ${vendeurNom}`;
+    modalHeader.appendChild(h2);
+    
+    const btnClose = document.createElement('button');
+    btnClose.className = 'admin-modal-close';
+    btnClose.textContent = '×';
+    btnClose.addEventListener('click', () => modal.remove());
+    modalHeader.appendChild(btnClose);
+    
+    const modalBody = document.createElement('div');
+    modalBody.className = 'admin-modal-body';
+    
+    produitsLocaux.forEach((produit, index) => {
+        const produitItem = document.createElement('div');
+        produitItem.className = 'admin-produit-item';
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'admin-produit-info';
+        
+        const h4 = document.createElement('h4');
+        h4.textContent = produit.nom;
+        infoDiv.appendChild(h4);
+        
+        const pPrix = document.createElement('p');
+        const strongPrix = document.createElement('strong');
+        strongPrix.textContent = 'Prix: ';
+        pPrix.appendChild(strongPrix);
+        pPrix.appendChild(document.createTextNode(produit.prix));
+        infoDiv.appendChild(pPrix);
+        
+        const pDesc = document.createElement('p');
+        pDesc.textContent = produit.description;
+        infoDiv.appendChild(pDesc);
+        
+        if (produit.image) {
+            const img = document.createElement('img');
+            img.src = produit.image;
+            img.alt = produit.nom;
+            img.style.maxWidth = '100px';
+            img.style.maxHeight = '100px';
+            img.style.borderRadius = '5px';
+            img.style.marginTop = '5px';
+            infoDiv.appendChild(img);
+        }
+        
+        const btnSupprimer = document.createElement('button');
+        btnSupprimer.className = 'btn-danger btn-small';
+        btnSupprimer.textContent = 'Supprimer';
+        btnSupprimer.addEventListener('click', () => supprimerProduit(vendeurId, index, produit.nom));
+        
+        produitItem.appendChild(infoDiv);
+        produitItem.appendChild(btnSupprimer);
+        modalBody.appendChild(produitItem);
+    });
+    
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+}
+
+// Fonction pour valider un vendeur
+function validerVendeur(vendeurId, vendeurNom) {
+    if (!confirm(`Valider l'inscription de "${vendeurNom}" ?\n\nLe vendeur sera visible sur la plateforme.`)) {
+        return;
+    }
+    
+    // Récupérer tous les vendeurs inscrits
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    const vendeurIndex = inscrits.findIndex(v => v.id === vendeurId);
+    
+    if (vendeurIndex !== -1) {
+        // Mettre à jour le statut
+        inscrits[vendeurIndex].statut = 'valide';
+        inscrits[vendeurIndex].dateValidation = new Date().toISOString();
+        
+        // Sauvegarder
+        localStorage.setItem('vendeurs_inscrits', JSON.stringify(inscrits));
+        
+        // Actualiser l'affichage
+        actualiserStatistiquesAdmin();
+        afficherInscriptionsEnAttente();
+        afficherListeVendeursAdmin();
+        
+        afficherMessageValidation(`Le vendeur "${vendeurNom}" a été validé avec succès.`, 'success');
+    }
+}
+
+// Fonction pour rejeter un vendeur
+function rejeterVendeur(vendeurId, vendeurNom) {
+    if (!confirm(`Rejeter l'inscription de "${vendeurNom}" ?\n\nCette action supprimera définitivement l'inscription et tous ses produits.`)) {
+        return;
+    }
+    
+    if (!confirm('Êtes-vous sûr ? Cette action est irréversible.')) {
+        return;
+    }
+    
+    // Récupérer les vendeurs inscrits
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    const nouveauxInscrits = inscrits.filter(v => v.id !== vendeurId);
+    
+    // Sauvegarder
+    localStorage.setItem('vendeurs_inscrits', JSON.stringify(nouveauxInscrits));
+    
+    // Supprimer aussi les produits de ce vendeur
+    localStorage.removeItem(`vendeur_${vendeurId}_produits`);
+    
+    // Actualiser l'affichage
+    actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
+    afficherListeVendeursAdmin();
+    
+    afficherMessageValidation(`L'inscription de "${vendeurNom}" a été rejetée.`, 'success');
+}
+
+// Fonction pour afficher un message de validation
+function afficherMessageValidation(message, type) {
+    const messageDiv = document.getElementById('message-validation');
+    if (!messageDiv) return;
+    
+    messageDiv.style.display = 'block';
+    messageDiv.textContent = message;
+    messageDiv.className = type === 'success' ? 'success' : 'error';
+    
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, 5000);
+}
+
+// Fonction pour supprimer un vendeur
+function supprimerVendeur(vendeurId, vendeurNom) {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer le vendeur "${vendeurNom}" ?\n\nCette action supprimera également tous ses produits et est irréversible.`)) {
+        return;
+    }
+    
+    // Récupérer les vendeurs inscrits
+    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    const nouveauxInscrits = inscrits.filter(v => v.id !== vendeurId);
+    
+    // Sauvegarder
+    localStorage.setItem('vendeurs_inscrits', JSON.stringify(nouveauxInscrits));
+    
+    // Supprimer aussi les produits de ce vendeur
+    localStorage.removeItem(`vendeur_${vendeurId}_produits`);
+    
+    // Actualiser l'affichage
+    actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
+    afficherListeVendeursAdmin();
+    
+    afficherMessageAdmin('Le vendeur a été supprimé avec succès.', 'success');
+}
+
+// Fonction pour supprimer un produit
+function supprimerProduit(vendeurId, produitIndex, nomProduit) {
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer le produit "${nomProduit}" ?`)) {
+        return;
+    }
+    
+    const key = `vendeur_${vendeurId}_produits`;
+    const produits = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    if (produitIndex >= 0 && produitIndex < produits.length) {
+        produits.splice(produitIndex, 1);
+        localStorage.setItem(key, JSON.stringify(produits));
+        
+        // Actualiser l'affichage
+        actualiserStatistiquesAdmin();
+        afficherListeVendeursAdmin();
+        
+        // Fermer et rouvrir la modal pour actualiser
+        document.querySelector('.admin-modal')?.remove();
+        const vendeur = trouverVendeur(vendeurId);
+        if (vendeur) {
+            afficherProduitsVendeur(vendeurId, vendeur.nom);
+        }
+        
+        afficherMessageAdmin('Le produit a été supprimé avec succès.', 'success');
+    }
+}
+
+// Fonction pour réinitialiser tous les vendeurs inscrits
+function reinitialiserVendeursInscrits() {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer TOUS les vendeurs inscrits ?\n\nCette action est irréversible et supprimera également tous leurs produits.')) {
+        return;
+    }
+    
+    if (!confirm('DERNIÈRE CONFIRMATION : Supprimer définitivement tous les vendeurs inscrits ?')) {
+        return;
+    }
+    
+    // Supprimer tous les vendeurs inscrits
+    localStorage.removeItem('vendeurs_inscrits');
+    
+    // Supprimer tous les produits de tous les vendeurs inscrits
+    const tousVendeurs = chargerTousVendeurs();
+    tousVendeurs.forEach(vendeur => {
+        if (vendeur.id > 1000) { // Vendeurs inscrits
+            localStorage.removeItem(`vendeur_${vendeur.id}_produits`);
+        }
+    });
+    
+    actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
+    afficherListeVendeursAdmin();
+    afficherMessageAdmin('Tous les vendeurs inscrits ont été supprimés.', 'success');
+}
+
+// Fonction pour réinitialiser tous les produits
+function reinitialiserTousProduits() {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer TOUS les produits de TOUS les vendeurs ?\n\nCette action est irréversible.')) {
+        return;
+    }
+    
+    // Supprimer tous les produits de tous les vendeurs
+    const tousVendeurs = chargerTousVendeurs();
+    tousVendeurs.forEach(vendeur => {
+        localStorage.removeItem(`vendeur_${vendeur.id}_produits`);
+    });
+    
+    actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
+    afficherListeVendeursAdmin();
+    afficherMessageAdmin('Tous les produits ont été supprimés.', 'success');
+}
+
+// Fonction pour réinitialiser toutes les données
+function reinitialiserToutesDonnees() {
+    if (!confirm('ATTENTION : Êtes-vous sûr de vouloir supprimer TOUTES les données (vendeurs inscrits + produits) ?\n\nCette action est irréversible !')) {
+        return;
+    }
+    
+    if (!confirm('DERNIÈRE CONFIRMATION : Supprimer définitivement TOUTES les données ?')) {
+        return;
+    }
+    
+    if (!confirm('DERNIÈRE ALERTE : Cette action va tout effacer. Confirmez une dernière fois.')) {
+        return;
+    }
+    
+    // Supprimer toutes les données
+    localStorage.removeItem('vendeurs_inscrits');
+    
+    const tousVendeurs = chargerTousVendeurs();
+    tousVendeurs.forEach(vendeur => {
+        localStorage.removeItem(`vendeur_${vendeur.id}_produits`);
+    });
+    
+    actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
+    afficherListeVendeursAdmin();
+    afficherMessageAdmin('Toutes les données ont été supprimées.', 'success');
+}
+
+// Fonction pour afficher un message dans l'admin
+function afficherMessageAdmin(message, type) {
+    const messageDiv = document.getElementById('message-admin-actions');
+    if (!messageDiv) return;
+    
+    messageDiv.style.display = 'block';
+    messageDiv.textContent = message;
+    messageDiv.className = type === 'success' ? 'success' : 'error';
+    
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, 5000);
+}
+
+// Gestion de l'administration
+function gererAdministration() {
+    // Vérifier si on est sur la page admin
+    if (!window.location.pathname.includes('admin.html')) {
+        return;
+    }
+    
+    initialiserMotDePasseAdmin();
+    
+    // Vérifier si l'admin est déjà connecté
+    if (estAdminConnecte()) {
+        afficherTableauDeBordAdmin();
+    } else {
+        afficherConnexionAdmin();
+    }
+    
+    // Gestion du formulaire de connexion
+    const formLogin = document.getElementById('form-admin-login');
+    if (formLogin) {
+        formLogin.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('admin-password').value;
+            const messageDiv = document.getElementById('message-admin-login');
+            
+            try {
+                // Vérifier si bloqué
+                if (estAdminBloque()) {
+                    const minutes = getTempsRestantBlocage();
+                    if (messageDiv) {
+                        messageDiv.style.display = 'block';
+                        messageDiv.textContent = `Trop de tentatives échouées. Veuillez réessayer dans ${minutes} minute(s).`;
+                        messageDiv.className = 'error';
+                    }
+                    return;
+                }
+                
+                if (connecterAdmin(password)) {
+                    afficherTableauDeBordAdmin();
+                } else {
+                    const attemptsData = JSON.parse(localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY) || '{"count": 0}');
+                    const remaining = MAX_LOGIN_ATTEMPTS - attemptsData.count;
+                    
+                    if (messageDiv) {
+                        messageDiv.style.display = 'block';
+                        if (remaining > 1) {
+                            messageDiv.textContent = `Mot de passe incorrect. ${remaining} tentative(s) restante(s).`;
+                        } else {
+                            messageDiv.textContent = `Mot de passe incorrect. Dernière tentative avant blocage.`;
+                        }
+                        messageDiv.className = 'error';
+                    }
+                }
+            } catch (error) {
+                if (messageDiv) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.textContent = error.message || 'Erreur de connexion.';
+                    messageDiv.className = 'error';
+                }
+            }
+        });
+    }
+    
+    // Bouton de déconnexion
+    const btnDeconnexion = document.getElementById('btn-deconnexion');
+    if (btnDeconnexion) {
+        btnDeconnexion.addEventListener('click', function() {
+            deconnecterAdmin();
+            afficherConnexionAdmin();
+            if (formLogin) formLogin.reset();
+        });
+    }
+    
+    // Boutons d'actions
+    const btnResetVendeurs = document.getElementById('btn-reset-vendeurs');
+    const btnResetProduits = document.getElementById('btn-reset-produits');
+    const btnResetTout = document.getElementById('btn-reset-tout');
+    
+    if (btnResetVendeurs) {
+        btnResetVendeurs.addEventListener('click', reinitialiserVendeursInscrits);
+    }
+    if (btnResetProduits) {
+        btnResetProduits.addEventListener('click', reinitialiserTousProduits);
+    }
+    if (btnResetTout) {
+        btnResetTout.addEventListener('click', reinitialiserToutesDonnees);
+    }
+}
+
+// Initialisation selon la page
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname.includes('admin.html')) {
+        gererAdministration();
+    } else if (window.location.pathname.includes('vendeurs.html')) {
+        initialiserRechercheFiltres();
+    } else if (window.location.pathname.includes('vendeur.html')) {
+        afficherProfilVendeur();
+    } else if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) {
+        gererAffichageFormulaire();
+        gererInscription();
+        afficherStatistiques();
+        afficherProduitsVedettes();
+        afficherZonesCouvertes();
+        initialiserAnimationsScroll();
+    }
+});

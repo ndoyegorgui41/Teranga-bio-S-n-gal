@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Nos Vendeurs - Teranga Bio Sénégal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
+        <div>
+            <h1>Nos Vendeurs</h1>
+            <a href="index.html" class="btn">Retour à l'accueil</a>
+        </div>
+    </header>
+    <main>
+        <section id="recherche-filtres">
+            <h2>Rechercher un vendeur</h2>
+            <div class="recherche-container">
+                <input type="text" id="recherche-vendeur" placeholder="Rechercher par nom ou description..." class="input-recherche">
+            </div>
+            <div class="filtres-container">
+                <label for="filtre-zone">Filtrer par zone :</label>
+                <select id="filtre-zone" class="select-filtre">
+                    <option value="">Toutes les zones</option>
+                </select>
+            </div>
+            <div id="compteur-resultats" class="compteur-resultats"></div>
+        </section>
+        <section id="liste-vendeurs">
+            <!-- Liste générée par JS -->
+        </section>
+        <section id="mentions">
+            <p><strong>Mention importante :</strong> Cette plateforme ne gère ni les paiements ni les livraisons. Toute transaction est à la responsabilité du vendeur et de l'acheteur.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Teranga Bio Sénégal</p>
+        <p class="footer-admin-link"><a href="admin.html">Administration</a></p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
