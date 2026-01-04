@@ -3060,7 +3060,31 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         position: absolute;
         top: 10px;
         right: 10px;
+        left: auto;
         z-index: 101;
+        margin: 0;
+    }
+    
+    .header-content {
+        padding-right: 50px;
+        align-items: flex-start !important;
+        text-align: left !important;
+    }
+    
+    body.page-accueil .header-content {
+        padding-right: 50px;
+        align-items: flex-start !important;
+        text-align: left !important;
+    }
+    
+    body.page-accueil header h1 {
+        text-align: left !important;
+        align-self: flex-start !important;
+    }
+    
+    header h1 {
+        text-align: left !important;
+        align-self: flex-start !important;
     }
     
     .main-nav {

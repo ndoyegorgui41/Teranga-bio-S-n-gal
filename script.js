@@ -507,10 +507,10 @@ function initialiserRechercheProduits(vendeurId) {
             const nom = sanitizeInput(document.getElementById('nom-produit').value);
             const prix = sanitizeInput(document.getElementById('prix-produit').value);
             const description = sanitizeInput(document.getElementById('desc-produit').value);
-            const imageInput = document.getElementById('image-produit');
-            
-            let image = '';
-            if (imageInput.files[0]) {
+        const imageInput = document.getElementById('image-produit');
+        
+        let image = '';
+        if (imageInput.files[0]) {
                 // Compresser l'image avant de l'utiliser
                 try {
                     image = await compresserImage(imageInput.files[0]);
@@ -520,12 +520,12 @@ function initialiserRechercheProduits(vendeurId) {
                 }
             }
             
-            const produit = { nom, prix, description, image };
-            sauvegarderProduit(id, produit);
+                const produit = { nom, prix, description, image };
+                sauvegarderProduit(id, produit);
             
             // Réinitialiser le formulaire et recharger la page
             form.reset();
-            location.reload();
+                location.reload();
         } catch (error) {
             alert('Erreur : ' + error.message);
         }
