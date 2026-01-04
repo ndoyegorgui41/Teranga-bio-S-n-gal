@@ -30,7 +30,7 @@ header {
     background-position: center;
     background-repeat: no-repeat;
     color: white;
-    padding: 40px 30px;
+    padding: 15px 30px 40px 30px;
     min-height: 180px;
     margin-bottom: 0;
     display: flex;
@@ -44,13 +44,13 @@ header {
 }
 
 .logo-header {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 60px;
+    max-height: 60px;
     margin-bottom: 0;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    margin-top: -10px;
+    margin-top: 0;
 }
 
 .header-content {
@@ -73,7 +73,7 @@ header > div {
 }
 
 body.page-accueil header {
-    padding: 40px 30px;
+    padding: 15px 30px 40px 30px;
     min-height: 180px;
     background: url('images/image1.jpeg');
     background-size: cover;
@@ -83,11 +83,11 @@ body.page-accueil header {
 }
 
 body.page-accueil .logo-header {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 60px;
+    max-height: 60px;
     margin-bottom: 0;
     flex-shrink: 0;
-    margin-top: -10px;
+    margin-top: 0;
 }
 
 body.page-accueil header>div,
@@ -98,15 +98,22 @@ body.page-accueil .header-content {
     justify-content: flex-start;
     flex: 1;
     gap: 15px;
-    padding-top: 15px;
+    padding-top: 0;
 }
 
 body.page-accueil header h1 {
     margin: 0;
-    font-size: 1.8em;
-    color: #FF8C00;
+    font-size: 1.4em;
+    color: white;
     font-weight: 600;
     line-height: 1.2;
+    text-shadow: 
+        -1px -1px 0 rgba(0, 0, 0, 0.8),
+        1px -1px 0 rgba(0, 0, 0, 0.8),
+        -1px 1px 0 rgba(0, 0, 0, 0.8),
+        1px 1px 0 rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 body.page-accueil header p {
@@ -114,9 +121,16 @@ body.page-accueil header p {
 }
 
 header h1 {
-    font-size: 1.8em;
+    font-size: 1.4em;
     font-weight: 600;
-    color: #FF8C00;
+    color: white;
+    text-shadow: 
+        -1px -1px 0 rgba(0, 0, 0, 0.8),
+        1px -1px 0 rgba(0, 0, 0, 0.8),
+        -1px 1px 0 rgba(0, 0, 0, 0.8),
+        1px 1px 0 rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 header a {
@@ -189,6 +203,31 @@ body.page-accueil header a {
 
 .nav-link span {
     white-space: nowrap;
+    color: white !important;
+    display: inline-block;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.nav-dropdown-link span {
+    color: white !important;
+    display: inline-block !important;
+    white-space: nowrap;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: inherit !important;
+    line-height: 1.5 !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+.nav-dropdown-close span {
+    color: white !important;
+    display: inline-block;
+    white-space: nowrap;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .nav-toggle {
@@ -255,9 +294,10 @@ body.page-accueil header a {
 .nav-dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
+    left: auto;
     margin-top: 8px;
-    background-color: rgba(30, 107, 58, 0.95);
+    background-color: rgba(70, 90, 75, 0.85);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 10px 0;
@@ -266,14 +306,51 @@ body.page-accueil header a {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     z-index: 1000;
 }
 
+.nav-dropdown-menu * {
+    transition: none !important;
+}
+
 .nav-dropdown.active .nav-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
     transform: translateY(0);
+}
+
+.nav-dropdown.active .nav-dropdown-menu * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: white !important;
+}
+
+.nav-dropdown.active .nav-dropdown-menu .nav-dropdown-link {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: white !important;
+}
+
+.nav-dropdown.active .nav-dropdown-menu .nav-dropdown-link span {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: white !important;
+    display: inline-block !important;
+    font-size: inherit !important;
+    line-height: 1.5 !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+    text-shadow: none !important;
+}
+
+.nav-dropdown.active .nav-dropdown-toggle {
+    display: none !important;
+}
+
+.nav-dropdown.active .nav-dropdown-toggle span {
+    display: none !important;
 }
 
 .nav-dropdown-link {
@@ -281,7 +358,7 @@ body.page-accueil header a {
     align-items: center;
     gap: 12px;
     padding: 12px 20px;
-    color: white;
+    color: white !important;
     text-decoration: none;
     font-size: 0.9em;
     font-weight: 500;
@@ -290,6 +367,10 @@ body.page-accueil header a {
     background: none;
     width: 100%;
     text-align: left;
+}
+
+.nav-dropdown-link * {
+    color: white !important;
 }
 
 .nav-dropdown-link:hover {
@@ -1795,11 +1876,12 @@ body.page-accueil #statistiques h2 {
     font-size: 2em;
     color: #1e6b3a;
     text-shadow: none;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
     text-align: center;
     display: block;
     width: 100%;
-    padding: 0;
+    padding: 0 10px;
     box-sizing: border-box;
 }
 
@@ -1860,7 +1942,9 @@ body.page-accueil #statistiques h2 {
 body.page-accueil #comment-ca-marche h2 {
     margin-bottom: 60px;
     text-align: center;
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 0 10px;
 }
 
 body.page-accueil #comment-ca-marche.animate-on-scroll {
@@ -2420,49 +2504,64 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     }
     
     header {
-        padding: 80px 50px 60px 50px;
+        padding: 20px 50px 60px 50px;
         min-height: 240px;
     }
     
     body.page-accueil header {
-        padding: 80px 50px 60px 50px;
+        padding: 20px 50px 60px 50px;
         min-height: 240px;
     }
     
     header h1 {
-        font-size: 1.8em;
+        font-size: 1.5em;
+        color: white;
+        text-shadow: 
+            -1px -1px 0 rgba(0, 0, 0, 0.8),
+            1px -1px 0 rgba(0, 0, 0, 0.8),
+            -1px 1px 0 rgba(0, 0, 0, 0.8),
+            1px 1px 0 rgba(0, 0, 0, 0.8),
+            0 0 10px rgba(0, 0, 0, 0.5),
+            0 2px 4px rgba(0, 0, 0, 0.7);
     }
     
     body.page-accueil header h1 {
-        font-size: 2.2em;
+        font-size: 1.6em;
         margin: 0;
         line-height: 1.2;
-        color: #FF8C00;
+        color: white;
+        text-shadow: 
+            -1px -1px 0 rgba(0, 0, 0, 0.8),
+            1px -1px 0 rgba(0, 0, 0, 0.8),
+            -1px 1px 0 rgba(0, 0, 0, 0.8),
+            1px 1px 0 rgba(0, 0, 0, 0.8),
+            0 0 10px rgba(0, 0, 0, 0.5),
+            0 2px 4px rgba(0, 0, 0, 0.7);
     }
     
     .logo-header {
-        max-width: 120px;
-        max-height: 120px;
+        max-width: 70px;
+        max-height: 70px;
         align-self: flex-start;
-        margin-top: -15px;
+        margin-top: 0;
     }
     
     body.page-accueil .logo-header {
-        max-width: 120px;
-        max-height: 120px;
-        margin-top: -15px;
+        max-width: 70px;
+        max-height: 70px;
+        margin-top: 0;
     }
     
     body.page-accueil .header-content {
         align-items: flex-start;
         justify-content: flex-start;
-        padding-top: 20px;
+        padding-top: 10px;
     }
     
     body.page-accueil .logo-header {
-        max-width: 120px;
-        max-height: 120px;
-        margin-top: -15px;
+        max-width: 70px;
+        max-height: 70px;
+        margin-top: 0;
     }
     
     body.page-accueil section#accueil {
@@ -2546,9 +2645,24 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         min-width: 250px;
     }
     
+    .nav-dropdown-menu * {
+        color: white !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
     .nav-dropdown-link {
         font-size: 0.95em;
         padding: 14px 24px;
+        color: white !important;
+    }
+    
+    .nav-dropdown-link span {
+        color: white !important;
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: inherit !important;
     }
     
     .processus-container {
@@ -2858,11 +2972,94 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
 
 /* Menu navigation mobile */
 @media (max-width: 767px) {
+    /* Section Comment ça marche - Responsive */
+    #comment-ca-marche {
+        padding: 40px 15px;
+    }
+    
+    body.page-accueil #comment-ca-marche h2 {
+        font-size: 1.5em;
+        margin-bottom: 40px;
+        white-space: normal;
+        word-wrap: break-word;
+        padding: 0 10px;
+        line-height: 1.3;
+    }
+    
+    .processus-header {
+        padding: 15px;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .processus-icon {
+        font-size: 2em;
+    }
+    
+    .processus-header h3 {
+        font-size: 1.4em;
+    }
+    
+    .etape {
+        padding: 20px 15px;
+        gap: 15px;
+    }
+    
+    .etape-numero {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1em;
+    }
+    
+    .etape-content h4 {
+        font-size: 1.1em;
+    }
+    
+    .etape-content p {
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+    
+    /* Section Statistiques - Responsive */
+    #statistiques {
+        padding: 40px 15px;
+    }
+    
+    body.page-accueil #statistiques h2 {
+        font-size: 1.5em;
+        margin-bottom: 30px;
+        white-space: normal;
+        word-wrap: break-word;
+        padding: 0 10px;
+        line-height: 1.3;
+    }
+    
+    .stats-container {
+        flex-direction: column;
+        gap: 25px;
+        padding: 30px 20px;
+        max-width: 100%;
+    }
+    
+    .stat-divider {
+        width: 80px;
+        height: 2px;
+        margin: 10px 0;
+    }
+    
+    .stat-number {
+        font-size: 2em;
+    }
+    
+    .stat-label {
+        font-size: 0.85em;
+    }
+    
     .nav-toggle {
         display: flex;
         position: absolute;
-        top: 20px;
-        right: 20px;
+        top: 10px;
+        right: 10px;
         z-index: 101;
     }
     
@@ -2872,7 +3069,7 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         top: 0;
         left: 0;
         right: 0;
-        background-color: rgba(30, 107, 58, 0.98);
+        background-color: rgba(70, 90, 75, 0.85);
         backdrop-filter: blur(10px);
         flex-direction: column;
         padding: 80px 20px 20px 20px;
@@ -2906,27 +3103,66 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     
     .nav-dropdown-menu {
         position: static;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
+        display: none;
+        flex-direction: column;
+        width: 100%;
         box-shadow: none;
         background-color: transparent;
         padding: 0;
         margin-top: 0;
-        margin-left: 20px;
+        margin-left: 0;
         min-width: auto;
     }
     
     .nav-dropdown.active .nav-dropdown-menu {
-        transform: none;
+        display: flex;
+    }
+    
+    .nav-dropdown.active .nav-dropdown-toggle {
+        display: none;
     }
     
     .nav-dropdown-link {
-        padding: 10px 16px;
+        display: flex;
+        width: 100%;
+        padding: 12px 16px;
         border-radius: 8px;
         margin-bottom: 5px;
         background-color: rgba(255, 255, 255, 0.05);
+        color: white !important;
     }
+    
+    .nav-dropdown-link span {
+        color: white !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: inline-block !important;
+    }
+    
+    .nav-dropdown-link * {
+        color: white !important;
+    }
+    
+    .nav-dropdown-close {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-top: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        font-family: inherit;
+        color: white;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+    
+    .nav-dropdown-close:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    
     
     header {
         position: relative;

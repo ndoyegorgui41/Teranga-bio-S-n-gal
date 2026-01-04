@@ -1744,33 +1744,49 @@ document.addEventListener('DOMContentLoaded', function() {
 function initialiserNavigation() {
     const navToggle = document.getElementById('nav-toggle');
     const mainNav = document.getElementById('main-nav');
-    const navLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle)');
+    const navLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle):not(.nav-dropdown-close)');
     const dropdownToggle = document.getElementById('nav-dropdown-toggle');
     const dropdownMenu = document.getElementById('nav-dropdown-menu');
     const dropdown = dropdownToggle ? dropdownToggle.closest('.nav-dropdown') : null;
     const dropdownLinks = document.querySelectorAll('.nav-dropdown-link');
-    const allNavLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle), .nav-dropdown-link');
+    const allNavLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle):not(.nav-dropdown-close), .nav-dropdown-link');
     
     if (!mainNav) return; // Si le menu n'existe pas, on sort
     
     // Toggle menu déroulant "Voir plus"
+    const dropdownClose = document.getElementById('nav-dropdown-close');
     if (dropdownToggle && dropdown) {
         dropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
-            dropdown.classList.toggle('active');
+            dropdown.classList.add('active');
         });
         
-        // Fermer le menu déroulant en cliquant ailleurs
+        // Fermer le menu déroulant avec le bouton "Voir moins"
+        if (dropdownClose) {
+            dropdownClose.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropdown.classList.remove('active');
+                // Ne pas fermer le menu mobile, seulement masquer le menu déroulant
+            });
+        }
+        
+        // Fermer le menu déroulant en cliquant ailleurs (seulement sur desktop)
         document.addEventListener('click', function(e) {
-            if (!dropdown.contains(e.target)) {
+            if (window.innerWidth > 767 && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('active');
             }
         });
         
-        // Fermer le menu déroulant en cliquant sur un lien
+        // Fermer le menu déroulant en cliquant sur un lien (mobile seulement)
         dropdownLinks.forEach(link => {
             link.addEventListener('click', function() {
-                dropdown.classList.remove('active');
+                if (window.innerWidth <= 767) {
+                    // Ne pas fermer le dropdown sur mobile, seulement fermer le menu principal
+                } else {
+                    dropdown.classList.remove('active');
+                }
             });
         });
     }
@@ -1785,6 +1801,10 @@ function initialiserNavigation() {
         // Fermer le menu en cliquant sur un lien (mobile)
         allNavLinks.forEach(link => {
             link.addEventListener('click', function() {
+                // Ne pas fermer le menu si c'est le bouton "Voir moins"
+                if (this.id === 'nav-dropdown-close') {
+                    return;
+                }
                 if (window.innerWidth <= 767) {
                     navToggle.classList.remove('active');
                     mainNav.classList.remove('active');
@@ -1796,6 +1816,10 @@ function initialiserNavigation() {
     // Smooth scroll pour les liens de navigation
     allNavLinks.forEach(link => {
         link.addEventListener('click', function(e) {
+            // Ne pas traiter le bouton "Voir moins" comme un lien de navigation
+            if (this.id === 'nav-dropdown-close' || this.classList.contains('nav-dropdown-close')) {
+                return;
+            }
             const href = this.getAttribute('href');
             if (href && href.startsWith('#')) {
                 e.preventDefault();
