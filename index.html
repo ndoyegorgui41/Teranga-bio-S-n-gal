@@ -5,22 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teranga Bio Sénégal</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Leaflet CSS pour la carte -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body class="page-accueil">
     <header>
         <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
-        <div>
-        <h1>Teranga Bio Sénégal</h1>
+        <div class="header-content">
+            <h1>Teranga Bio Sénégal</h1>
+            <nav class="main-nav" id="main-nav">
+                <a href="#accueil" class="nav-link" data-section="accueil">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span>Accueil</span>
+                </a>
+                <a href="#produits-vedettes" class="nav-link" data-section="produits-vedettes">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.15.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span>Produits</span>
+                </a>
+                <a href="#contactez-nous" class="nav-link" data-section="contactez-nous">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span>Contact</span>
+                </a>
+                <div class="nav-dropdown">
+                    <button class="nav-link nav-dropdown-toggle" id="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <span>Voir plus</span>
+                    </button>
+                    <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+                        <a href="#statistiques" class="nav-dropdown-link" data-section="statistiques">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                            <span>Statistiques</span>
+                        </a>
+                        <a href="#comment-ca-marche" class="nav-dropdown-link" data-section="comment-ca-marche">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            </svg>
+                            <span>Comment ça marche</span>
+                        </a>
+                        <a href="#zones-couvertes" class="nav-dropdown-link" data-section="zones-couvertes">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <span>Zones</span>
+                        </a>
+                        <a href="#valeurs" class="nav-dropdown-link" data-section="valeurs">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>Valeurs</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
     <main>
         <section id="accueil">
-            <h2>Bienvenue</h2>
-            <p>Découvrez des vendeurs de produits bio locaux. Commandez via WhatsApp et organisez paiement et livraison directement.</p>
-            <div class="boutons-accueil">
-            <a href="vendeurs.html" class="btn">Voir les vendeurs</a>
-                <div class="bouton-formulaire-wrapper">
-                    <button id="btn-devenir-vendeur" class="btn">Devenir vendeur</button>
+            <div class="accueil-container">
+                <div class="accueil-image">
+                    <picture>
+                        <source srcset="images/arrière plan.webp" type="image/webp">
+                        <img src="images/arrière plan.jpeg" alt="Produits bio locaux">
+                    </picture>
+                </div>
+                <div class="accueil-content">
+                    <h2>Produits Bio Locaux du Sénégal</h2>
+                    <p class="accueil-intro">Connectez-vous directement avec les producteurs locaux pour des produits frais, naturels et cultivés avec soin. Commandez facilement via WhatsApp et recevez des produits authentiques directement de la ferme à votre table.</p>
+                    <div class="boutons-accueil">
+                        <a href="vendeurs.html" class="btn">Découvrir les vendeurs</a>
+                        <div class="bouton-formulaire-wrapper">
+                            <button id="btn-devenir-vendeur" class="btn">Rejoindre comme vendeur</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -68,26 +139,63 @@
         </section>
         <section id="comment-ca-marche">
             <h2>Comment ça marche ?</h2>
-            <div class="etapes">
-                <div class="etape">
-                    <span class="etape-numero">1</span>
-                    <div class="etape-content">
-                        <h3>Explorez</h3>
-                        <p>Parcourez la liste des vendeurs et leurs produits bio locaux</p>
+            <div class="processus-container">
+                <div class="processus-colonne processus-acheteur">
+                    <div class="processus-header">
+                        <span class="processus-icon">🛒</span>
+                        <h3>Pour les Acheteurs</h3>
+                    </div>
+                    <div class="etapes">
+                        <div class="etape etape-acheteur">
+                            <span class="etape-numero">1</span>
+                            <div class="etape-content">
+                                <h4>Explorez</h4>
+                                <p>Parcourez la liste des vendeurs et découvrez leurs produits bio locaux</p>
+                            </div>
+                        </div>
+                        <div class="etape etape-acheteur">
+                            <span class="etape-numero">2</span>
+                            <div class="etape-content">
+                                <h4>Contactez</h4>
+                                <p>Cliquez sur "Contacter" pour ouvrir WhatsApp et discuter directement avec le vendeur</p>
+                            </div>
+                        </div>
+                        <div class="etape etape-acheteur">
+                            <span class="etape-numero">3</span>
+                            <div class="etape-content">
+                                <h4>Commandez</h4>
+                                <p>Organisez le paiement et la livraison directement avec le producteur</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="etape">
-                    <span class="etape-numero">2</span>
-                    <div class="etape-content">
-                        <h3>Contactez</h3>
-                        <p>Cliquez sur "Contacter" pour ouvrir WhatsApp et discuter directement</p>
+                <div class="processus-colonne processus-vendeur">
+                    <div class="processus-header">
+                        <span class="processus-icon">🌱</span>
+                        <h3>Pour les Vendeurs</h3>
                     </div>
-                </div>
-                <div class="etape">
-                    <span class="etape-numero">3</span>
-                    <div class="etape-content">
-                        <h3>Commandez</h3>
-                        <p>Organisez paiement et livraison directement avec le vendeur</p>
+                    <div class="etapes">
+                        <div class="etape etape-vendeur">
+                            <span class="etape-numero">1</span>
+                            <div class="etape-content">
+                                <h4>Inscrivez-vous</h4>
+                                <p>Cliquez sur "Rejoindre comme vendeur" et remplissez le formulaire avec vos informations : nom, description de votre activité, zone de production, coordonnées téléphone et WhatsApp, disponibilités, et créez un mot de passe pour accéder à votre espace vendeur.</p>
+                            </div>
+                        </div>
+                        <div class="etape etape-vendeur">
+                            <span class="etape-numero">2</span>
+                            <div class="etape-content">
+                                <h4>Validez votre compte</h4>
+                                <p>Votre inscription sera soumise à validation par l'administrateur de la plateforme. Une fois validée, vous recevrez une confirmation et votre profil apparaîtra dans la liste des vendeurs accessible aux acheteurs.</p>
+                            </div>
+                        </div>
+                        <div class="etape etape-vendeur">
+                            <span class="etape-numero">3</span>
+                            <div class="etape-content">
+                                <h4>Gérez vos produits</h4>
+                                <p>Accédez à votre espace vendeur avec votre mot de passe, ajoutez vos produits bio (nom, prix, description, photo). Vous pouvez ajouter jusqu'à 50 produits. Les images sont automatiquement compressées. Les acheteurs pourront vous contacter directement via WhatsApp.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -100,9 +208,24 @@
         </section>
         <section id="zones-couvertes">
             <h2>Zones couvertes</h2>
-            <p>Notre plateforme connecte les producteurs bio de différentes régions du Sénégal :</p>
+            <div class="description-encadree animate-on-scroll">
+                <p>Découvrez sur la carte interactive ci-dessous les régions du Sénégal où nos producteurs bio sont actifs. Les zones en vert indiquent les régions où des vendeurs sont déjà présents, tandis que les zones en gris représentent les régions où nous prévoyons de nous développer prochainement.</p>
+            </div>
+            <div id="carte-senegal" class="carte-container">
+                <!-- Carte interactive du Sénégal - chargée au scroll -->
+            </div>
+            <div class="legende-carte">
+                <div class="legende-item">
+                    <span class="legende-indicateur legende-active"></span>
+                    <span class="legende-text">Zone active</span>
+                </div>
+                <div class="legende-item">
+                    <span class="legende-indicateur legende-a-venir"></span>
+                    <span class="legende-text">Zone à venir</span>
+                </div>
+            </div>
             <div class="zones-container" id="zones-container">
-                <!-- Les zones seront chargées dynamiquement -->
+                <!-- Les badges de zones seront chargés dynamiquement -->
             </div>
         </section>
         <section id="valeurs">
@@ -126,14 +249,82 @@
                 </div>
             </div>
         </section>
+        <section id="contactez-nous">
+            <h2>Contactez-nous</h2>
+            <div class="contact-intro-wrapper">
+                <p class="contact-intro">Vous avez une question, une suggestion ou besoin d'aide ? Nous sommes à votre écoute. Choisissez le moyen de contact qui vous convient le mieux.</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-item">
+                    <div class="contact-icon-wrapper">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                        </svg>
+                    </div>
+                    <div class="contact-content">
+                        <h3>WhatsApp</h3>
+                        <p>Contactez-nous directement via WhatsApp pour une réponse rapide</p>
+                        <a href="https://wa.me/221XXXXXXXXX" class="btn-contact btn-whatsapp" target="_blank" rel="noopener noreferrer">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                            </svg>
+                            Ouvrir WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon-wrapper">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                    <div class="contact-content">
+                        <h3>Email</h3>
+                        <p>Envoyez-nous un email, nous vous répondrons dans les plus brefs délais</p>
+                        <a href="mailto:contact@terangabio.sn" class="btn-contact btn-email">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            contact@terangabio.sn
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon-wrapper">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                    </div>
+                    <div class="contact-content">
+                        <h3>Téléphone</h3>
+                        <p>Appelez-nous pour discuter directement avec notre équipe</p>
+                        <a href="tel:+221XXXXXXXXX" class="btn-contact btn-phone">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                            +221 XX XXX XX XX
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="mentions">
-            <p><strong>Mention importante :</strong> Cette plateforme ne gère ni les paiements ni les livraisons. Toute transaction est à la responsabilité du vendeur et de l'acheteur.</p>
+            <div class="mention-content">
+                <div class="mention-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                </div>
+                <p><strong>Mention importante :</strong> Cette plateforme ne gère ni les paiements ni les livraisons. Toute transaction est à la responsabilité du vendeur et de l'acheteur.</p>
+            </div>
         </section>
     </main>
     <footer>
         <p>&copy; 2025 Teranga Bio Sénégal</p>
         <p class="footer-admin-link"><a href="admin.html">Administration</a></p>
     </footer>
+    <!-- Leaflet JS pour la carte -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="script.js"></script>
 </body>
 </html>

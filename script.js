@@ -732,13 +732,134 @@ function afficherProduitsVedettes() {
     });
 }
 
-// Fonction pour afficher les zones couvertes
+// Mapping des zones du Sénégal vers leurs coordonnées GPS approximatives
+const coordonneesZones = {
+    "Région de Dakar": { lat: 14.7167, lng: -17.4677, nom: "Dakar" },
+    "Région de Thiès": { lat: 14.7978, lng: -16.9269, nom: "Thiès" },
+    "Région de Diourbel": { lat: 14.6550, lng: -16.2314, nom: "Diourbel" },
+    "Région de Saint-Louis": { lat: 16.0179, lng: -16.4896, nom: "Saint-Louis" },
+    "Région de Louga": { lat: 15.6147, lng: -16.2279, nom: "Louga" },
+    "Région de Fatick": { lat: 14.3240, lng: -16.4111, nom: "Fatick" },
+    "Région de Kaolack": { lat: 14.1389, lng: -16.0758, nom: "Kaolack" },
+    "Région de Tambacounda": { lat: 13.7689, lng: -13.6673, nom: "Tambacounda" },
+    "Région de Kaffrine": { lat: 14.1053, lng: -15.5414, nom: "Kaffrine" },
+    "Région de Kolda": { lat: 12.8933, lng: -14.9447, nom: "Kolda" },
+    "Région de Sédhiou": { lat: 12.7081, lng: -15.5569, nom: "Sédhiou" },
+    "Région de Ziguinchor": { lat: 12.5642, lng: -16.2731, nom: "Ziguinchor" },
+    "Région de Matam": { lat: 15.6581, lng: -13.2574, nom: "Matam" },
+    "Région de Kédougou": { lat: 12.5576, lng: -12.1741, nom: "Kédougou" }
+};
+
+// Variable globale pour stocker la carte
+let carteSenegal = null;
+let carteInitialisee = false;
+
+// Fonction pour obtenir les coordonnées d'une zone
+function obtenirCoordonneesZone(zoneNom) {
+    if (coordonneesZones[zoneNom]) {
+        return coordonneesZones[zoneNom];
+    }
+    const zoneLower = zoneNom.toLowerCase();
+    for (const [key, value] of Object.entries(coordonneesZones)) {
+        if (key.toLowerCase().includes(zoneLower) || zoneLower.includes(key.toLowerCase())) {
+            return value;
+        }
+    }
+    return { lat: 14.4974, lng: -14.4524, nom: zoneNom };
+}
+
+// Fonction simple pour initialiser la carte (appelée au scroll)
+function initialiserCarteSenegal() {
+    if (carteInitialisee || typeof L === 'undefined') return;
+    
+    const carteContainer = document.getElementById('carte-senegal');
+    if (!carteContainer) return;
+    
+    carteSenegal = L.map('carte-senegal', {
+        scrollWheelZoom: false,
+        zoomControl: true
+    }).setView([14.4974, -14.4524], 7);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(carteSenegal);
+    
+    carteInitialisee = true;
+    afficherZonesSurCarte();
+}
+
+// Fonction pour afficher les zones sur la carte
+function afficherZonesSurCarte() {
+    if (!carteSenegal) return;
+    
+    carteSenegal.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+            carteSenegal.removeLayer(layer);
+        }
+    });
+    
+    const tousVendeurs = chargerTousVendeurs();
+    const zonesAvecVendeurs = new Set();
+    
+    // Collecter les zones actives
+    tousVendeurs.forEach(vendeur => {
+        if (vendeur.zone) {
+            zonesAvecVendeurs.add(vendeur.zone);
+        }
+    });
+    
+    // Afficher les zones actives (vertes)
+    zonesAvecVendeurs.forEach(zoneNom => {
+        const vendeurs = tousVendeurs.filter(v => v.zone === zoneNom);
+        const coord = obtenirCoordonneesZone(zoneNom);
+        const nombreVendeurs = vendeurs.length;
+        
+        const iconeActive = L.divIcon({
+            className: 'marqueur-zone marqueur-active',
+            html: `<div class="marqueur-cercle marqueur-cercle-active"><span>${nombreVendeurs}</span></div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        });
+        
+        const marqueur = L.marker([coord.lat, coord.lng], { icon: iconeActive }).addTo(carteSenegal);
+        
+        const listeVendeurs = vendeurs.map(v => `• ${v.nom}`).join('<br>');
+        const popupContent = `
+            <div class="popup-zone">
+                <strong>${zoneNom}</strong><br>
+                <span class="popup-vendeurs-count">${nombreVendeurs} vendeur${nombreVendeurs > 1 ? 's' : ''}</span>
+                <div class="popup-vendeurs-list">${listeVendeurs}</div>
+            </div>
+        `;
+        marqueur.bindPopup(popupContent);
+    });
+    
+    // Afficher les zones à venir (grises)
+    Object.keys(coordonneesZones).forEach(zoneNom => {
+        if (!zonesAvecVendeurs.has(zoneNom)) {
+            const coord = obtenirCoordonneesZone(zoneNom);
+            
+            const iconeAVenir = L.divIcon({
+                className: 'marqueur-zone marqueur-a-venir',
+                html: `<div class="marqueur-cercle marqueur-cercle-a-venir"></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+            
+            const marqueur = L.marker([coord.lat, coord.lng], { icon: iconeAVenir }).addTo(carteSenegal);
+            marqueur.bindPopup(`<div class="popup-zone"><strong>${zoneNom}</strong><br><span style="color: #95a5a6;">Zone à venir</span></div>`);
+        }
+    });
+}
+
+// Fonction pour afficher les zones couvertes (badges seulement)
 function afficherZonesCouvertes() {
     const container = document.getElementById('zones-container');
-    if (!container) return; // Si pas sur la page d'accueil
+    if (!container) return;
 
     const tousVendeurs = chargerTousVendeurs();
-    const zones = new Set(); // Utiliser un Set pour éviter les doublons
+    const zones = new Set();
     
     tousVendeurs.forEach(vendeur => {
         if (vendeur.zone) {
@@ -747,11 +868,11 @@ function afficherZonesCouvertes() {
     });
     
     const zonesArray = Array.from(zones).sort();
+    container.innerHTML = '';
     
     if (zonesArray.length === 0) {
         const p = document.createElement('p');
-        p.style.color = 'white';
-        p.style.textShadow = '1px 1px 3px rgba(0, 0, 0, 0.7)';
+        p.style.color = '#666';
         p.textContent = 'Aucune zone disponible pour le moment.';
         container.appendChild(p);
         return;
@@ -763,6 +884,11 @@ function afficherZonesCouvertes() {
         span.textContent = zone;
         container.appendChild(span);
     });
+    
+    // Mettre à jour la carte si elle est déjà initialisée
+    if (carteInitialisee) {
+        afficherZonesSurCarte();
+    }
 }
 
 // Animation au scroll
@@ -783,25 +909,64 @@ function initialiserAnimationsScroll() {
             }
         });
     }, { 
-        threshold: 0.1, // Déclencher quand 10% de l'élément est visible
-        rootMargin: '0px 0px -50px 0px' // Déclencher légèrement avant que l'élément soit complètement visible
+        threshold: 0.15, // Déclencher quand 15% de l'élément est visible
+        rootMargin: '0px 0px -30px 0px' // Déclencher légèrement avant que l'élément soit complètement visible
     });
 
     // Observer les sections principales
-    const sections = document.querySelectorAll('#statistiques, #comment-ca-marche, #produits-vedettes, #zones-couvertes, #valeurs, #mentions');
+    const sections = document.querySelectorAll('#statistiques, #comment-ca-marche, #produits-vedettes, #zones-couvertes, #valeurs, #contactez-nous, #mentions');
     sections.forEach(section => {
-        // Ajouter la classe initiale pour l'animation
+        const rect = section.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
         section.classList.add('animate-on-scroll');
-        observer.observe(section);
+        
+        if (isVisible) {
+            setTimeout(() => {
+                section.classList.add('visible');
+            }, 100);
+        } else {
+            observer.observe(section);
+        }
     });
 
-    // Observer le conteneur des étapes pour animer chaque étape séquentiellement
-    const etapesContainer = document.querySelector('.etapes');
-    if (etapesContainer) {
+    // Observer la description encadrée
+    const descriptionEncadree = document.querySelector('.description-encadree.animate-on-scroll');
+    if (descriptionEncadree) {
+        const rect = descriptionEncadree.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+            setTimeout(() => {
+                descriptionEncadree.classList.add('visible');
+            }, 150);
+        } else {
+            observer.observe(descriptionEncadree);
+        }
+    }
+
+    // Observer la section zones-couvertes pour charger la carte au scroll
+    const sectionZones = document.getElementById('zones-couvertes');
+    if (sectionZones && typeof L !== 'undefined') {
+        const carteObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !carteInitialisee) {
+                    initialiserCarteSenegal();
+                    carteObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        carteObserver.observe(sectionZones);
+    }
+
+    // Observer les conteneurs des étapes pour animer chaque étape séquentiellement
+    const etapesContainers = document.querySelectorAll('.etapes');
+    if (etapesContainers.length > 0) {
         const etapesObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const etapes = entry.target.querySelectorAll('.etape');
+                    const etapes = entry.target.querySelectorAll('.etape:not(.visible)');
                     etapes.forEach((etape, index) => {
                         setTimeout(() => {
                             etape.classList.add('visible');
@@ -811,10 +976,12 @@ function initialiserAnimationsScroll() {
                 }
             });
         }, { 
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.15,
+            rootMargin: '0px 0px -30px 0px'
         });
-        etapesObserver.observe(etapesContainer);
+        etapesContainers.forEach(container => {
+            etapesObserver.observe(container);
+        });
     }
 }
 
@@ -1569,5 +1736,105 @@ document.addEventListener('DOMContentLoaded', function() {
         afficherProduitsVedettes();
         afficherZonesCouvertes();
         initialiserAnimationsScroll();
+        initialiserNavigation();
     }
 });
+
+// Fonction pour initialiser la navigation
+function initialiserNavigation() {
+    const navToggle = document.getElementById('nav-toggle');
+    const mainNav = document.getElementById('main-nav');
+    const navLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle)');
+    const dropdownToggle = document.getElementById('nav-dropdown-toggle');
+    const dropdownMenu = document.getElementById('nav-dropdown-menu');
+    const dropdown = dropdownToggle ? dropdownToggle.closest('.nav-dropdown') : null;
+    const dropdownLinks = document.querySelectorAll('.nav-dropdown-link');
+    const allNavLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle), .nav-dropdown-link');
+    
+    if (!mainNav) return; // Si le menu n'existe pas, on sort
+    
+    // Toggle menu déroulant "Voir plus"
+    if (dropdownToggle && dropdown) {
+        dropdownToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+        });
+        
+        // Fermer le menu déroulant en cliquant ailleurs
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+        
+        // Fermer le menu déroulant en cliquant sur un lien
+        dropdownLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                dropdown.classList.remove('active');
+            });
+        });
+    }
+    
+    // Toggle menu mobile
+    if (navToggle) {
+        navToggle.addEventListener('click', function() {
+            navToggle.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+        
+        // Fermer le menu en cliquant sur un lien (mobile)
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 767) {
+                    navToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                }
+            });
+        });
+    }
+    
+    // Smooth scroll pour les liens de navigation
+    allNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = targetSection.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    });
+    
+    // Mettre à jour l'état actif du menu au scroll
+    function updateActiveNavLink() {
+        const sections = document.querySelectorAll('section[id]');
+        const scrollPosition = window.scrollY + 150;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                allNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-section') === sectionId || 
+                        link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', updateActiveNavLink);
+    updateActiveNavLink(); // Appel initial
+}
