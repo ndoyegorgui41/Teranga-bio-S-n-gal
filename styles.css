@@ -802,6 +802,13 @@ body.page-accueil #message-inscription.error {
 /* Recherche et Filtres */
 #recherche-filtres {
     margin-bottom: 20px;
+    padding: 20px;
+    background-color: white;
+}
+
+#liste-vendeurs {
+    padding: 20px;
+    background-color: white;
 }
 
 .recherche-container {
@@ -3202,6 +3209,14 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         background-color: rgba(255, 255, 255, 0.15);
     }
     
+    /* Sections vendeurs - Mobile */
+    #recherche-filtres {
+        padding: 15px;
+    }
+    
+    #liste-vendeurs {
+        padding: 15px;
+    }
     
     header {
         position: relative;
