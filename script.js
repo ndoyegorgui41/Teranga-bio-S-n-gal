@@ -1127,6 +1127,7 @@ function afficherTableauDeBordAdmin() {
     if (dashboardSection) dashboardSection.style.display = 'block';
     
     actualiserStatistiquesAdmin();
+    afficherInscriptionsEnAttente();
     afficherListeVendeursAdmin();
 }
 
@@ -1135,8 +1136,13 @@ function afficherConnexionAdmin() {
     const loginSection = document.getElementById('admin-login');
     const dashboardSection = document.getElementById('admin-dashboard');
     
-    if (loginSection) loginSection.style.display = 'block';
-    if (dashboardSection) dashboardSection.style.display = 'none';
+    if (loginSection) {
+        loginSection.style.display = 'block';
+        loginSection.style.visibility = 'visible';
+    }
+    if (dashboardSection) {
+        dashboardSection.style.display = 'none';
+    }
 }
 
 // Fonction pour actualiser les statistiques admin
@@ -1643,8 +1649,13 @@ function afficherMessageAdmin(message, type) {
 
 // Gestion de l'administration
 function gererAdministration() {
-    // Vérifier si on est sur la page admin
-    if (!window.location.pathname.includes('admin.html')) {
+    // Vérifier si on est sur la page admin (compatible mobile et desktop)
+    const pathname = window.location.pathname || '';
+    const href = window.location.href || '';
+    const isAdminPage = pathname.includes('admin.html') || href.includes('admin.html') || 
+                        document.getElementById('admin-login') !== null;
+    
+    if (!isAdminPage) {
         return;
     }
     
@@ -1731,9 +1742,17 @@ function gererAdministration() {
 
 // Initialisation selon la page
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname.includes('admin.html')) {
+    // Détection améliorée pour mobile et desktop
+    const pathname = window.location.pathname || '';
+    const href = window.location.href || '';
+    
+    // Vérifier si on est sur la page admin
+    const isAdminPage = pathname.includes('admin.html') || href.includes('admin.html') || 
+                        document.getElementById('admin-login') !== null;
+    
+    if (isAdminPage) {
         gererAdministration();
-    } else if (window.location.pathname.includes('vendeurs.html')) {
+    } else if (pathname.includes('vendeurs.html') || href.includes('vendeurs.html')) {
         initialiserRechercheFiltres();
     } else if (window.location.pathname.includes('vendeur.html')) {
         afficherProfilVendeur();

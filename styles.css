@@ -995,6 +995,13 @@ body.page-accueil .footer-admin-link a:hover {
     justify-content: center;
     background-color: #f4f4f4;
     padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* S'assurer que la page admin est visible par défaut */
+#admin-login {
+    display: block !important;
 }
 
 .admin-login-box {
