@@ -1661,6 +1661,18 @@ function gererAdministration() {
     
     initialiserMotDePasseAdmin();
     
+    // S'assurer que la page de connexion est visible par défaut
+    const loginSection = document.getElementById('admin-login');
+    const dashboardSection = document.getElementById('admin-dashboard');
+    
+    if (loginSection) {
+        loginSection.style.display = 'block';
+        loginSection.style.visibility = 'visible';
+    }
+    if (dashboardSection) {
+        dashboardSection.style.display = 'none';
+    }
+    
     // Vérifier si l'admin est déjà connecté
     if (estAdminConnecte()) {
         afficherTableauDeBordAdmin();
