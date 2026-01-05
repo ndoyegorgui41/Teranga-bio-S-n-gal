@@ -1123,8 +1123,14 @@ function afficherTableauDeBordAdmin() {
     const loginSection = document.getElementById('admin-login');
     const dashboardSection = document.getElementById('admin-dashboard');
     
-    if (loginSection) loginSection.style.display = 'none';
-    if (dashboardSection) dashboardSection.style.display = 'block';
+    if (loginSection) {
+        loginSection.style.display = 'none';
+        loginSection.style.visibility = 'hidden';
+    }
+    if (dashboardSection) {
+        dashboardSection.style.display = 'block';
+        dashboardSection.style.visibility = 'visible';
+    }
     
     actualiserStatistiquesAdmin();
     afficherInscriptionsEnAttente();
@@ -1683,47 +1689,55 @@ function gererAdministration() {
     // Gestion du formulaire de connexion
     const formLogin = document.getElementById('form-admin-login');
     if (formLogin) {
-        formLogin.addEventListener('submit', function(e) {
+        formLogin.onsubmit = function(e) {
             e.preventDefault();
-            const password = document.getElementById('admin-password').value;
+            e.stopPropagation();
+            
+            const passwordInput = document.getElementById('admin-password');
+            const password = passwordInput ? passwordInput.value.trim() : '';
             const messageDiv = document.getElementById('message-admin-login');
             
-            try {
-                // Vérifier si bloqué
-                if (estAdminBloque()) {
-                    const minutes = getTempsRestantBlocage();
-                    if (messageDiv) {
-                        messageDiv.style.display = 'block';
-                        messageDiv.textContent = `Trop de tentatives échouées. Veuillez réessayer dans ${minutes} minute(s).`;
-                        messageDiv.className = 'error';
-                    }
-                    return;
-                }
-                
-                if (connecterAdmin(password)) {
-                    afficherTableauDeBordAdmin();
-                } else {
-                    const attemptsData = JSON.parse(localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY) || '{"count": 0}');
-                    const remaining = MAX_LOGIN_ATTEMPTS - attemptsData.count;
-                    
-                    if (messageDiv) {
-                        messageDiv.style.display = 'block';
-                        if (remaining > 1) {
-                            messageDiv.textContent = `Mot de passe incorrect. ${remaining} tentative(s) restante(s).`;
-                        } else {
-                            messageDiv.textContent = `Mot de passe incorrect. Dernière tentative avant blocage.`;
-                        }
-                        messageDiv.className = 'error';
-                    }
-                }
-            } catch (error) {
+            // Réinitialiser le message
+            if (messageDiv) {
+                messageDiv.style.display = 'none';
+                messageDiv.textContent = '';
+                messageDiv.className = '';
+            }
+            
+            // Vérifier si bloqué
+            if (estAdminBloque()) {
+                const minutes = getTempsRestantBlocage();
                 if (messageDiv) {
                     messageDiv.style.display = 'block';
-                    messageDiv.textContent = error.message || 'Erreur de connexion.';
+                    messageDiv.textContent = `Trop de tentatives échouées. Veuillez réessayer dans ${minutes} minute(s).`;
                     messageDiv.className = 'error';
                 }
+                return false;
             }
-        });
+            
+            // Vérifier le mot de passe
+            if (connecterAdmin(password)) {
+                // Connexion réussie
+                afficherTableauDeBordAdmin();
+                if (passwordInput) passwordInput.value = '';
+                return false;
+            } else {
+                // Mot de passe incorrect
+                const attemptsData = JSON.parse(localStorage.getItem(ADMIN_LOGIN_ATTEMPTS_KEY) || '{"count": 0}');
+                const remaining = MAX_LOGIN_ATTEMPTS - attemptsData.count;
+                
+                if (messageDiv) {
+                    messageDiv.style.display = 'block';
+                    if (remaining > 1) {
+                        messageDiv.textContent = `Mot de passe incorrect. ${remaining} tentative(s) restante(s).`;
+                    } else {
+                        messageDiv.textContent = `Mot de passe incorrect. Dernière tentative avant blocage.`;
+                    }
+                    messageDiv.className = 'error';
+                }
+                return false;
+            }
+        };
     }
     
     // Bouton de déconnexion
