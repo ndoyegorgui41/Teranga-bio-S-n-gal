@@ -1124,12 +1124,12 @@ function afficherTableauDeBordAdmin() {
     const dashboardSection = document.getElementById('admin-dashboard');
     
     if (loginSection) {
-        loginSection.style.display = 'none';
-        loginSection.style.visibility = 'hidden';
+        loginSection.style.setProperty('display', 'none', 'important');
+        loginSection.style.setProperty('visibility', 'hidden', 'important');
     }
     if (dashboardSection) {
-        dashboardSection.style.display = 'block';
-        dashboardSection.style.visibility = 'visible';
+        dashboardSection.style.setProperty('display', 'block', 'important');
+        dashboardSection.style.setProperty('visibility', 'visible', 'important');
     }
     
     actualiserStatistiquesAdmin();
@@ -1143,11 +1143,12 @@ function afficherConnexionAdmin() {
     const dashboardSection = document.getElementById('admin-dashboard');
     
     if (loginSection) {
-        loginSection.style.display = 'block';
-        loginSection.style.visibility = 'visible';
+        loginSection.style.setProperty('display', 'flex', 'important');
+        loginSection.style.setProperty('visibility', 'visible', 'important');
     }
     if (dashboardSection) {
-        dashboardSection.style.display = 'none';
+        dashboardSection.style.setProperty('display', 'none', 'important');
+        dashboardSection.style.setProperty('visibility', 'hidden', 'important');
     }
 }
 
@@ -1672,11 +1673,12 @@ function gererAdministration() {
     const dashboardSection = document.getElementById('admin-dashboard');
     
     if (loginSection) {
-        loginSection.style.display = 'block';
-        loginSection.style.visibility = 'visible';
+        loginSection.style.setProperty('display', 'flex', 'important');
+        loginSection.style.setProperty('visibility', 'visible', 'important');
     }
     if (dashboardSection) {
-        dashboardSection.style.display = 'none';
+        dashboardSection.style.setProperty('display', 'none', 'important');
+        dashboardSection.style.setProperty('visibility', 'hidden', 'important');
     }
     
     // Vérifier si l'admin est déjà connecté
@@ -1766,32 +1768,53 @@ function gererAdministration() {
     }
 }
 
-// Initialisation selon la page
-document.addEventListener('DOMContentLoaded', function() {
+// Fonction d'initialisation
+function initialiserPage() {
     // Détection améliorée pour mobile et desktop
     const pathname = window.location.pathname || '';
     const href = window.location.href || '';
+    const filename = pathname.split('/').pop() || '';
     
     // Vérifier si on est sur la page admin
     const isAdminPage = pathname.includes('admin.html') || href.includes('admin.html') || 
+                        filename === 'admin.html' ||
                         document.getElementById('admin-login') !== null;
     
     if (isAdminPage) {
         gererAdministration();
-    } else if (pathname.includes('vendeurs.html') || href.includes('vendeurs.html')) {
+    } else if (pathname.includes('vendeurs.html') || href.includes('vendeurs.html') || filename === 'vendeurs.html') {
         initialiserRechercheFiltres();
-    } else if (window.location.pathname.includes('vendeur.html')) {
+    } else if (pathname.includes('vendeur.html') || href.includes('vendeur.html') || filename === 'vendeur.html') {
         afficherProfilVendeur();
-    } else if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) {
-        gererAffichageFormulaire();
-        gererInscription();
-        afficherStatistiques();
-        afficherProduitsVedettes();
-        afficherZonesCouvertes();
-        initialiserAnimationsScroll();
-        initialiserNavigation();
+    } else {
+        // Page d'accueil (index.html, /, ou page par défaut)
+        const isHomePage = pathname.includes('index.html') || 
+                          href.includes('index.html') || 
+                          filename === 'index.html' ||
+                          filename === '' ||
+                          pathname === '/' || 
+                          pathname.endsWith('/') ||
+                          document.body.classList.contains('page-accueil');
+        
+        if (isHomePage) {
+            gererAffichageFormulaire();
+            gererInscription();
+            afficherStatistiques();
+            afficherProduitsVedettes();
+            afficherZonesCouvertes();
+            initialiserAnimationsScroll();
+            initialiserNavigation();
+        }
     }
-});
+}
+
+// Initialisation selon la page
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialiserPage);
+} else {
+    // Le DOM est déjà chargé
+    initialiserPage();
+}
 
 // Fonction pour initialiser la navigation
 function initialiserNavigation() {

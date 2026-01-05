@@ -1001,7 +1001,8 @@ body.page-accueil .footer-admin-link a:hover {
 
 /* S'assurer que la page admin est visible par défaut */
 #admin-login {
-    display: block !important;
+    display: flex !important;
+    visibility: visible !important;
 }
 
 .admin-login-box {
@@ -1061,6 +1062,13 @@ body.page-accueil .footer-admin-link a:hover {
 }
 
 /* Tableau de bord admin */
+#admin-dashboard {
+    display: block;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
 #admin-dashboard header {
     background-color: #4CAF50;
     color: white;
