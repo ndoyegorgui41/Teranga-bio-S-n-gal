@@ -290,6 +290,18 @@ function obtenirNombreProduitsLocaux(vendeurId) {
     return locaux.length;
 }
 
+// Fonction pour nettoyer et échapper les entrées utilisateur (prévention XSS)
+function sanitizeInput(input) {
+    if (typeof input !== 'string') {
+        return String(input);
+    }
+    
+    // Créer un élément temporaire pour échapper les caractères HTML
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
 // Fonction pour sauvegarder un produit dans localStorage avec vérification de limite
 function sauvegarderProduit(vendeurId, produit) {
     const key = `vendeur_${vendeurId}_produits`;
@@ -991,19 +1003,15 @@ function initialiserAnimationsScroll() {
 // ⚠️ SÉCURITÉ : Pour une vraie sécurité, implémentez un backend avec hashage de mot de passe
 // Ce système frontend uniquement n'est pas sécurisé pour une production réelle
 
-// Hash simple du mot de passe (base64) pour éviter qu'il soit visible en clair
-// ⚠️ Ce n'est PAS une vraie sécurité, juste une obfuscation basique
-// Le hash de "admin123" en base64 : "YWRtaW4xMjM="
-const ADMIN_PASSWORD_HASH = btoa('admin123'); // Base64 encoding
-
-// Fonction pour hasher un mot de passe (simple obfuscation)
-function hashPassword(password) {
-    return btoa(password); // Base64 encoding (pas sécurisé, juste obfuscation)
-}
+// Mot de passe administrateur
+// ⚠️ SÉCURITÉ : Pour une vraie sécurité, implémentez un backend avec hashage de mot de passe
+// Ce système frontend uniquement n'est pas sécurisé pour une production réelle
+const ADMIN_PASSWORD = 'admin123';
 
 // Fonction pour comparer les mots de passe
-function comparePassword(inputPassword, hashedPassword) {
-    return hashPassword(inputPassword) === hashedPassword;
+function comparePassword(inputPassword, storedPassword) {
+    // Comparaison directe (non sécurisé, mais fonctionnel pour un système frontend uniquement)
+    return inputPassword === storedPassword;
 }
 
 // Clé pour stocker l'état de connexion admin
@@ -1095,7 +1103,7 @@ function connecterAdmin(password) {
     }
     
     // Vérifier le mot de passe
-    if (comparePassword(password, ADMIN_PASSWORD_HASH)) {
+    if (comparePassword(password, ADMIN_PASSWORD)) {
         reinitialiserTentatives();
         localStorage.setItem(ADMIN_SESSION_KEY, 'true');
         return true;
