@@ -206,18 +206,30 @@ function initialiserFiltres() {
 // Fonction pour initialiser la recherche et les filtres
 function initialiserRechercheFiltres() {
     // Vérifier si on est sur la page vendeurs
-    if (!document.getElementById('recherche-vendeur')) return;
+    const rechercheInput = document.getElementById('recherche-vendeur');
+    const listeContainer = document.getElementById('liste-vendeurs');
+    
+    if (!rechercheInput && !listeContainer) {
+        return;
+    }
     
     // Initialiser les filtres (liste des zones)
-    initialiserFiltres();
+    try {
+        initialiserFiltres();
+    } catch (e) {
+        console.error('Erreur initialisation filtres:', e);
+    }
     
     // Afficher la liste initiale
-    afficherListeVendeurs();
+    try {
+        afficherListeVendeurs();
+    } catch (e) {
+        console.error('Erreur affichage liste vendeurs:', e);
+    }
     
     // Événement sur le champ de recherche
-    const inputRecherche = document.getElementById('recherche-vendeur');
-    if (inputRecherche) {
-        inputRecherche.addEventListener('input', filtrerEtRechercherVendeurs);
+    if (rechercheInput) {
+        rechercheInput.addEventListener('input', filtrerEtRechercherVendeurs);
     }
     
     // Événement sur le filtre de zone
@@ -1775,46 +1787,84 @@ function initialiserPage() {
     const href = window.location.href || '';
     const filename = pathname.split('/').pop() || '';
     
-    // Vérifier si on est sur la page admin
-    const isAdminPage = pathname.includes('admin.html') || href.includes('admin.html') || 
-                        filename === 'admin.html' ||
-                        document.getElementById('admin-login') !== null;
+    // Vérifier si on est sur la page admin (par élément HTML en priorité)
+    const isAdminPage = document.getElementById('admin-login') !== null ||
+                        pathname.includes('admin.html') || 
+                        href.includes('admin.html') || 
+                        filename === 'admin.html';
     
     if (isAdminPage) {
         gererAdministration();
-    } else if (pathname.includes('vendeurs.html') || href.includes('vendeurs.html') || filename === 'vendeurs.html') {
+        return;
+    }
+    
+    // Vérifier si on est sur la page vendeurs (par élément HTML en priorité)
+    const isVendeursPage = document.getElementById('recherche-vendeur') !== null ||
+                            document.getElementById('liste-vendeurs') !== null ||
+                            pathname.includes('vendeurs.html') || 
+                            href.includes('vendeurs.html') || 
+                            filename === 'vendeurs.html';
+    
+    if (isVendeursPage) {
         initialiserRechercheFiltres();
-    } else if (pathname.includes('vendeur.html') || href.includes('vendeur.html') || filename === 'vendeur.html') {
+        return;
+    }
+    
+    // Vérifier si on est sur la page vendeur (par élément HTML en priorité)
+    const isVendeurPage = document.getElementById('nom-vendeur') !== null ||
+                          document.getElementById('profil-vendeur') !== null ||
+                          pathname.includes('vendeur.html') || 
+                          href.includes('vendeur.html') || 
+                          filename === 'vendeur.html';
+    
+    if (isVendeurPage) {
         afficherProfilVendeur();
-    } else {
-        // Page d'accueil (index.html, /, ou page par défaut)
-        const isHomePage = pathname.includes('index.html') || 
-                          href.includes('index.html') || 
-                          filename === 'index.html' ||
-                          filename === '' ||
-                          pathname === '/' || 
-                          pathname.endsWith('/') ||
-                          document.body.classList.contains('page-accueil');
-        
-        if (isHomePage) {
-            gererAffichageFormulaire();
-            gererInscription();
-            afficherStatistiques();
-            afficherProduitsVedettes();
-            afficherZonesCouvertes();
-            initialiserAnimationsScroll();
-            initialiserNavigation();
-        }
+        return;
+    }
+    
+    // Page d'accueil (index.html, /, ou page par défaut)
+    const isHomePage = document.body.classList.contains('page-accueil') ||
+                       pathname.includes('index.html') || 
+                       href.includes('index.html') || 
+                       filename === 'index.html' ||
+                       filename === '' ||
+                       pathname === '/' || 
+                       pathname.endsWith('/');
+    
+    if (isHomePage) {
+        gererAffichageFormulaire();
+        gererInscription();
+        afficherStatistiques();
+        afficherProduitsVedettes();
+        afficherZonesCouvertes();
+        initialiserAnimationsScroll();
+        initialiserNavigation();
     }
 }
 
 // Initialisation selon la page
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialiserPage);
-} else {
-    // Le DOM est déjà chargé
-    initialiserPage();
+function demarrerInitialisation() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initialiserPage, 100);
+        });
+    } else {
+        // Le DOM est déjà chargé
+        setTimeout(initialiserPage, 100);
+    }
 }
+
+// Démarrer l'initialisation
+demarrerInitialisation();
+
+// Backup : réessayer après un délai supplémentaire (pour mobile)
+setTimeout(function() {
+    // Si on est sur la page vendeurs et que la liste est vide, réessayer
+    const liste = document.getElementById('liste-vendeurs');
+    if (liste && liste.children.length === 0 && document.getElementById('recherche-vendeur')) {
+        initialiserRechercheFiltres();
+    }
+}, 500);
 
 // Fonction pour initialiser la navigation
 function initialiserNavigation() {

@@ -407,6 +407,15 @@ section {
     border-radius: 0;
 }
 
+/* Sections spécifiques - Override pour les pages non-accueil */
+section#recherche-filtres,
+section#liste-vendeurs,
+section#mentions {
+    padding: 20px !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
 body.page-accueil section {
     background-color: white;
     font-size: 1rem;
@@ -802,13 +811,18 @@ body.page-accueil #message-inscription.error {
 /* Recherche et Filtres */
 #recherche-filtres {
     margin-bottom: 20px;
-    padding: 20px;
+    padding: 20px !important;
     background-color: white;
+    display: block !important;
+    visibility: visible !important;
 }
 
 #liste-vendeurs {
-    padding: 20px;
+    padding: 20px !important;
     background-color: white;
+    display: block !important;
+    visibility: visible !important;
+    min-height: 100px;
 }
 
 .recherche-container {
@@ -3210,12 +3224,23 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     }
     
     /* Sections vendeurs - Mobile */
-    #recherche-filtres {
-        padding: 15px;
+    section#recherche-filtres,
+    section#liste-vendeurs {
+        padding: 15px !important;
+        display: block !important;
+        visibility: visible !important;
     }
     
     #liste-vendeurs {
-        padding: 15px;
+        padding: 15px !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    .vendeur-card {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     header {
