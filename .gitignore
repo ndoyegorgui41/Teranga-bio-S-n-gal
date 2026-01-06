@@ -31,3 +31,4 @@ yarn.lock
 .cache/
 
 
+.DS_Store

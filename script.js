@@ -559,19 +559,31 @@ function initialiserRechercheProduits(vendeurId) {
 // Fonction pour gérer l'affichage du formulaire d'inscription
 function gererAffichageFormulaire() {
     const btnDevenirVendeur = document.getElementById('btn-devenir-vendeur');
-    const sectionInscription = document.getElementById('inscription-vendeur');
+    const formulaire = document.getElementById('inscription-vendeur');
     
-    if (!btnDevenirVendeur || !sectionInscription) return;
+    if (!btnDevenirVendeur || !formulaire) {
+        return;
+    }
 
-    btnDevenirVendeur.addEventListener('click', function() {
-        if (sectionInscription.style.display === 'none') {
-            sectionInscription.style.display = 'block';
-            // Faire défiler légèrement pour voir le formulaire
-            btnDevenirVendeur.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // S'assurer que le formulaire est masqué au chargement
+    formulaire.classList.remove('visible');
+    formulaire.style.display = 'none';
+
+    // Gestionnaire de clic
+    btnDevenirVendeur.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (formulaire.classList.contains('visible')) {
+            // Masquer
+            formulaire.classList.remove('visible');
+            formulaire.style.display = 'none';
         } else {
-            sectionInscription.style.display = 'none';
+            // Afficher
+            formulaire.classList.add('visible');
+            formulaire.style.display = 'block';
         }
-    });
+    };
 }
 
 // Fonction pour gérer l'inscription d'un nouveau vendeur
@@ -813,29 +825,72 @@ function initialiserCarteSenegal() {
     afficherZonesSurCarte();
 }
 
+// Fonction pour normaliser un nom de zone (enlever accents, mettre en minuscule, normaliser)
+function normaliserNomZone(nom) {
+    if (!nom) return '';
+    return nom.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Enlever les accents
+        .replace(/région de |département de |ville de /gi, '') // Enlever les préfixes
+        .trim();
+}
+
+// Fonction pour trouver la clé correspondante dans coordonneesZones
+function trouverCleZoneCorrespondante(zoneNom) {
+    if (!zoneNom) return null;
+    
+    // Vérifier d'abord la correspondance exacte
+    if (coordonneesZones[zoneNom]) {
+        return zoneNom;
+    }
+    
+    // Normaliser le nom recherché
+    const nomNormalise = normaliserNomZone(zoneNom);
+    
+    // Chercher dans coordonneesZones avec correspondance normalisée
+    for (const cle in coordonneesZones) {
+        const cleNormalisee = normaliserNomZone(cle);
+        if (cleNormalisee === nomNormalise || 
+            cleNormalisee.includes(nomNormalise) || 
+            nomNormalise.includes(cleNormalisee)) {
+            return cle;
+        }
+    }
+    
+    return null;
+}
+
 // Fonction pour afficher les zones sur la carte
 function afficherZonesSurCarte() {
     if (!carteSenegal) return;
     
+    // Supprimer tous les marqueurs existants
     carteSenegal.eachLayer((layer) => {
         if (layer instanceof L.Marker) {
             carteSenegal.removeLayer(layer);
         }
     });
     
+    // Recharger tous les vendeurs pour avoir les données à jour
     const tousVendeurs = chargerTousVendeurs();
-    const zonesAvecVendeurs = new Set();
+    const zonesAvecVendeurs = new Map(); // Utiliser Map au lieu de Set pour stocker les clés normalisées et les vendeurs
     
-    // Collecter les zones actives
+    // Collecter les zones actives et normaliser les noms
     tousVendeurs.forEach(vendeur => {
         if (vendeur.zone) {
-            zonesAvecVendeurs.add(vendeur.zone);
+            const cleZone = trouverCleZoneCorrespondante(vendeur.zone);
+            if (cleZone) {
+                // Utiliser la clé normalisée de coordonneesZones
+                if (!zonesAvecVendeurs.has(cleZone)) {
+                    zonesAvecVendeurs.set(cleZone, []);
+                }
+                zonesAvecVendeurs.get(cleZone).push(vendeur);
+            }
         }
     });
     
     // Afficher les zones actives (vertes)
-    zonesAvecVendeurs.forEach(zoneNom => {
-        const vendeurs = tousVendeurs.filter(v => v.zone === zoneNom);
+    zonesAvecVendeurs.forEach((vendeurs, zoneNom) => {
         const coord = obtenirCoordonneesZone(zoneNom);
         const nombreVendeurs = vendeurs.length;
         
@@ -859,7 +914,7 @@ function afficherZonesSurCarte() {
         marqueur.bindPopup(popupContent);
     });
     
-    // Afficher les zones à venir (grises)
+    // Afficher les zones à venir (grises) - uniquement celles qui n'ont pas de vendeurs
     Object.keys(coordonneesZones).forEach(zoneNom => {
         if (!zonesAvecVendeurs.has(zoneNom)) {
             const coord = obtenirCoordonneesZone(zoneNom);
@@ -882,6 +937,7 @@ function afficherZonesCouvertes() {
     const container = document.getElementById('zones-container');
     if (!container) return;
 
+    // Recharger tous les vendeurs pour avoir les données à jour
     const tousVendeurs = chargerTousVendeurs();
     const zones = new Set();
     
@@ -972,14 +1028,27 @@ function initialiserAnimationsScroll() {
     // Observer la section zones-couvertes pour charger la carte au scroll
     const sectionZones = document.getElementById('zones-couvertes');
     if (sectionZones && typeof L !== 'undefined') {
+        // Vérifier si la section est déjà visible au chargement
+        const rect = sectionZones.getBoundingClientRect();
+        const isVisibleOnLoad = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisibleOnLoad && !carteInitialisee) {
+            // Initialiser immédiatement si la section est déjà visible
+            setTimeout(() => {
+                initialiserCarteSenegal();
+            }, 300);
+        }
+        
         const carteObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !carteInitialisee) {
                     initialiserCarteSenegal();
                     carteObserver.unobserve(entry.target);
+                } else if (entry.isIntersecting && carteInitialisee && carteSenegal) {
+                    afficherZonesSurCarte();
                 }
             });
-        }, { threshold: 0.3 });
+        }, { threshold: 0.1 });
         
         carteObserver.observe(sectionZones);
     }
@@ -1000,12 +1069,38 @@ function initialiserAnimationsScroll() {
                 }
             });
         }, { 
-            threshold: 0.15,
-            rootMargin: '0px 0px -30px 0px'
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
+        
         etapesContainers.forEach(container => {
-            etapesObserver.observe(container);
+            // Vérifier si le conteneur est déjà visible au chargement
+            const rect = container.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+            
+            if (isVisible) {
+                // Si visible, afficher les étapes immédiatement
+                const etapes = container.querySelectorAll('.etape:not(.visible)');
+                etapes.forEach((etape, index) => {
+                    setTimeout(() => {
+                        etape.classList.add('visible');
+                    }, index * 200);
+                });
+            } else {
+                // Sinon, observer pour l'animation au scroll
+                etapesObserver.observe(container);
+            }
         });
+        
+        // Fallback : s'assurer que les étapes sont visibles après 2 secondes si elles ne le sont pas déjà
+        setTimeout(() => {
+            etapesContainers.forEach(container => {
+                const etapes = container.querySelectorAll('.etape:not(.visible)');
+                etapes.forEach(etape => {
+                    etape.classList.add('visible');
+                });
+            });
+        }, 2000);
     }
 }
 
@@ -1481,6 +1576,13 @@ function validerVendeur(vendeurId, vendeurNom) {
         afficherInscriptionsEnAttente();
         afficherListeVendeursAdmin();
         
+        // Mettre à jour la carte des zones couvertes si elle est initialisée
+        if (carteInitialisee && carteSenegal) {
+            afficherZonesSurCarte();
+        }
+        // Mettre à jour les badges de zones
+        afficherZonesCouvertes();
+        
         afficherMessageValidation(`Le vendeur "${vendeurNom}" a été validé avec succès.`, 'success');
     }
 }
@@ -1509,6 +1611,13 @@ function rejeterVendeur(vendeurId, vendeurNom) {
     actualiserStatistiquesAdmin();
     afficherInscriptionsEnAttente();
     afficherListeVendeursAdmin();
+    
+    // Mettre à jour la carte des zones couvertes si elle est initialisée
+    if (carteInitialisee && carteSenegal) {
+        afficherZonesSurCarte();
+    }
+    // Mettre à jour les badges de zones
+    afficherZonesCouvertes();
     
     afficherMessageValidation(`L'inscription de "${vendeurNom}" a été rejetée.`, 'success');
 }
@@ -1547,6 +1656,13 @@ function supprimerVendeur(vendeurId, vendeurNom) {
     actualiserStatistiquesAdmin();
     afficherInscriptionsEnAttente();
     afficherListeVendeursAdmin();
+    
+    // Mettre à jour la carte des zones couvertes si elle est initialisée
+    if (carteInitialisee && carteSenegal) {
+        afficherZonesSurCarte();
+    }
+    // Mettre à jour les badges de zones
+    afficherZonesCouvertes();
     
     afficherMessageAdmin('Le vendeur a été supprimé avec succès.', 'success');
 }
@@ -1839,6 +1955,26 @@ function initialiserPage() {
         afficherZonesCouvertes();
         initialiserAnimationsScroll();
         initialiserNavigation();
+        
+        // S'assurer que les étapes de la section comment-ca-marche sont visibles
+        setTimeout(function() {
+            const sectionComment = document.getElementById('comment-ca-marche');
+            if (sectionComment) {
+                const etapes = sectionComment.querySelectorAll('.etape');
+                etapes.forEach(function(etape) {
+                    etape.classList.add('visible');
+                    etape.style.setProperty('opacity', '1', 'important');
+                    etape.style.setProperty('transform', 'none', 'important');
+                    etape.style.setProperty('display', 'flex', 'important');
+                    etape.style.setProperty('visibility', 'visible', 'important');
+                });
+            }
+        }, 300);
+        
+        // Mettre à jour la carte si elle est déjà initialisée
+        if (carteInitialisee && carteSenegal) {
+            afficherZonesSurCarte();
+        }
     }
 }
 
@@ -1856,6 +1992,115 @@ function demarrerInitialisation() {
 
 // Démarrer l'initialisation
 demarrerInitialisation();
+
+// Backup: s'assurer que la page admin s'affiche correctement
+setTimeout(function() {
+    const loginSection = document.getElementById('admin-login');
+    const dashboardSection = document.getElementById('admin-dashboard');
+    
+    if (loginSection && document.body.contains(loginSection)) {
+        // Si on est sur la page admin et que l'admin n'est pas connecté, afficher le login
+        if (!estAdminConnecte()) {
+            loginSection.style.setProperty('display', 'flex', 'important');
+            loginSection.style.setProperty('visibility', 'visible', 'important');
+            loginSection.style.setProperty('opacity', '1', 'important');
+        }
+    }
+    
+    if (dashboardSection && document.body.contains(dashboardSection)) {
+        // Si l'admin n'est pas connecté, masquer le dashboard
+        if (!estAdminConnecte()) {
+            dashboardSection.style.setProperty('display', 'none', 'important');
+            dashboardSection.style.setProperty('visibility', 'hidden', 'important');
+        }
+    }
+    
+    // Backup pour la page d'accueil : s'assurer que toutes les sections sont visibles (sauf le formulaire d'inscription)
+    if (document.body.classList.contains('page-accueil')) {
+        const sections = document.querySelectorAll('body.page-accueil section');
+        sections.forEach(function(section) {
+            if (section && section.id !== 'inscription-vendeur') {
+                section.style.setProperty('display', 'block', 'important');
+                section.style.setProperty('visibility', 'visible', 'important');
+                section.style.setProperty('opacity', '1', 'important');
+            }
+        });
+        
+        // Ne pas toucher au formulaire d'inscription dans le backup - laisser gererAffichageFormulaire() gérer
+        
+        // Réessayer d'afficher les éléments dynamiques
+        if (document.getElementById('produits-vedettes-container')) {
+            afficherProduitsVedettes();
+        }
+        if (document.getElementById('zones-container')) {
+            afficherZonesCouvertes();
+        }
+        if (document.getElementById('nombre-vendeurs')) {
+            afficherStatistiques();
+        }
+        
+        // S'assurer que la section zones-couvertes est visible et initialisée
+        const sectionZones = document.getElementById('zones-couvertes');
+        if (sectionZones) {
+            sectionZones.style.setProperty('display', 'block', 'important');
+            sectionZones.style.setProperty('visibility', 'visible', 'important');
+            sectionZones.style.setProperty('opacity', '1', 'important');
+            
+            // S'assurer que la description encadrée est visible
+            const descriptionEncadree = sectionZones.querySelector('.description-encadree');
+            if (descriptionEncadree) {
+                descriptionEncadree.style.setProperty('display', 'block', 'important');
+                descriptionEncadree.style.setProperty('visibility', 'visible', 'important');
+                descriptionEncadree.style.setProperty('opacity', '1', 'important');
+                descriptionEncadree.classList.add('visible');
+            }
+            
+            // S'assurer que la carte est visible
+            const carteContainer = document.getElementById('carte-senegal');
+            if (carteContainer) {
+                carteContainer.style.setProperty('display', 'block', 'important');
+                carteContainer.style.setProperty('visibility', 'visible', 'important');
+                carteContainer.style.setProperty('opacity', '1', 'important');
+                
+                // Initialiser la carte si elle ne l'est pas déjà et si Leaflet est disponible
+                if (typeof L !== 'undefined' && !carteInitialisee) {
+                    setTimeout(() => {
+                        initialiserCarteSenegal();
+                    }, 400);
+                }
+            }
+            
+            // S'assurer que la légende est visible
+            const legende = sectionZones.querySelector('.legende-carte');
+            if (legende) {
+                legende.style.setProperty('display', 'flex', 'important');
+                legende.style.setProperty('visibility', 'visible', 'important');
+                legende.style.setProperty('opacity', '1', 'important');
+            }
+            
+            // S'assurer que le conteneur de zones est visible
+            const zonesContainer = document.getElementById('zones-container');
+            if (zonesContainer) {
+                zonesContainer.style.setProperty('display', 'flex', 'important');
+                zonesContainer.style.setProperty('visibility', 'visible', 'important');
+                zonesContainer.style.setProperty('opacity', '1', 'important');
+            }
+        }
+        
+        // S'assurer que la navigation est visible
+        const mainNav = document.getElementById('main-nav');
+        if (mainNav) {
+            mainNav.style.setProperty('display', 'flex', 'important');
+            mainNav.style.setProperty('visibility', 'visible', 'important');
+            mainNav.style.setProperty('opacity', '1', 'important');
+        }
+        
+        // Réinitialiser la navigation pour s'assurer que les événements sont bien attachés
+        initialiserNavigation();
+        
+        // Le formulaire d'inscription est maintenant géré par toggleFormulaire() dans index.html
+    }
+}, 200);
 
 // Backup : réessayer après un délai supplémentaire (pour mobile)
 setTimeout(function() {
@@ -1880,37 +2125,35 @@ function initialiserNavigation() {
     if (!mainNav) return; // Si le menu n'existe pas, on sort
     
     // Toggle menu déroulant "Voir plus"
-    const dropdownClose = document.getElementById('nav-dropdown-close');
     if (dropdownToggle && dropdown) {
+        // Attacher l'événement sur le bouton "Voir plus"
         dropdownToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            dropdown.classList.add('active');
+            dropdown.classList.toggle('active');
         });
         
         // Fermer le menu déroulant avec le bouton "Voir moins"
-        if (dropdownClose) {
-            dropdownClose.addEventListener('click', function(e) {
+        const closeBtn = document.getElementById('nav-dropdown-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 dropdown.classList.remove('active');
-                // Ne pas fermer le menu mobile, seulement masquer le menu déroulant
             });
         }
         
         // Fermer le menu déroulant en cliquant ailleurs (seulement sur desktop)
         document.addEventListener('click', function(e) {
-            if (window.innerWidth > 767 && !dropdown.contains(e.target)) {
+            if (window.innerWidth > 767 && dropdown.classList.contains('active') && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('active');
             }
         });
         
-        // Fermer le menu déroulant en cliquant sur un lien (mobile seulement)
+        // Fermer le menu déroulant en cliquant sur un lien (desktop seulement)
         dropdownLinks.forEach(link => {
             link.addEventListener('click', function() {
-                if (window.innerWidth <= 767) {
-                    // Ne pas fermer le dropdown sur mobile, seulement fermer le menu principal
-                } else {
+                if (window.innerWidth > 767) {
                     dropdown.classList.remove('active');
                 }
             });

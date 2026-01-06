@@ -55,9 +55,9 @@ header {
 
 .header-content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
     flex: 1;
     gap: 15px;
     position: relative;
@@ -93,16 +93,21 @@ body.page-accueil .logo-header {
 body.page-accueil header>div,
 body.page-accueil .header-content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: space-between;
     flex: 1;
     gap: 15px;
     padding-top: 0;
 }
 
-body.page-accueil header h1 {
+body.page-accueil .header-content h1 {
     margin: 0;
+    flex-shrink: 0;
+}
+
+body.page-accueil header h1 {
+    margin: 0 0 5px 0;
     font-size: 1.4em;
     color: white;
     font-weight: 600;
@@ -163,14 +168,22 @@ body.page-accueil header a {
 
 /* Navigation Menu */
 .main-nav {
-    display: none;
+    display: flex !important;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 10px;
-    width: 100%;
+    margin-top: 0;
     justify-content: flex-end;
-    align-self: flex-end;
+    align-items: center !important;
+    align-self: flex-start;
     margin-left: auto;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.page-accueil .header-content .main-nav {
+    margin-top: 0;
+    align-self: flex-start;
+    align-items: center !important;
 }
 
 .nav-link {
@@ -187,6 +200,8 @@ body.page-accueil header a {
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    vertical-align: middle;
+    line-height: 1.2;
 }
 
 .nav-link:hover {
@@ -203,31 +218,31 @@ body.page-accueil header a {
 
 .nav-link span {
     white-space: nowrap;
-    color: white !important;
+    color: white;
     display: inline-block;
-    visibility: visible !important;
-    opacity: 1 !important;
+    visibility: visible;
+    opacity: 1;
 }
 
 .nav-dropdown-link span {
-    color: white !important;
-    display: inline-block !important;
+    color: white;
+    display: inline-block;
     white-space: nowrap;
-    visibility: visible !important;
-    opacity: 1 !important;
-    font-size: inherit !important;
-    line-height: 1.5 !important;
-    width: auto !important;
-    max-width: none !important;
-    overflow: visible !important;
+    visibility: visible;
+    opacity: 1;
+    font-size: inherit;
+    line-height: 1.5;
+    width: auto;
+    max-width: none;
+    overflow: visible;
 }
 
 .nav-dropdown-close span {
-    color: white !important;
+    color: white;
     display: inline-block;
     white-space: nowrap;
-    visibility: visible !important;
-    opacity: 1 !important;
+    visibility: visible;
+    opacity: 1;
 }
 
 .nav-toggle {
@@ -281,6 +296,10 @@ body.page-accueil header a {
 .nav-dropdown {
     position: relative;
     display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-dropdown-toggle {
@@ -289,6 +308,22 @@ body.page-accueil header a {
     border: none;
     background: none;
     margin: 0;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px;
+    padding: 8px 16px !important;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9em !important;
+    font-weight: 500 !important;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    vertical-align: middle;
+    line-height: 1.2 !important;
+    height: auto;
 }
 
 .nav-dropdown-menu {
@@ -297,7 +332,7 @@ body.page-accueil header a {
     right: 0;
     left: auto;
     margin-top: 8px;
-    background-color: rgba(70, 90, 75, 0.85);
+    background-color: rgba(70, 90, 75, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 10px 0;
@@ -308,6 +343,7 @@ body.page-accueil header a {
     transform: translateY(-10px);
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     z-index: 1000;
+    pointer-events: none;
 }
 
 .nav-dropdown-menu * {
@@ -318,9 +354,11 @@ body.page-accueil header a {
     opacity: 1 !important;
     visibility: visible !important;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
-.nav-dropdown.active .nav-dropdown-menu * {
+.nav-dropdown.active .nav-dropdown-menu .nav-dropdown-link,
+.nav-dropdown.active .nav-dropdown-menu .nav-dropdown-close {
     opacity: 1 !important;
     visibility: visible !important;
     color: white !important;
@@ -358,7 +396,7 @@ body.page-accueil header a {
     align-items: center;
     gap: 12px;
     padding: 12px 20px;
-    color: white !important;
+    color: white;
     text-decoration: none;
     font-size: 0.9em;
     font-weight: 500;
@@ -369,8 +407,9 @@ body.page-accueil header a {
     text-align: left;
 }
 
-.nav-dropdown-link * {
-    color: white !important;
+.nav-dropdown-link svg,
+.nav-dropdown-link span {
+    color: white;
 }
 
 .nav-dropdown-link:hover {
@@ -421,13 +460,32 @@ body.page-accueil section {
     font-size: 1rem;
     font-weight: normal;
     padding: 60px 20px;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 body.page-accueil section p {
     font-weight: normal;
     font-size: 1rem;
-    color: #555;
+    color: #555 !important;
     line-height: 1.8;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.page-accueil section h2 {
+    color: #333 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+body.page-accueil section h3 {
+    color: #333 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
 }
 
 /* Hero Section (#accueil) */
@@ -501,20 +559,151 @@ body.page-accueil section#accueil p {
     line-height: 1.8;
 }
 
-body.page-accueil section#inscription-vendeur {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    box-sizing: border-box;
+/* Formulaire popup à côté du bouton */
+.formulaire-inscription-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: auto;
+    z-index: 1000;
     background-color: white;
     color: #333;
-    padding: 50px 30px;
-    border-radius: 0;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    margin-top: 15px;
+    max-width: 600px;
+    width: 100%;
+    min-width: 400px;
+    box-sizing: border-box;
+    display: none !important;
+}
+
+.formulaire-inscription-popup.visible {
+    display: block !important;
+}
+
+/* Titre du formulaire */
+.formulaire-inscription-popup .formulaire-titre {
+    color: #1e6b3a;
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    padding: 0;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+}
+
+.formulaire-inscription-popup .formulaire-intro {
+    color: #666;
+    margin: 0 0 25px 0;
+    font-size: 1.05em;
+    text-align: center;
+    line-height: 1.5;
     text-shadow: none;
-    backdrop-filter: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.formulaire-inscription-popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.formulaire-inscription-popup label {
+    color: #1e6b3a;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+    display: block;
+    letter-spacing: 0.01em;
+    text-align: left;
+}
+
+.formulaire-inscription-popup input,
+.formulaire-inscription-popup textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.05em;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #333;
+}
+
+.formulaire-inscription-popup input:focus,
+.formulaire-inscription-popup textarea:focus {
+    outline: none;
+    border-color: #FF8C00;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+}
+
+.formulaire-inscription-popup input:hover,
+.formulaire-inscription-popup textarea:hover {
+    border-color: #ccc;
+    background-color: white;
+}
+
+.formulaire-inscription-popup input::placeholder,
+.formulaire-inscription-popup textarea::placeholder {
+    color: #999;
+    opacity: 0.8;
+}
+
+.formulaire-inscription-popup textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.formulaire-inscription-popup .btn {
+    margin-top: 10px;
+    padding: 14px 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.formulaire-inscription-popup .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+}
+
+/* Sur desktop, positionner le formulaire en dessous du bouton */
+@media (min-width: 769px) {
+    .bouton-formulaire-wrapper {
+        position: relative;
+    }
+    
+    .formulaire-inscription-popup {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: auto;
+        width: 500px;
+        max-width: calc(100vw - 40px);
+        margin-top: 15px;
+        transform: none;
+    }
+}
+
+/* Sur mobile, le formulaire s'affiche en dessous */
+@media (max-width: 768px) {
+    .formulaire-inscription-popup {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 15px;
+    }
 }
 
 h2 {
@@ -532,15 +721,6 @@ body.page-accueil h2 {
     text-shadow: none;
 }
 
-body.page-accueil section#inscription-vendeur h2 {
-    color: #1e6b3a;
-    text-shadow: none;
-}
-
-body.page-accueil section#inscription-vendeur p {
-    color: #555;
-    text-shadow: none;
-}
 
 /* Boutons */
 .btn {
@@ -621,6 +801,7 @@ body.page-accueil .boutons-accueil {
 }
 
 body.page-accueil .bouton-formulaire-wrapper {
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1994,6 +2175,19 @@ body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
     transform: translateY(0);
 }
 
+/* Forcer l'affichage des étapes dans la section comment-ca-marche */
+#comment-ca-marche .etapes {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+#comment-ca-marche .etape {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
 .processus-container {
     display: flex;
     flex-direction: column;
@@ -2044,6 +2238,50 @@ body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
     color: #FF8C00;
 }
 
+.processus-image {
+    width: 100%;
+    margin: 25px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.processus-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.processus-action {
+    margin-top: 30px;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.btn-processus {
+    background-color: #FF8C00;
+    color: white;
+    padding: 15px 35px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.btn-processus:hover {
+    background-color: #e67e00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+}
+
+.btn-processus:active {
+    transform: translateY(0);
+}
+
 .etapes {
     display: flex;
     flex-direction: column;
@@ -2052,7 +2290,7 @@ body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
 }
 
 .etape {
-    display: flex;
+    display: flex !important;
     align-items: flex-start;
     gap: 20px;
     padding: 25px;
@@ -2062,6 +2300,7 @@ body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
     transform: translateY(20px);
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     border-left: 4px solid;
+    visibility: visible !important;
 }
 
 .etape.visible {
@@ -2266,8 +2505,8 @@ body.page-accueil #zones-couvertes h2 {
 }
 
 .description-encadree.animate-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
@@ -2305,12 +2544,19 @@ body.page-accueil #zones-couvertes > p {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: #e8f4f8;
     min-height: 320px;
+    position: relative;
 }
 
 .carte-container .leaflet-container {
     height: 100%;
     width: 100%;
     border-radius: 15px;
+}
+
+#carte-senegal {
+    height: 100%;
+    width: 100%;
+    min-height: 320px;
 }
 
 /* Style des marqueurs personnalisés */
@@ -2681,24 +2927,25 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         min-width: 250px;
     }
     
-    .nav-dropdown-menu * {
-        color: white !important;
-        opacity: 1 !important;
-        visibility: visible !important;
+    .nav-dropdown-menu .nav-dropdown-link,
+    .nav-dropdown-menu .nav-dropdown-close {
+        color: white;
+        opacity: 1;
+        visibility: visible;
     }
     
     .nav-dropdown-link {
         font-size: 0.95em;
         padding: 14px 24px;
-        color: white !important;
+        color: white;
     }
     
     .nav-dropdown-link span {
-        color: white !important;
-        display: inline-block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        font-size: inherit !important;
+        color: white;
+        display: inline-block;
+        visibility: visible;
+        opacity: 1;
+        font-size: inherit;
     }
     
     .processus-container {
@@ -2856,9 +3103,14 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     }
     
     .carte-container {
-        height: 350px;
+        height: 400px;
         margin: 40px 0;
-        min-height: 350px;
+        min-height: 400px;
+    }
+    
+    #carte-senegal {
+        height: 100%;
+        min-height: 400px;
     }
     
     .marqueur-cercle {
@@ -3172,10 +3424,14 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         margin-top: 0;
         margin-left: 0;
         min-width: auto;
+        pointer-events: none;
     }
     
     .nav-dropdown.active .nav-dropdown-menu {
-        display: flex;
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
     
     .nav-dropdown.active .nav-dropdown-toggle {
@@ -3189,18 +3445,19 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         border-radius: 8px;
         margin-bottom: 5px;
         background-color: rgba(255, 255, 255, 0.05);
-        color: white !important;
+        color: white;
     }
     
     .nav-dropdown-link span {
-        color: white !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        display: inline-block !important;
+        color: white;
+        visibility: visible;
+        opacity: 1;
+        display: inline-block;
     }
     
-    .nav-dropdown-link * {
-        color: white !important;
+    .nav-dropdown-link svg,
+    .nav-dropdown-link span {
+        color: white;
     }
     
     .nav-dropdown-close {
