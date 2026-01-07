@@ -716,6 +716,20 @@ body.page-accueil section#accueil p {
         z-index: 1;
     }
     
+    /* S'assurer que les marqueurs sont visibles sur mobile */
+    .leaflet-marker-pane,
+    .leaflet-marker-icon,
+    .marqueur-zone,
+    .marqueur-cercle {
+        z-index: 1000 !important;
+        position: relative;
+    }
+    
+    /* S'assurer que les popups sont aussi visibles */
+    .leaflet-popup-pane {
+        z-index: 1001 !important;
+    }
+    
     /* Améliorer l'interaction tactile pour les boutons sur mobile */
     .btn,
     .btn-processus {
@@ -2604,6 +2618,8 @@ body.page-accueil #zones-couvertes > p {
 .marqueur-zone {
     background: transparent;
     border: none;
+    z-index: 1000 !important;
+    position: relative;
 }
 
 .marqueur-cercle {
@@ -2617,6 +2633,8 @@ body.page-accueil #zones-couvertes > p {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: transform 0.2s ease;
+    position: relative;
+    z-index: 1000 !important;
 }
 
 .marqueur-cercle:hover {
@@ -3157,10 +3175,17 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     .marqueur-cercle {
         width: 45px;
         height: 45px;
+        z-index: 1000 !important;
     }
     
     .marqueur-cercle span {
         font-size: 1em;
+    }
+    
+    /* S'assurer que les marqueurs sont bien visibles sur mobile */
+    .leaflet-marker-pane,
+    .leaflet-marker-icon {
+        z-index: 1000 !important;
     }
     
     /* Valeurs - Desktop */

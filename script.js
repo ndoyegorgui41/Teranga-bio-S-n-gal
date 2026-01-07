@@ -822,7 +822,20 @@ function initialiserCarteSenegal() {
     }).addTo(carteSenegal);
     
     carteInitialisee = true;
-    afficherZonesSurCarte();
+    
+    // Sur mobile, attendre un peu avant d'afficher les zones pour que la carte soit complètement rendue
+    setTimeout(function() {
+        carteSenegal.invalidateSize();
+        afficherZonesSurCarte();
+        
+        // Re-invalider après un court délai supplémentaire pour mobile
+        if (window.innerWidth <= 768) {
+            setTimeout(function() {
+                carteSenegal.invalidateSize();
+                afficherZonesSurCarte();
+            }, 300);
+        }
+    }, 100);
 }
 
 // Fonction pour normaliser un nom de zone (enlever accents, mettre en minuscule, normaliser)
@@ -930,6 +943,13 @@ function afficherZonesSurCarte() {
             marqueur.bindPopup(`<div class="popup-zone"><strong>${zoneNom}</strong><br><span style="color: #95a5a6;">Zone à venir</span></div>`);
         }
     });
+    
+    // Recalculer la taille de la carte pour s'assurer que les marqueurs sont visibles
+    if (carteSenegal) {
+        setTimeout(function() {
+            carteSenegal.invalidateSize();
+        }, 50);
+    }
 }
 
 // Fonction pour afficher les zones couvertes (badges seulement)
