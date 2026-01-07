@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=21">
+    <link rel="stylesheet" href="styles.css?v=22">
     <!-- Leaflet CSS pour la carte -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
@@ -442,20 +442,56 @@
             }
         }
         
-        // Initialiser au chargement
+        // Fonction pour gérer le clic/touch sur les boutons
+        function gererClicBouton(e, boutonElement) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            toggleFormulaire(boutonElement);
+        }
+        
+        // Initialiser au chargement - s'exécute après script.js
         document.addEventListener('DOMContentLoaded', function() {
             const formulaire = document.getElementById('inscription-vendeur');
             if (formulaire) {
                 formulaire.style.setProperty('display', 'none', 'important');
                 formulaire.classList.remove('visible');
             }
+            
+            // Ajouter des gestionnaires d'événements pour tous les boutons "Rejoindre comme vendeur"
+            // Utiliser setTimeout pour s'assurer que script.js a terminé
+            setTimeout(function() {
+                const btnDevenirVendeur = document.getElementById('btn-devenir-vendeur');
+                const btnProcessus = document.querySelector('.btn-processus');
+                
+                // Réinitialiser tous les gestionnaires d'événements pour forcer notre version
+                if (btnDevenirVendeur) {
+                    btnDevenirVendeur.onclick = null;
+                    btnDevenirVendeur.addEventListener('click', function(e) {
+                        gererClicBouton(e, btnDevenirVendeur);
+                    }, true); // Utiliser capture phase pour priorité
+                    btnDevenirVendeur.addEventListener('touchend', function(e) {
+                        gererClicBouton(e, btnDevenirVendeur);
+                    }, true);
+                }
+                
+                if (btnProcessus) {
+                    btnProcessus.onclick = null;
+                    btnProcessus.addEventListener('click', function(e) {
+                        gererClicBouton(e, btnProcessus);
+                    }, true);
+                    btnProcessus.addEventListener('touchend', function(e) {
+                        gererClicBouton(e, btnProcessus);
+                    }, true);
+                }
+            }, 100);
         });
         
         // Ajuster le positionnement si la fenêtre est redimensionnée
         window.addEventListener('resize', function() {
             const formulaire = document.getElementById('inscription-vendeur');
-            if (formulaire && formulaire.classList.contains('visible')) {
-                ajusterPositionFormulaire();
+            if (formulaire && formulaire.classList.contains('visible') && boutonActif) {
+                ajusterPositionFormulaire(boutonActif);
             }
         });
     </script>

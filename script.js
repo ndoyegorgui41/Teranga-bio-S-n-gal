@@ -1948,7 +1948,8 @@ function initialiserPage() {
                        pathname.endsWith('/');
     
     if (isHomePage) {
-        gererAffichageFormulaire();
+        // gererAffichageFormulaire() désactivé - géré par toggleFormulaire() dans index.html
+        // gererAffichageFormulaire();
         gererInscription();
         afficherStatistiques();
         afficherProduitsVedettes();

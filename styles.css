@@ -703,6 +703,23 @@ body.page-accueil section#accueil p {
         width: 100%;
         max-width: 100%;
         margin-top: 15px;
+        z-index: 1000;
+    }
+    
+    /* Améliorer l'interaction tactile pour les boutons sur mobile */
+    .btn,
+    .btn-processus {
+        -webkit-tap-highlight-color: rgba(255, 140, 0, 0.5);
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .bouton-formulaire-wrapper {
+        position: relative;
+        z-index: 10;
     }
 }
 
@@ -741,6 +758,12 @@ body.page-accueil h2 {
     vertical-align: middle;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+    -webkit-tap-highlight-color: rgba(255, 140, 0, 0.3);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    z-index: 10;
 }
 
 .btn:hover {
@@ -812,6 +835,8 @@ body.page-accueil .bouton-formulaire-wrapper {
 body.page-accueil .bouton-formulaire-wrapper .btn {
     width: 100%;
     min-width: 0;
+    position: relative;
+    z-index: 10;
 }
 
 /* Liste vendeurs */
