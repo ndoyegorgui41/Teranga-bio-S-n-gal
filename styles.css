@@ -670,9 +670,176 @@ body.page-accueil section#accueil p {
     transition: all 0.3s ease;
 }
 
-.formulaire-inscription-popup .btn:hover {
+.formulaire-inscription-popup .btn:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+}
+
+.formulaire-inscription-popup .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+.formulaire-inscription-popup .btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Styles pour la charte vendeur */
+.charte-vendeur-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.charte-titre {
+    color: #1e6b3a;
+    font-size: 1.3em;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 20px 0;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #1e6b3a;
+}
+
+.charte-content {
+    font-size: 0.95em;
+    line-height: 1.7;
+    color: #333;
+}
+
+.charte-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.charte-section:last-child {
+    border-bottom: none;
+}
+
+.charte-section-titre {
+    color: #1e6b3a;
+    font-size: 1.1em;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+}
+
+.charte-section-titre::before {
+    content: "▶";
+    color: #FF8C00;
+    margin-right: 8px;
+    font-size: 0.8em;
+}
+
+.charte-sous-titre {
+    color: #2d8651;
+    font-weight: 600;
+    margin: 12px 0 8px 0;
+    font-size: 1em;
+}
+
+.charte-content p {
+    margin: 10px 0;
+    text-align: justify;
+}
+
+.charte-content ul {
+    margin: 10px 0 10px 20px;
+    padding-left: 10px;
+}
+
+.charte-content li {
+    margin: 8px 0;
+    line-height: 1.6;
+    list-style-type: disc;
+}
+
+.charte-content ul ul {
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+/* Style pour la case à cocher d'acceptation */
+.charte-acceptation {
+    margin: 25px 0;
+    padding: 20px;
+    background-color: #fff9e6;
+    border: 2px solid #FF8C00;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.charte-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: #1e6b3a;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.charte-checkbox-label input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: #FF8C00;
+    flex-shrink: 0;
+}
+
+.charte-checkbox-text {
+    user-select: none;
+    flex: 1;
+}
+
+.charte-checkbox-label:hover {
+    color: #2d8651;
+}
+
+.charte-checkbox-label input[type="checkbox"]:focus {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+/* Responsive pour la charte */
+@media (max-width: 768px) {
+    .charte-vendeur-container {
+        padding: 15px;
+        max-height: 350px;
+        font-size: 0.9em;
+    }
+    
+    .charte-titre {
+        font-size: 1.2em;
+    }
+    
+    .charte-section-titre {
+        font-size: 1em;
+    }
+    
+    .charte-acceptation {
+        padding: 15px;
+    }
+    
+    .charte-checkbox-label {
+        font-size: 1em;
+    }
 }
 
 /* Sur desktop, positionner le formulaire en dessous du bouton */

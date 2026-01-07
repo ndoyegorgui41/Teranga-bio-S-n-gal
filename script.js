@@ -590,6 +590,31 @@ function gererAffichageFormulaire() {
 function gererInscription() {
     const form = document.getElementById('form-inscription');
     if (!form) return; // Si pas sur la page d'accueil
+    
+    // Désactiver le bouton d'inscription tant que la charte n'est pas acceptée
+    const btnSubmit = document.getElementById('btn-inscription-submit');
+    const accepteCharte = document.getElementById('accepte-charte');
+    
+    function mettreAJourBouton() {
+        if (btnSubmit && accepteCharte) {
+            btnSubmit.disabled = !accepteCharte.checked;
+            if (btnSubmit.disabled) {
+                btnSubmit.style.opacity = '0.6';
+                btnSubmit.style.cursor = 'not-allowed';
+            } else {
+                btnSubmit.style.opacity = '1';
+                btnSubmit.style.cursor = 'pointer';
+            }
+        }
+    }
+    
+    // Vérifier l'état initial
+    mettreAJourBouton();
+    
+    // Écouter les changements de la case à cocher
+    if (accepteCharte) {
+        accepteCharte.addEventListener('change', mettreAJourBouton);
+    }
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -606,6 +631,18 @@ function gererInscription() {
         // Validation basique
         if (!nom || !description || !zone || !telephone || !whatsapp || !disponibilite || !password) {
             afficherMessageInscription('Veuillez remplir tous les champs.', 'error');
+            return;
+        }
+        
+        // Vérifier que la charte a été acceptée
+        const accepteCharte = document.getElementById('accepte-charte');
+        if (!accepteCharte || !accepteCharte.checked) {
+            afficherMessageInscription('Vous devez accepter la charte vendeur pour continuer l\'inscription.', 'error');
+            // Faire défiler vers la case à cocher
+            if (accepteCharte) {
+                accepteCharte.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                accepteCharte.focus();
+            }
             return;
         }
 
@@ -646,6 +683,9 @@ function gererInscription() {
             
             // Réinitialiser le formulaire
             form.reset();
+            
+            // Remettre à jour l'état du bouton après réinitialisation
+            mettreAJourBouton();
 
             // Optionnel : rediriger vers la liste des vendeurs après 3 secondes
             setTimeout(function() {
