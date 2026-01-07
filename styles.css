@@ -720,6 +720,11 @@ body.page-accueil section#accueil p {
     .bouton-formulaire-wrapper {
         position: relative;
         z-index: 10;
+        width: 100%;
+    }
+    
+    .processus-action {
+        position: relative;
     }
 }
 
@@ -2282,6 +2287,7 @@ body.page-accueil #comment-ca-marche.animate-on-scroll.visible {
     margin-top: 30px;
     text-align: center;
     padding-top: 20px;
+    position: relative;
 }
 
 .btn-processus {
