@@ -3388,22 +3388,28 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         display: flex;
         position: absolute;
         top: 10px;
-        right: 10px;
+        right: 5px;
         left: auto;
         z-index: 101;
         margin: 0;
     }
     
     .header-content {
-        padding-right: 50px;
+        padding-right: 60px;
         align-items: flex-start !important;
         text-align: left !important;
     }
     
     body.page-accueil .header-content {
-        padding-right: 50px;
+        padding-right: 60px;
         align-items: flex-start !important;
         text-align: left !important;
+    }
+    
+    body.page-accueil .header-content h1 {
+        max-width: calc(100% - 50px);
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     body.page-accueil header h1 {
