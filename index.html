@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=23">
+    <link rel="stylesheet" href="styles.css?v=24">
     <!-- Leaflet CSS pour la carte -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
@@ -435,11 +435,50 @@
                 // Ajuster le positionnement par rapport au bouton cliqué
                 if (boutonElement) {
                     ajusterPositionFormulaire(boutonElement);
+                    
+                    // Sur mobile, faire défiler vers le formulaire après un court délai
+                    if (window.innerWidth < 769) {
+                        setTimeout(function() {
+                            const formulaireRect = formulaire.getBoundingClientRect();
+                            const boutonRect = boutonElement.getBoundingClientRect();
+                            const scrollPosition = window.scrollY || window.pageYOffset;
+                            
+                            // Calculer la position de défilement pour centrer le formulaire dans la vue
+                            const formulaireTop = scrollPosition + formulaireRect.top;
+                            const viewportHeight = window.innerHeight;
+                            const formulaireHeight = formulaireRect.height;
+                            
+                            // Défiler pour que le formulaire soit bien visible
+                            const targetScroll = formulaireTop - (viewportHeight / 2) + (formulaireHeight / 2);
+                            
+                            window.scrollTo({
+                                top: Math.max(0, targetScroll),
+                                behavior: 'smooth'
+                            });
+                        }, 100);
+                    }
                 } else {
                     // Fallback: utiliser le bouton par défaut
                     const btnDefault = document.getElementById('btn-devenir-vendeur');
                     if (btnDefault) {
                         ajusterPositionFormulaire(btnDefault);
+                        
+                        // Sur mobile, faire défiler vers le formulaire
+                        if (window.innerWidth < 769) {
+                            setTimeout(function() {
+                                const formulaireRect = formulaire.getBoundingClientRect();
+                                const scrollPosition = window.scrollY || window.pageYOffset;
+                                const formulaireTop = scrollPosition + formulaireRect.top;
+                                const viewportHeight = window.innerHeight;
+                                const formulaireHeight = formulaireRect.height;
+                                const targetScroll = formulaireTop - (viewportHeight / 2) + (formulaireHeight / 2);
+                                
+                                window.scrollTo({
+                                    top: Math.max(0, targetScroll),
+                                    behavior: 'smooth'
+                                });
+                            }, 100);
+                        }
                     }
                 }
             }

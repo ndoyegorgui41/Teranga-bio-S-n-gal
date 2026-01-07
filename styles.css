@@ -703,7 +703,17 @@ body.page-accueil section#accueil p {
         width: 100%;
         max-width: 100%;
         margin-top: 15px;
-        z-index: 1000;
+        z-index: 10000 !important;
+        background-color: white;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* S'assurer que la carte et autres sections ont un z-index plus bas */
+    #zones-couvertes,
+    .carte-container,
+    #carte-senegal {
+        position: relative;
+        z-index: 1;
     }
     
     /* Améliorer l'interaction tactile pour les boutons sur mobile */
