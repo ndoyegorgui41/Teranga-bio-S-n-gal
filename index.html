@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=27">
+    <link rel="stylesheet" href="styles.css?v=28">
     <!-- Leaflet CSS pour la carte -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
@@ -121,7 +121,7 @@
                                     <label for="password-vendeur">Mot de passe (pour accès vendeur) :</label>
                                     <input type="password" id="password-vendeur" required>
                                     
-                                    <div class="charte-vendeur-container">
+                                    <div class="charte-vendeur-container" id="charte-vendeur-container">
                                         <h4 class="charte-titre">Charte Vendeur - Teranga Bio Sénégal</h4>
                                         <div class="charte-content">
                                             <div class="charte-section">
@@ -222,6 +222,7 @@
                                             <input type="checkbox" id="accepte-charte" name="accepte-charte" required>
                                             <span class="charte-checkbox-text">J'ai lu et j'accepte la charte vendeur</span>
                                         </label>
+                                        <p class="lire-charte-note">Lire la charte complète</p>
                                     </div>
                                     
                                     <button type="submit" class="btn" id="btn-inscription-submit">S'inscrire</button>

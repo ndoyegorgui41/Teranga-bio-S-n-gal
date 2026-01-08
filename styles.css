@@ -817,6 +817,33 @@ body.page-accueil section#accueil p {
     border-radius: 3px;
 }
 
+/* Note "Lire la charte complète" */
+.lire-charte-note {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 0;
+    color: #1e6b3a;
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: center;
+    font-weight: 500;
+    animation: pulse-attention 2s ease-in-out infinite;
+    cursor: default;
+}
+
+@keyframes pulse-attention {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+        color: #1e6b3a;
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+        color: #FF8C00;
+    }
+}
+
 /* Responsive pour la charte */
 @media (max-width: 768px) {
     .charte-vendeur-container {
