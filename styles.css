@@ -1618,6 +1618,59 @@ body.page-accueil .footer-admin-link a:hover {
     margin: 0;
 }
 
+/* Section inscriptions en attente */
+#admin-en-attente {
+    margin-bottom: 30px;
+}
+
+#admin-en-attente h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+#admin-en-attente > div:first-child {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 15px !important;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#btn-refresh-en-attente {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 10px 20px !important;
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 1em !important;
+    font-weight: 500 !important;
+    transition: background-color 0.3s !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+
+#btn-refresh-en-attente:hover {
+    background-color: #45a049 !important;
+}
+
+#btn-refresh-en-attente:focus {
+    outline: 3px solid #FF8C00 !important;
+    outline-offset: 2px !important;
+}
+
+#liste-en-attente {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 50px;
+}
+
 /* Liste des vendeurs admin */
 #admin-vendeurs {
     margin-bottom: 30px;
@@ -1926,6 +1979,100 @@ body.page-accueil .footer-admin-link a:hover {
     border: 1px solid #f5c6cb;
 }
 
+/* Message de bienvenue pour les vendeurs */
+.message-bienvenue {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 3px solid #28a745;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+    position: relative;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-bienvenue h3 {
+    color: #155724;
+    margin: 0 0 15px 0;
+    font-size: 1.4em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.message-bienvenue h3::before {
+    content: "✓";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.message-bienvenue div {
+    color: #155724;
+    line-height: 1.8;
+    white-space: pre-line;
+    font-size: 1.05em;
+    margin-bottom: 15px;
+}
+
+.message-bienvenue strong {
+    color: #0d3e13;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.message-bienvenue .btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-bienvenue .btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.message-bienvenue .btn:focus {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+}
+
+.message-bienvenue .btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.message-bienvenue .btn:focus-visible {
+    outline: 3px solid #FF8C00;
+    outline-offset: 2px;
+}
+
 @media (max-width: 768px) {
     .admin-en-attente-card {
         border-left-width: 3px;
@@ -1933,6 +2080,15 @@ body.page-accueil .footer-admin-link a:hover {
     
     .btn-success {
         width: 100%;
+    }
+    
+    #admin-en-attente > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    #btn-refresh-en-attente {
+        width: 100% !important;
     }
 }
 

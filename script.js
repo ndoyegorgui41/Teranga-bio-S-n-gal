@@ -64,12 +64,20 @@ function chargerTousVendeursAdmin() {
 // Fonction pour charger uniquement les vendeurs en attente
 function chargerVendeursEnAttente() {
     const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
-    return inscrits.filter(v => v.statut === 'en_attente');
+    // Filtrer les vendeurs en attente (comparaison stricte et insensible à la casse pour robustesse)
+    return inscrits.filter(v => {
+        const statut = v.statut ? String(v.statut).toLowerCase().trim() : '';
+        return statut === 'en_attente';
+    });
 }
 
 // Fonction pour sauvegarder un vendeur inscrit
 function sauvegarderVendeur(vendeur) {
     const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    // S'assurer que le statut est bien défini
+    if (!vendeur.statut) {
+        vendeur.statut = 'en_attente';
+    }
     inscrits.push(vendeur);
     localStorage.setItem('vendeurs_inscrits', JSON.stringify(inscrits));
 }
@@ -344,6 +352,42 @@ function afficherProfilVendeur() {
     // Afficher le profil
     const profil = document.getElementById('profil-vendeur');
     profil.textContent = ''; // Vider le contenu
+    
+    // Afficher les messages de bienvenue non lus pour ce vendeur
+    const messages = recupererMessagesVendeur(id);
+    const messagesNonLus = messages.filter(m => !m.lu && m.type === 'bienvenue');
+    
+    if (messagesNonLus.length > 0) {
+        messagesNonLus.forEach(message => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-bienvenue';
+            
+            const titre = document.createElement('h3');
+            titre.textContent = message.titre;
+            messageDiv.appendChild(titre);
+            
+            const contenu = document.createElement('div');
+            // Remplacer **texte** par du texte en gras
+            let texteFormate = message.contenu.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            contenu.innerHTML = texteFormate;
+            messageDiv.appendChild(contenu);
+            
+            const btnFermer = document.createElement('button');
+            btnFermer.textContent = 'Fermer';
+            btnFermer.className = 'btn';
+            btnFermer.addEventListener('click', function() {
+                marquerMessageLu(id, message.id);
+                messageDiv.style.transition = 'opacity 0.3s ease';
+                messageDiv.style.opacity = '0';
+                setTimeout(function() {
+                    messageDiv.style.display = 'none';
+                }, 300);
+            });
+            messageDiv.appendChild(btnFermer);
+            
+            profil.appendChild(messageDiv);
+        });
+    }
     
     const p1 = document.createElement('p');
     const strong1 = document.createElement('strong');
@@ -1350,9 +1394,22 @@ function actualiserStatistiquesAdmin() {
 // Fonction pour afficher les inscriptions en attente
 function afficherInscriptionsEnAttente() {
     const container = document.getElementById('liste-en-attente');
-    if (!container) return;
+    if (!container) {
+        console.error('Container liste-en-attente non trouvé');
+        return;
+    }
     
+    // Recharger depuis localStorage pour avoir les données les plus récentes
     const enAttente = chargerVendeursEnAttente();
+    
+    // Débogage
+    console.log('Vendeurs en attente trouvés:', enAttente.length);
+    console.log('Vendeurs en attente:', enAttente);
+    
+    // Récupérer tous les inscrits pour vérifier
+    const tousInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+    console.log('Total vendeurs inscrits dans localStorage:', tousInscrits.length);
+    console.log('Tous les inscrits:', tousInscrits);
     
     container.textContent = ''; // Vider le contenu
     
@@ -1614,8 +1671,42 @@ function afficherProduitsVendeur(vendeurId, vendeurNom) {
 }
 
 // Fonction pour valider un vendeur
+// Fonction pour créer et stocker un message de bienvenue pour un vendeur validé
+function creerMessageBienvenue(vendeurId, vendeurNom) {
+    const message = {
+        id: Date.now(),
+        type: 'bienvenue',
+        titre: 'Bienvenue sur Teranga Bio Sénégal !',
+        contenu: `Félicitations ${vendeurNom} !\n\nVotre inscription sur la plateforme Teranga Bio Sénégal a été validée avec succès.\n\nVotre identifiant vendeur est : **${vendeurId}**\n\nConservez précieusement cet identifiant, il vous sera utile pour accéder à votre espace vendeur et gérer vos produits.\n\nVous pouvez dès maintenant commencer à ajouter vos produits bio sur la plateforme.\n\nBienvenue dans la communauté Teranga Bio !`,
+        dateCreation: new Date().toISOString(),
+        lu: false
+    };
+    
+    // Stocker le message dans localStorage
+    const messages = JSON.parse(localStorage.getItem(`messages_vendeur_${vendeurId}`) || '[]');
+    messages.push(message);
+    localStorage.setItem(`messages_vendeur_${vendeurId}`, JSON.stringify(messages));
+    
+    return message;
+}
+
+// Fonction pour récupérer les messages d'un vendeur
+function recupererMessagesVendeur(vendeurId) {
+    return JSON.parse(localStorage.getItem(`messages_vendeur_${vendeurId}`) || '[]');
+}
+
+// Fonction pour marquer un message comme lu
+function marquerMessageLu(vendeurId, messageId) {
+    const messages = recupererMessagesVendeur(vendeurId);
+    const messageIndex = messages.findIndex(m => m.id === messageId);
+    if (messageIndex !== -1) {
+        messages[messageIndex].lu = true;
+        localStorage.setItem(`messages_vendeur_${vendeurId}`, JSON.stringify(messages));
+    }
+}
+
 function validerVendeur(vendeurId, vendeurNom) {
-    if (!confirm(`Valider l'inscription de "${vendeurNom}" ?\n\nLe vendeur sera visible sur la plateforme.`)) {
+    if (!confirm(`Valider l'inscription de "${vendeurNom}" ?\n\nLe vendeur sera visible sur la plateforme et recevra un message de bienvenue avec son identifiant.`)) {
         return;
     }
     
@@ -1627,6 +1718,9 @@ function validerVendeur(vendeurId, vendeurNom) {
         // Mettre à jour le statut
         inscrits[vendeurIndex].statut = 'valide';
         inscrits[vendeurIndex].dateValidation = new Date().toISOString();
+        
+        // Créer et stocker le message de bienvenue
+        creerMessageBienvenue(vendeurId, vendeurNom);
         
         // Sauvegarder
         localStorage.setItem('vendeurs_inscrits', JSON.stringify(inscrits));
@@ -1643,7 +1737,7 @@ function validerVendeur(vendeurId, vendeurNom) {
         // Mettre à jour les badges de zones
         afficherZonesCouvertes();
         
-        afficherMessageValidation(`Le vendeur "${vendeurNom}" a été validé avec succès.`, 'success');
+        afficherMessageValidation(`Le vendeur "${vendeurNom}" a été validé avec succès. Un message de bienvenue avec son identifiant (${vendeurId}) lui a été envoyé.`, 'success');
     }
 }
 
@@ -1937,6 +2031,15 @@ function gererAdministration() {
             deconnecterAdmin();
             afficherConnexionAdmin();
             if (formLogin) formLogin.reset();
+        });
+    }
+    
+    // Bouton de rafraîchissement des inscriptions en attente
+    const btnRefreshEnAttente = document.getElementById('btn-refresh-en-attente');
+    if (btnRefreshEnAttente) {
+        btnRefreshEnAttente.addEventListener('click', function() {
+            afficherInscriptionsEnAttente();
+            actualiserStatistiquesAdmin();
         });
     }
     

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=29">
 </head>
 <body>
     <!-- Section de connexion -->
@@ -57,7 +57,10 @@
 
             <!-- Inscriptions en attente -->
             <section id="admin-en-attente">
-                <h2>Inscriptions en attente de validation</h2>
+                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 15px !important; flex-wrap: wrap; gap: 15px;">
+                    <h2 style="margin: 0;">Inscriptions en attente de validation</h2>
+                    <button id="btn-refresh-en-attente" class="btn" type="button" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important;">🔄 Actualiser</button>
+                </div>
                 <div id="liste-en-attente">
                     <!-- Liste générée par JS -->
                 </div>
@@ -87,7 +90,7 @@
             <p>&copy; 2025 Teranga Bio Sénégal - Administration</p>
         </footer>
     </div>
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=23"></script>
 </body>
 </html>
 
