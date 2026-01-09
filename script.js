@@ -63,12 +63,30 @@ function chargerTousVendeursAdmin() {
 
 // Fonction pour charger uniquement les vendeurs en attente
 function chargerVendeursEnAttente() {
-    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
-    // Filtrer les vendeurs en attente (comparaison stricte et insensible à la casse pour robustesse)
-    return inscrits.filter(v => {
-        const statut = v.statut ? String(v.statut).toLowerCase().trim() : '';
-        return statut === 'en_attente';
-    });
+    try {
+        const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+        console.log('Vendeurs inscrits récupérés:', inscrits.length);
+        
+        // Filtrer les vendeurs en attente (comparaison stricte et insensible à la casse pour robustesse)
+        const enAttente = inscrits.filter(v => {
+            // Si pas de statut, considérer comme en attente par défaut (pour les anciens vendeurs)
+            if (!v.statut) {
+                return false; // Ne pas inclure les vendeurs sans statut (anciens)
+            }
+            const statut = String(v.statut).toLowerCase().trim();
+            const result = statut === 'en_attente';
+            if (result) {
+                console.log('Vendeur en attente trouvé:', v.nom, 'ID:', v.id, 'Statut:', v.statut);
+            }
+            return result;
+        });
+        
+        console.log('Total vendeurs en attente:', enAttente.length);
+        return enAttente;
+    } catch (error) {
+        console.error('Erreur lors du chargement des vendeurs en attente:', error);
+        return [];
+    }
 }
 
 // Fonction pour sauvegarder un vendeur inscrit
@@ -1343,9 +1361,39 @@ function afficherTableauDeBordAdmin() {
         dashboardSection.style.setProperty('visibility', 'visible', 'important');
     }
     
-    actualiserStatistiquesAdmin();
-    afficherInscriptionsEnAttente();
-    afficherListeVendeursAdmin();
+    // Attendre un peu pour que le DOM soit complètement rendu
+    setTimeout(function() {
+        actualiserStatistiquesAdmin();
+        afficherInscriptionsEnAttente();
+        afficherListeVendeursAdmin();
+        
+        // Réinitialiser l'event listener du bouton actualiser
+        const btnRefreshEnAttente = document.getElementById('btn-refresh-en-attente');
+        if (btnRefreshEnAttente) {
+            // Retirer tous les event listeners existants
+            const newBtn = btnRefreshEnAttente.cloneNode(true);
+            btnRefreshEnAttente.parentNode.replaceChild(newBtn, btnRefreshEnAttente);
+            
+            // Ajouter le nouvel event listener
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Bouton actualiser cliqué depuis afficherTableauDeBordAdmin');
+                afficherInscriptionsEnAttente();
+                actualiserStatistiquesAdmin();
+                // Afficher un message de confirmation
+                const messageDiv = document.getElementById('message-validation');
+                if (messageDiv) {
+                    messageDiv.textContent = 'Liste actualisée avec succès.';
+                    messageDiv.className = 'success';
+                    messageDiv.style.display = 'block';
+                    setTimeout(function() {
+                        messageDiv.style.display = 'none';
+                    }, 3000);
+                }
+            });
+        }
+    }, 100);
 }
 
 // Fonction pour afficher la section de connexion
@@ -1399,17 +1447,27 @@ function afficherInscriptionsEnAttente() {
         return;
     }
     
+    console.log('Fonction afficherInscriptionsEnAttente appelée');
+    
     // Recharger depuis localStorage pour avoir les données les plus récentes
     const enAttente = chargerVendeursEnAttente();
     
     // Débogage
     console.log('Vendeurs en attente trouvés:', enAttente.length);
-    console.log('Vendeurs en attente:', enAttente);
+    if (enAttente.length > 0) {
+        console.log('Vendeurs en attente:', enAttente);
+    }
     
     // Récupérer tous les inscrits pour vérifier
-    const tousInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
-    console.log('Total vendeurs inscrits dans localStorage:', tousInscrits.length);
-    console.log('Tous les inscrits:', tousInscrits);
+    try {
+        const tousInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+        console.log('Total vendeurs inscrits dans localStorage:', tousInscrits.length);
+        if (tousInscrits.length > 0) {
+            console.log('Statuts des vendeurs inscrits:', tousInscrits.map(v => ({ nom: v.nom, id: v.id, statut: v.statut })));
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des vendeurs inscrits:', error);
+    }
     
     container.textContent = ''; // Vider le contenu
     
@@ -1419,10 +1477,14 @@ function afficherInscriptionsEnAttente() {
         p.style.padding = '20px';
         p.style.backgroundColor = '#f9f9f9';
         p.style.borderRadius = '5px';
+        p.style.textAlign = 'center';
         p.textContent = 'Aucune inscription en attente de validation.';
         container.appendChild(p);
+        console.log('Aucune inscription en attente - message affiché');
         return;
     }
+    
+    console.log('Affichage de', enAttente.length, 'vendeur(s) en attente');
     
     enAttente.forEach(vendeur => {
         const dateInscription = vendeur.dateInscription ? new Date(vendeur.dateInscription).toLocaleDateString('fr-FR') : 'Date inconnue';
@@ -1483,7 +1545,10 @@ function afficherInscriptionsEnAttente() {
         card.appendChild(infoDiv);
         card.appendChild(actionsDiv);
         container.appendChild(card);
+        console.log('Carte ajoutée pour le vendeur:', vendeur.nom);
     });
+    
+    console.log('Toutes les cartes de vendeurs en attente ont été ajoutées au container. Total:', enAttente.length);
 }
 
 // Fonction pour afficher la liste des vendeurs dans l'admin
@@ -2035,13 +2100,37 @@ function gererAdministration() {
     }
     
     // Bouton de rafraîchissement des inscriptions en attente
-    const btnRefreshEnAttente = document.getElementById('btn-refresh-en-attente');
-    if (btnRefreshEnAttente) {
-        btnRefreshEnAttente.addEventListener('click', function() {
-            afficherInscriptionsEnAttente();
-            actualiserStatistiquesAdmin();
-        });
-    }
+    // Attendre que le dashboard soit visible avant d'attacher l'event listener
+    setTimeout(function() {
+        const btnRefreshEnAttente = document.getElementById('btn-refresh-en-attente');
+        if (btnRefreshEnAttente) {
+            console.log('Bouton actualiser trouvé, ajout de l\'event listener');
+            // Retirer tous les event listeners existants en clonant le bouton
+            const newBtn = btnRefreshEnAttente.cloneNode(true);
+            btnRefreshEnAttente.parentNode.replaceChild(newBtn, btnRefreshEnAttente);
+            
+            // Ajouter le nouvel event listener
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Bouton actualiser cliqué depuis gererAdministration');
+                afficherInscriptionsEnAttente();
+                actualiserStatistiquesAdmin();
+                // Afficher un message de confirmation
+                const messageDiv = document.getElementById('message-validation');
+                if (messageDiv) {
+                    messageDiv.textContent = 'Liste actualisée avec succès.';
+                    messageDiv.className = 'success';
+                    messageDiv.style.display = 'block';
+                    setTimeout(function() {
+                        messageDiv.style.display = 'none';
+                    }, 3000);
+                }
+            });
+        } else {
+            console.error('Bouton actualiser non trouvé dans gererAdministration');
+        }
+    }, 500);
     
     // Boutons d'actions
     const btnResetVendeurs = document.getElementById('btn-reset-vendeurs');
