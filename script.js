@@ -67,19 +67,47 @@ function chargerVendeursEnAttente() {
         const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
         console.log('Vendeurs inscrits récupérés:', inscrits.length);
         
+        // Afficher tous les vendeurs pour le débogage
+        console.log('Tous les vendeurs inscrits:', inscrits.map(v => ({
+            id: v.id,
+            nom: v.nom,
+            statut: v.statut || 'NON DÉFINI'
+        })));
+        
         // Filtrer les vendeurs en attente (comparaison stricte et insensible à la casse pour robustesse)
         const enAttente = inscrits.filter(v => {
             // Si pas de statut, considérer comme en attente par défaut (pour les anciens vendeurs)
-            if (!v.statut) {
-                return false; // Ne pas inclure les vendeurs sans statut (anciens)
+            if (!v.statut || v.statut === null || v.statut === undefined || v.statut === '') {
+                console.log('Vendeur sans statut trouvé (considéré en attente):', v.nom, 'ID:', v.id);
+                // Mettre à jour le statut dans localStorage pour éviter ce problème à l'avenir
+                v.statut = 'en_attente';
+                return true; // Inclure les vendeurs sans statut comme en attente
             }
             const statut = String(v.statut).toLowerCase().trim();
             const result = statut === 'en_attente';
             if (result) {
                 console.log('Vendeur en attente trouvé:', v.nom, 'ID:', v.id, 'Statut:', v.statut);
+            } else {
+                console.log('Vendeur exclu (statut différent):', v.nom, 'ID:', v.id, 'Statut:', statut);
             }
             return result;
         });
+        
+        // Sauvegarder les vendeurs mis à jour (si des statuts ont été ajoutés)
+        if (enAttente.length > 0) {
+            const tousInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+            let misAJour = false;
+            tousInscrits.forEach(v => {
+                if (!v.statut || v.statut === null || v.statut === undefined || v.statut === '') {
+                    v.statut = 'en_attente';
+                    misAJour = true;
+                }
+            });
+            if (misAJour) {
+                localStorage.setItem('vendeurs_inscrits', JSON.stringify(tousInscrits));
+                console.log('Statuts mis à jour pour les vendeurs sans statut');
+            }
+        }
         
         console.log('Total vendeurs en attente:', enAttente.length);
         return enAttente;
@@ -1458,13 +1486,30 @@ function afficherInscriptionsEnAttente() {
         console.log('Vendeurs en attente:', enAttente);
     }
     
-    // Récupérer tous les inscrits pour vérifier
+    // Récupérer tous les inscrits pour vérifier et afficher un résumé détaillé
     try {
         const tousInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+        console.log('=== DIAGNOSTIC COMPLET ===');
         console.log('Total vendeurs inscrits dans localStorage:', tousInscrits.length);
         if (tousInscrits.length > 0) {
-            console.log('Statuts des vendeurs inscrits:', tousInscrits.map(v => ({ nom: v.nom, id: v.id, statut: v.statut })));
+            console.log('Détails de tous les vendeurs inscrits:');
+            tousInscrits.forEach((v, index) => {
+                console.log(`  ${index + 1}. ID: ${v.id}, Nom: ${v.nom}, Statut: ${v.statut || 'NON DÉFINI'}, Date: ${v.dateInscription || 'N/A'}`);
+            });
+            
+            // Compter par statut
+            const parStatut = {};
+            tousInscrits.forEach(v => {
+                const statut = v.statut || 'NON DÉFINI';
+                parStatut[statut] = (parStatut[statut] || 0) + 1;
+            });
+            console.log('Répartition par statut:', parStatut);
+        } else {
+            console.warn('⚠️ Aucun vendeur trouvé dans localStorage !');
+            console.log('Clé utilisée: vendeurs_inscrits');
+            console.log('Valeur dans localStorage:', localStorage.getItem('vendeurs_inscrits'));
         }
+        console.log('========================');
     } catch (error) {
         console.error('Erreur lors de la récupération des vendeurs inscrits:', error);
     }

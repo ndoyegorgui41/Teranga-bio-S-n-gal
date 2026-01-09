@@ -1618,21 +1618,24 @@ body.page-accueil .footer-admin-link a:hover {
     margin: 0;
 }
 
-/* Section inscriptions en attente */
-#admin-en-attente {
+/* Section inscriptions en attente - Styles de base */
+#admin-en-attente,
+body.admin-page #admin-en-attente {
     margin-bottom: 30px;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
 }
 
-#admin-en-attente h2 {
+#admin-en-attente h2,
+body.admin-page #admin-en-attente h2 {
     margin-bottom: 20px;
     color: #333;
     font-size: 1.5em;
 }
 
-#liste-en-attente {
+#liste-en-attente,
+body.admin-page #liste-en-attente {
     display: flex !important;
     flex-direction: column;
     gap: 20px;
@@ -1641,7 +1644,8 @@ body.page-accueil .footer-admin-link a:hover {
     opacity: 1 !important;
 }
 
-#admin-en-attente > div:first-child {
+#admin-en-attente > div:first-child,
+body.admin-page #admin-en-attente > div:first-child {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -1650,28 +1654,41 @@ body.page-accueil .footer-admin-link a:hover {
     gap: 15px;
 }
 
-#btn-refresh-en-attente {
+/* Bouton actualiser - Styles de base pour tous les écrans */
+#btn-refresh-en-attente,
+body.admin-page #btn-refresh-en-attente {
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
     padding: 10px 20px !important;
-    background-color: #4CAF50 !important;
+    background-color: #1e6b3a !important;
     color: white !important;
     border: none !important;
     border-radius: 5px !important;
     cursor: pointer !important;
     font-size: 1em !important;
     font-weight: 500 !important;
-    transition: background-color 0.3s !important;
+    transition: all 0.3s ease !important;
     margin: 0 !important;
     white-space: nowrap !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
-#btn-refresh-en-attente:hover {
-    background-color: #45a049 !important;
+#btn-refresh-en-attente:hover,
+body.admin-page #btn-refresh-en-attente:hover {
+    background-color: #155724 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
-#btn-refresh-en-attente:focus {
+#btn-refresh-en-attente:active,
+body.admin-page #btn-refresh-en-attente:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+#btn-refresh-en-attente:focus,
+body.admin-page #btn-refresh-en-attente:focus {
     outline: 3px solid #FF8C00 !important;
     outline-offset: 2px !important;
 }
@@ -2101,6 +2118,91 @@ body.page-accueil .footer-admin-link a:hover {
     
     #btn-refresh-en-attente {
         width: 100% !important;
+    }
+}
+
+/* Styles spécifiques pour desktop - Page Admin uniquement */
+@media (min-width: 769px) {
+    /* Section inscriptions en attente - Desktop */
+    body:has(#admin-dashboard) #admin-en-attente,
+    body.admin-page #admin-en-attente {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin-bottom: 30px !important;
+    }
+    
+    body:has(#admin-dashboard) #liste-en-attente,
+    body.admin-page #liste-en-attente {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        min-height: 50px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Bouton actualiser - Desktop */
+    body:has(#admin-dashboard) #btn-refresh-en-attente,
+    body.admin-page #btn-refresh-en-attente {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        padding: 10px 20px !important;
+        background-color: #1e6b3a !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 5px !important;
+        cursor: pointer !important;
+        font-size: 1em !important;
+        font-weight: 500 !important;
+        transition: background-color 0.3s ease !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        width: auto !important;
+        min-width: 150px !important;
+    }
+    
+    body:has(#admin-dashboard) #btn-refresh-en-attente:hover,
+    body.admin-page #btn-refresh-en-attente:hover {
+        background-color: #155724 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    body:has(#admin-dashboard) #btn-refresh-en-attente:active,
+    body.admin-page #btn-refresh-en-attente:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* Header wrapper - Desktop */
+    body:has(#admin-dashboard) #admin-en-attente > div:first-child,
+    body.admin-page #admin-en-attente > div:first-child {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 15px !important;
+        flex-wrap: nowrap !important;
+        gap: 20px !important;
+    }
+    
+    /* Titre h2 - Desktop */
+    body:has(#admin-dashboard) #admin-en-attente h2,
+    body.admin-page #admin-en-attente h2 {
+        margin: 0 !important;
+        font-size: 1.5em !important;
+        color: #333 !important;
+        flex: 1 !important;
+    }
+    
+    /* Cartes de vendeurs en attente - Desktop */
+    body:has(#admin-dashboard) .admin-en-attente-card,
+    body.admin-page .admin-en-attente-card {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        border-left: 4px solid #ffc107 !important;
+        background-color: #fffbf0 !important;
     }
 }
 
