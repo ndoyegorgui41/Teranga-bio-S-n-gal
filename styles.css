@@ -4044,3 +4044,846 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         position: relative;
     }
 }
+
+/* Styles pour la page Opportunité */
+body.page-opportunite {
+    background-color: #ffffff;
+}
+
+body.page-opportunite main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+body.page-opportunite .hero-section {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+body.page-opportunite .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+body.page-opportunite .content-section {
+    margin-bottom: 50px;
+    padding: 30px 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+body.page-opportunite .content-section h2 {
+    font-size: 2rem;
+    color: #1e6b3a;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+body.page-opportunite .content-section h3 {
+    font-size: 1.5rem;
+    color: #2d8f4f;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+body.page-opportunite .marche-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+body.page-opportunite .marche-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+body.page-opportunite .marche-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Mini boutons CTA */
+.cta-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.cta-mini-btn {
+    padding: 0.6rem 1.2rem;
+    background-color: var(--couleur-primaire, #2E7D32);
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    animation: pulse-btn 2s infinite;
+}
+
+.cta-mini-btn:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.cta-mini-btn:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes pulse-btn {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(46, 125, 50, 0);
+    }
+}
+
+.cta-mini-btn:hover {
+    background-color: transparent;
+    border-color: var(--couleur-primaire, #2E7D32);
+    color: var(--couleur-primaire, #2E7D32);
+    transform: translateY(-2px);
+    animation: none;
+}
+
+body.page-opportunite .cibles-container,
+body.page-opportunite .avantages-container,
+body.page-opportunite .etapes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+body.page-opportunite .cible-item,
+body.page-opportunite .avantage-item,
+body.page-opportunite .etape-item {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.page-opportunite .cible-item:hover,
+body.page-opportunite .avantage-item:hover,
+body.page-opportunite .etape-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.page-opportunite .cta-section {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+body.page-opportunite .cta-section h2 {
+    color: white;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    body.page-opportunite .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    body.page-opportunite .content-section h2 {
+        font-size: 1.6rem;
+    }
+    
+    body.page-opportunite .content-section h3 {
+        font-size: 1.3rem;
+    }
+    
+    body.page-opportunite .cibles-container,
+    body.page-opportunite .avantages-container,
+    body.page-opportunite .etapes-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== FORMULAIRE DEVENIR PARTENAIRE (INLINE) ===== */
+body.page-opportunite .form-partenaire-inline {
+    margin-top: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 30px;
+    position: relative;
+    animation: slideDown 0.4s ease;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.page-opportunite .form-partenaire-inline h3 {
+    color: #1e6b3a;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+body.page-opportunite .close-form-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+body.page-opportunite .close-form-btn:hover {
+    background: #e53935;
+    color: white;
+}
+
+body.page-opportunite .close-form-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+body.page-opportunite .form-section {
+    background: linear-gradient(180deg, #f8fdf9 0%, #ffffff 100%);
+}
+
+body.page-opportunite .form-intro {
+    text-align: center;
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.page-opportunite .partenaire-form {
+    max-width: 100%;
+    margin: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.page-opportunite .form-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 35px 0;
+}
+
+body.page-opportunite .form-fieldset legend {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e6b3a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8f5e9;
+    width: 100%;
+}
+
+body.page-opportunite .form-group {
+    margin-bottom: 20px;
+}
+
+body.page-opportunite .form-group label {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+body.page-opportunite .form-group .required {
+    color: #e53935;
+}
+
+body.page-opportunite .form-group input[type="text"],
+body.page-opportunite .form-group input[type="email"],
+body.page-opportunite .form-group input[type="tel"],
+body.page-opportunite .form-group select,
+body.page-opportunite .form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    box-sizing: border-box;
+}
+
+body.page-opportunite .form-group input:focus,
+body.page-opportunite .form-group select:focus,
+body.page-opportunite .form-group textarea:focus {
+    outline: none;
+    border-color: #1e6b3a;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(30, 107, 58, 0.1);
+}
+
+body.page-opportunite .form-group input::placeholder,
+body.page-opportunite .form-group textarea::placeholder {
+    color: #999;
+}
+
+body.page-opportunite .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+body.page-opportunite .form-group .error-message {
+    display: none;
+    color: #e53935;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+body.page-opportunite .form-group.error input,
+body.page-opportunite .form-group.error select,
+body.page-opportunite .form-group.error textarea {
+    border-color: #e53935;
+    background-color: #fff5f5;
+}
+
+body.page-opportunite .form-group.error .error-message {
+    display: block;
+}
+
+/* Checkbox styles */
+body.page-opportunite .checkbox-group .group-label {
+    margin-bottom: 15px;
+}
+
+body.page-opportunite .checkbox-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+body.page-opportunite .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    font-size: 0.95rem;
+}
+
+body.page-opportunite .checkbox-label:hover {
+    background: #e8f5e9;
+}
+
+body.page-opportunite .checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    accent-color: #1e6b3a;
+    cursor: pointer;
+}
+
+body.page-opportunite .consent-fieldset {
+    background: #f8fdf9;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 30px;
+}
+
+body.page-opportunite .consent-group {
+    margin-bottom: 15px;
+}
+
+body.page-opportunite .consent-group .checkbox-label {
+    background: transparent;
+    padding: 8px 0;
+}
+
+body.page-opportunite .validation-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #fff3e0;
+    border-radius: 8px;
+    border-left: 4px solid #ff9800;
+}
+
+body.page-opportunite .validation-notice svg {
+    color: #ff9800;
+    flex-shrink: 0;
+}
+
+/* Bouton submit */
+body.page-opportunite .form-actions {
+    text-align: center;
+    margin-top: 35px;
+}
+
+body.page-opportunite .btn-partenaire {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 107, 58, 0.3);
+}
+
+body.page-opportunite .btn-partenaire:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 107, 58, 0.4);
+}
+
+body.page-opportunite .btn-partenaire:active {
+    transform: translateY(-1px);
+}
+
+body.page-opportunite .btn-partenaire svg {
+    transition: transform 0.3s ease;
+}
+
+body.page-opportunite .btn-partenaire:hover svg {
+    transform: translateX(5px);
+}
+
+/* Message de confirmation */
+body.page-opportunite .confirmation-message {
+    text-align: center;
+    padding: 60px 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+    margin: 0 auto;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.page-opportunite .confirmation-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+body.page-opportunite .confirmation-icon svg {
+    color: #1e6b3a;
+}
+
+body.page-opportunite .confirmation-message h3 {
+    color: #1e6b3a;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+body.page-opportunite .confirmation-message p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+body.page-opportunite .btn-secondary {
+    background: transparent;
+    color: #1e6b3a;
+    border: 2px solid #1e6b3a;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+body.page-opportunite .btn-secondary:hover {
+    background: #1e6b3a;
+    color: white;
+}
+
+/* Responsive formulaire */
+@media (max-width: 768px) {
+    body.page-opportunite .partenaire-form {
+        padding: 25px 20px;
+        margin: 0 10px;
+    }
+    
+    body.page-opportunite .checkbox-options {
+        flex-direction: column;
+    }
+    
+    body.page-opportunite .checkbox-label {
+        width: 100%;
+    }
+    
+    body.page-opportunite .btn-partenaire {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    body.page-opportunite .confirmation-message {
+        padding: 40px 25px;
+        margin: 0 10px;
+    }
+}
+
+/* ===== FORMULAIRE LANCER UNE CAMPAGNE ===== */
+body.page-opportunite .form-campagne-inline {
+    margin-top: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 30px;
+    position: relative;
+    animation: slideDown 0.4s ease;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.page-opportunite .campagne-form {
+    max-width: 100%;
+    margin: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.page-opportunite .char-count {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: normal;
+}
+
+body.page-opportunite .char-count span {
+    color: #1e6b3a;
+    font-weight: 600;
+}
+
+body.page-opportunite .hint {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: normal;
+    font-style: italic;
+}
+
+body.page-opportunite .form-hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+body.page-opportunite .form-help-text {
+    display: block !important;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #777 !important;
+    font-style: normal;
+    line-height: 1.4;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Upload d'images */
+body.page-opportunite .images-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+body.page-opportunite .image-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e0e0e0;
+}
+
+body.page-opportunite .image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.page-opportunite .image-preview-item .remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(229, 57, 53, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+body.page-opportunite .image-preview-item .remove-image:hover {
+    background: #e53935;
+    transform: scale(1.1);
+}
+
+/* Radio buttons pour durée */
+body.page-opportunite .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+body.page-opportunite .radio-label {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+body.page-opportunite .radio-label:hover {
+    border-color: #1e6b3a;
+    background: #f8fdf9;
+}
+
+body.page-opportunite .radio-label input[type="radio"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: #1e6b3a;
+    cursor: pointer;
+}
+
+body.page-opportunite .radio-label input[type="radio"]:checked ~ .radio-content {
+    color: #1e6b3a;
+}
+
+body.page-opportunite .radio-label:has(input[type="radio"]:checked) {
+    border-color: #1e6b3a;
+    background: #e8f5e9;
+}
+
+body.page-opportunite .radio-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+body.page-opportunite .radio-content strong {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+body.page-opportunite .radio-content .prix {
+    font-size: 0.95rem;
+    color: #1e6b3a;
+    font-weight: 600;
+}
+
+body.page-opportunite .radio-label:has(input[type="radio"]:checked) .radio-content strong {
+    color: #1e6b3a;
+}
+
+/* Badge populaire avec étoile dorée */
+body.page-opportunite .radio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 10px;
+}
+
+body.page-opportunite .popular-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #8B4513;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
+    white-space: nowrap;
+}
+
+body.page-opportunite .popular-badge svg {
+    width: 14px;
+    height: 14px;
+    fill: #8B4513;
+}
+
+body.page-opportunite .radio-label-popular {
+    border-color: #FFD700 !important;
+    background: linear-gradient(to right, #fffef5 0%, #ffffff 100%) !important;
+    position: relative;
+}
+
+body.page-opportunite .radio-label-popular:hover {
+    border-color: #FFA500 !important;
+    background: linear-gradient(to right, #fffef0 0%, #f8fdf9 100%) !important;
+}
+
+body.page-opportunite .radio-label-popular:has(input[type="radio"]:checked) {
+    border-color: #FFD700 !important;
+    background: linear-gradient(to right, #fffef5 0%, #e8f5e9 100%) !important;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* Mentions importantes */
+body.page-opportunite .mentions-importantes {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fff3e0;
+    border-radius: 12px;
+    border-left: 4px solid #ff9800;
+}
+
+body.page-opportunite .mention-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+body.page-opportunite .mention-item:last-child {
+    margin-bottom: 0;
+}
+
+body.page-opportunite .mention-item svg {
+    color: #ff9800;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Bouton campagne */
+body.page-opportunite .btn-campagne {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 107, 58, 0.3);
+}
+
+body.page-opportunite .btn-campagne:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 107, 58, 0.4);
+}
+
+body.page-opportunite .btn-campagne:active {
+    transform: translateY(-1px);
+}
+
+body.page-opportunite .btn-campagne svg {
+    transition: transform 0.3s ease;
+}
+
+body.page-opportunite .btn-campagne:hover svg {
+    transform: translateX(5px);
+}
+
+/* Responsive formulaire campagne */
+@media (max-width: 768px) {
+    body.page-opportunite .form-campagne-inline {
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    body.page-opportunite .form-campagne-inline h3 {
+        font-size: 1.2rem;
+        padding-right: 40px;
+    }
+    
+    body.page-opportunite .radio-group {
+        gap: 10px;
+    }
+    
+    body.page-opportunite .radio-label {
+        padding: 12px 15px;
+    }
+    
+    body.page-opportunite .images-preview {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+    
+    body.page-opportunite .image-preview-item {
+        width: 80px;
+        height: 80px;
+    }
+}

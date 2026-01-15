@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=31">
+    <link rel="stylesheet" href="styles.css?v=32">
 </head>
 <body class="admin-page">
     <!-- Section de connexion -->
@@ -32,6 +32,18 @@
             </div>
         </header>
         <main>
+            <!-- Avertissement localStorage -->
+            <section id="admin-avertissement" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="color: #856404; margin-top: 0;">⚠️ Important : Stockage local</h3>
+                <p style="color: #856404; margin-bottom: 10px;">
+                    Les données sont stockées localement dans votre navigateur (localStorage). 
+                    <strong>Les vendeurs inscrits sur d'autres appareils ou navigateurs ne seront pas visibles ici.</strong>
+                </p>
+                <p style="color: #856404; margin-bottom: 0;">
+                    Pour partager les données entre appareils, utilisez les boutons d'export/import ci-dessous.
+                </p>
+            </section>
+
             <!-- Statistiques -->
             <section id="admin-stats">
                 <h2>Statistiques de la plateforme</h2>
@@ -75,6 +87,17 @@
                 </div>
             </section>
 
+            <!-- Export/Import de données -->
+            <section id="admin-export-import" style="margin-bottom: 30px;">
+                <h2>Export/Import des données</h2>
+                <div class="admin-actions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <button id="btn-export-vendeurs" class="btn" style="background-color: #1e6b3a;">📥 Exporter les vendeurs</button>
+                    <button id="btn-import-vendeurs" class="btn" style="background-color: #1e6b3a;">📤 Importer les vendeurs</button>
+                    <input type="file" id="input-import-vendeurs" accept=".json" style="display: none;">
+                </div>
+                <div id="message-export-import" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+            </section>
+
             <!-- Actions administratives -->
             <section id="admin-actions">
                 <h2>Actions administratives</h2>
@@ -90,7 +113,7 @@
             <p>&copy; 2025 Teranga Bio Sénégal - Administration</p>
         </footer>
     </div>
-    <script src="script.js?v=25"></script>
+    <script src="script.js?v=26"></script>
 </body>
 </html>
 

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opportunité - Teranga Bio Sénégal</title>
+    <link rel="stylesheet" href="styles.css?v=33">
+</head>
+<body class="page-opportunite">
+    <header>
+        <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
+        <div class="header-content">
+            <h1>Teranga Bio Sénégal</h1>
+            <nav class="main-nav" id="main-nav">
+                <a href="index.html" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span>Accueil</span>
+                </a>
+                <a href="vendeurs.html" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.15.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span>Vendeurs</span>
+                </a>
+                <a href="index.html#contactez-nous" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <span>Contact</span>
+                </a>
+            </nav>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero-opportunite" class="hero-section">
+            <h1>Rejoignez la plateforme qui transforme votre visibilité</h1>
+        </section>
+
+        <section id="marche-senegalais" class="content-section">
+            <h2>Le marché sénégalais vous attend</h2>
+            <div class="marche-content">
+                <p>Le Sénégal vit une transformation digitale accélérée : vous le constatez chaque jour avec l'explosion du mobile et des réseaux sociaux. Si vous êtes commerçant, entrepreneur ou dirigeant de PME, cette dynamique vous offre des opportunités inédites pour développer votre visibilité et conquérir de nouveaux clients. Vos clients potentiels sont déjà connectés et cherchent activement vos produits et services.</p>
+                <p>Pourtant, vous savez combien il est difficile de structurer votre présence en ligne et de bénéficier d'une visibilité organisée qui génère réellement des résultats. Notre plateforme répond précisément à ce défi : un espace dédié où vous pouvez vous connecter efficacement avec votre audience locale, que vous soyez vendeur, annonceur ou partenaire.</p>
+                <p>L'opportunité est là, maintenant. En vous positionnant dès aujourd'hui sur notre plateforme, vous créez un avantage concurrentiel décisif dans un marché en pleine croissance. Chaque jour d'attente peut signifier des clients qui choisissent vos concurrents. Ne laissez pas cette fenêtre d'opportunité se refermer.</p>
+            </div>
+        </section>
+
+        <section id="solution-adaptee" class="content-section">
+            <h2>Une solution adaptée à votre activité</h2>
+            <div class="cibles-container">
+                <div class="cible-item">
+                    <h3>Pour les vendeurs</h3>
+                    <p>Vos clients vous cherchent déjà, faites-vous trouver. Publier vos produits, échangez directement avec des acheteurs locaux et commencez à vendre dès aujourd'hui. Simple, gratuit et efficace.</p>
+                </div>
+                <div class="cible-item">
+                    <h3>Pour les annonceurs</h3>
+                    <p>Optimisez votre budget publicitaire. Ciblez précisément les clients qui comptent, dans les zones qui vous intéressent. Lancez votre première campagne maintenant et constatez la différence.</p>
+                </div>
+                <div class="cible-item">
+                    <h3>Pour les partenaires</h3>
+                    <p>Le bon moment pour vous positionner, c'est maintenant. Intégrez un réseau d'entrepreneurs ambitieux, valorisez vos services et créez des collaborations qui boostent votre activité.</p>
+                </div>
+            </div>
+            <div class="cta-buttons-container">
+                <a href="#" class="cta-mini-btn" onclick="toggleFormulaire(); return false;">Créer un compte vendeur</a>
+                <a href="#" class="cta-mini-btn" onclick="toggleFormCampagne(this); return false;">Lancer une campagne</a>
+                <a href="#" class="cta-mini-btn" onclick="toggleFormPartenaire(this); return false;">Devenir partenaire</a>
+            </div>
+            
+            <!-- Formulaire Lancer une Campagne (inline) -->
+            <div id="form-campagne-container" class="form-campagne-inline" style="display: none;">
+                <button type="button" class="close-form-btn" onclick="fermerFormCampagne()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+                <h3>Lancer une campagne publicitaire</h3>
+                <p class="form-intro">Créez votre campagne locale en quelques étapes simples.</p>
+                
+                <form id="form-campagne" class="campagne-form" novalidate>
+                    <!-- 1. Informations de la campagne -->
+                    <fieldset class="form-fieldset">
+                        <legend>Informations de la campagne</legend>
+                        
+                        <div class="form-group">
+                            <label for="nom-campagne">Nom de la campagne <span class="required">*</span></label>
+                            <input type="text" id="nom-campagne" name="nom-campagne" placeholder="Ex: Promotion été 2024" required>
+                            <span class="error-message">Veuillez entrer un nom pour votre campagne</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="objectif-campagne">Objectif de la campagne <span class="required">*</span></label>
+                            <select id="objectif-campagne" name="objectif-campagne" required>
+                                <option value="">-- Sélectionnez un objectif --</option>
+                                <option value="visibilite-locale">Visibilité locale</option>
+                                <option value="promotion-produit">Promotion de produit/service</option>
+                                <option value="annonce-evenementielle">Annonce événementielle</option>
+                                <option value="notoriete-marque">Notoriété de marque</option>
+                            </select>
+                            <small class="form-help-text">Cela nous aide à mieux positionner votre annonce.</small>
+                            <span class="error-message">Veuillez sélectionner un objectif</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- 2. Contenu de l'annonce -->
+                    <fieldset class="form-fieldset">
+                        <legend>Contenu de l'annonce</legend>
+                        
+                        <div class="form-group">
+                            <label for="titre-annonce">Titre de l'annonce <span class="required">*</span> <span class="char-count">(<span id="titre-count">0</span>/60 caractères)</span></label>
+                            <input type="text" id="titre-annonce" name="titre-annonce" maxlength="60" placeholder="Ex: Nouvelle collection disponible maintenant" required>
+                            <span class="error-message">Le titre est obligatoire (max 60 caractères)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description-annonce">Description de l'annonce <span class="required">*</span></label>
+                            <textarea id="description-annonce" name="description-annonce" rows="4" placeholder="Décrivez votre offre en 2 à 3 phrases claires et attractives..." required></textarea>
+                            <span class="error-message">Veuillez rédiger une description</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="images-annonce">Images de l'annonce <span class="required">*</span> <span class="hint">(1 à 3 images)</span></label>
+                            <input type="file" id="images-annonce" name="images-annonce" accept="image/*" multiple required>
+                            <div id="images-preview" class="images-preview"></div>
+                            <span class="error-message">Veuillez sélectionner au moins une image</span>
+                            <small class="form-hint">Formats acceptés: JPG, PNG. Taille max: 5MB par image</small>
+                            <small class="form-help-text">Des images claires et professionnelles augmentent la visibilité de votre annonce.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="moyen-contact">Moyen de contact <span class="required">*</span></label>
+                            <select id="moyen-contact" name="moyen-contact" required>
+                                <option value="">-- Sélectionnez un moyen de contact --</option>
+                                <option value="telephone">Téléphone</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="lien-externe">Lien externe (site ou réseau social)</option>
+                            </select>
+                            <span class="error-message">Veuillez sélectionner un moyen de contact</span>
+                        </div>
+                        
+                        <div class="form-group" id="contact-details-group" style="display: none;">
+                            <label for="contact-details">Détails du contact <span class="required">*</span></label>
+                            <input type="text" id="contact-details" name="contact-details" placeholder="Numéro ou lien">
+                            <span class="error-message">Veuillez entrer les détails de contact</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- 3. Ciblage -->
+                    <fieldset class="form-fieldset">
+                        <legend>Ciblage</legend>
+                        
+                        <div class="form-group">
+                            <label for="ville-campagne">Ville <span class="required">*</span></label>
+                            <input type="text" id="ville-campagne" name="ville-campagne" placeholder="Ex: Dakar, Thiès, Saint-Louis..." required>
+                            <span class="error-message">Veuillez indiquer la ville</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="zone-quartier">Zone/Quartier</label>
+                            <input type="text" id="zone-quartier" name="zone-quartier" placeholder="Ex: Plateau, Almadies, Ouakam...">
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label class="group-label">Audience ciblée (optionnel)</label>
+                            <div class="checkbox-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="audience" value="grand-public">
+                                    Grand public
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="audience" value="professionnels">
+                                    Professionnels
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="audience" value="jeunes">
+                                    Jeunes
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="audience" value="femmes">
+                                    Femmes
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="audience" value="hommes">
+                                    Hommes
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- 4. Durée de diffusion -->
+                    <fieldset class="form-fieldset">
+                        <legend>Durée de diffusion</legend>
+                        
+                        <div class="form-group radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="duree-diffusion" value="7" data-prix="5000" required>
+                                <div class="radio-content">
+                                    <strong>7 jours</strong>
+                                    <span class="prix">5 000 FCFA</span>
+                                </div>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="duree-diffusion" value="14" data-prix="9000" required>
+                                <div class="radio-content">
+                                    <strong>14 jours</strong>
+                                    <span class="prix">9 000 FCFA</span>
+                                </div>
+                            </label>
+                            <label class="radio-label radio-label-popular">
+                                <input type="radio" name="duree-diffusion" value="30" data-prix="15000" required>
+                                <div class="radio-content">
+                                    <div class="radio-header">
+                                        <strong>30 jours</strong>
+                                        <span class="popular-badge">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                            </svg>
+                                            Populaire
+                                        </span>
+                                    </div>
+                                    <span class="prix">15 000 FCFA</span>
+                                </div>
+                            </label>
+                        </div>
+                        <span class="error-message">Veuillez sélectionner une durée de diffusion</span>
+                    </fieldset>
+
+                    <!-- 5. Validation -->
+                    <fieldset class="form-fieldset consent-fieldset">
+                        <legend>Validation</legend>
+                        
+                        <div class="form-group checkbox-group consent-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="conforme-contenu" id="conforme-contenu" required>
+                                <span class="checkmark"></span>
+                                Je confirme que le contenu est conforme et respecte les règles de diffusion <span class="required">*</span>
+                            </label>
+                            <span class="error-message">Vous devez confirmer la conformité du contenu</span>
+                        </div>
+                        
+                        <div class="form-group checkbox-group consent-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="accepte-verification" id="accepte-verification" required>
+                                <span class="checkmark"></span>
+                                J'accepte que la campagne soit vérifiée avant diffusion <span class="required">*</span>
+                            </label>
+                            <span class="error-message">Vous devez accepter la vérification</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- Mentions importantes -->
+                    <div class="mentions-importantes">
+                        <div class="mention-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            <span>La diffusion de la campagne est soumise à validation.</span>
+                        </div>
+                        <div class="mention-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            <span>Un membre de notre équipe vous contactera pour finaliser la publication et le paiement.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-campagne">
+                            <span>Soumettre la campagne</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Message de confirmation -->
+                <div id="confirmation-campagne" class="confirmation-message" style="display: none;">
+                    <div class="confirmation-icon">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h4>Campagne soumise avec succès !</h4>
+                    <p>Votre demande a été enregistrée. Notre équipe l'examinera et vous contactera dans les plus brefs délais pour finaliser la publication et le paiement.</p>
+                    <button type="button" class="btn-secondary" onclick="resetFormCampagne()">Créer une autre campagne</button>
+                </div>
+            </div>
+            
+            <!-- Formulaire Devenir Partenaire (inline) -->
+            <div id="form-partenaire-container" class="form-partenaire-inline" style="display: none;">
+                <button type="button" class="close-form-btn" onclick="fermerFormPartenaire()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+                <h3>Devenir partenaire</h3>
+                <p class="form-intro">Proposez un partenariat professionnel et rejoignez notre réseau.</p>
+                
+                <form id="form-partenaire" class="partenaire-form" novalidate>
+                    <!-- 1. Informations générales -->
+                    <fieldset class="form-fieldset">
+                        <legend>Informations générales</legend>
+                        
+                        <div class="form-group">
+                            <label for="nom-raison-sociale">Nom complet ou raison sociale <span class="required">*</span></label>
+                            <input type="text" id="nom-raison-sociale" name="nom-raison-sociale" placeholder="Ex: Mamadou Diallo ou Diallo & Fils SARL" required>
+                            <span class="error-message">Veuillez entrer votre nom ou raison sociale</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="type-partenaire">Type de partenaire <span class="required">*</span></label>
+                            <select id="type-partenaire" name="type-partenaire" required>
+                                <option value="">-- Sélectionnez votre profil --</option>
+                                <option value="freelance">Freelance / Indépendant</option>
+                                <option value="agence">Agence</option>
+                                <option value="entreprise">Entreprise / Startup</option>
+                                <option value="media">Média / Influenceur</option>
+                                <option value="institution">Institution / Organisation</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                            <span class="error-message">Veuillez sélectionner votre type de partenaire</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="secteur-activite">Secteur d'activité <span class="required">*</span></label>
+                            <input type="text" id="secteur-activite" name="secteur-activite" placeholder="Ex: Commerce, Technologie, Agriculture..." required>
+                            <span class="error-message">Veuillez indiquer votre secteur d'activité</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- 2. Coordonnées -->
+                    <fieldset class="form-fieldset">
+                        <legend>Coordonnées</legend>
+                        
+                        <div class="form-group">
+                            <label for="email-pro">Email professionnel <span class="required">*</span></label>
+                            <input type="email" id="email-pro" name="email-pro" placeholder="Ex: contact@votre-entreprise.sn" required>
+                            <span class="error-message">Veuillez entrer une adresse email valide</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telephone">Numéro de téléphone <span class="required">*</span></label>
+                            <input type="tel" id="telephone" name="telephone" placeholder="Ex: +221 77 123 45 67" required>
+                            <span class="error-message">Veuillez entrer un numéro de téléphone valide</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ville-zone">Ville / Zone d'intervention <span class="required">*</span></label>
+                            <input type="text" id="ville-zone" name="ville-zone" placeholder="Ex: Dakar, Thiès, Saint-Louis..." required>
+                            <span class="error-message">Veuillez indiquer votre zone d'intervention</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- 3. Proposition de partenariat -->
+                    <fieldset class="form-fieldset">
+                        <legend>Proposition de partenariat</legend>
+                        
+                        <div class="form-group">
+                            <label for="services-offres">Services ou offres à valoriser <span class="required">*</span></label>
+                            <textarea id="services-offres" name="services-offres" rows="3" placeholder="Décrivez brièvement les services ou offres que vous souhaitez proposer..." required></textarea>
+                            <span class="error-message">Veuillez décrire vos services ou offres</span>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label class="group-label">Type de partenariat recherché <span class="required">*</span></label>
+                            <div class="checkbox-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="type-partenariat" value="visibilite">
+                                    Visibilité
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="type-partenariat" value="collaboration">
+                                    Collaboration commerciale
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="type-partenariat" value="apport-affaires">
+                                    Apport d'affaires
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="type-partenariat" value="strategique">
+                                    Partenariat stratégique
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="type-partenariat" value="autre-type">
+                                    Autre
+                                </label>
+                            </div>
+                            <span class="error-message">Veuillez sélectionner au moins un type de partenariat</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- 4. Message libre -->
+                    <fieldset class="form-fieldset">
+                        <legend>Message libre</legend>
+                        
+                        <div class="form-group">
+                            <label for="message-proposition">Présentez votre proposition</label>
+                            <textarea id="message-proposition" name="message-proposition" rows="3" placeholder="Expliquez pourquoi vous souhaitez devenir partenaire..."></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- 5. Consentement -->
+                    <fieldset class="form-fieldset consent-fieldset">
+                        <legend>Consentement</legend>
+                        
+                        <div class="form-group checkbox-group consent-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="consent-contact" id="consent-contact" required>
+                                J'accepte d'être contacté(e) <span class="required">*</span>
+                            </label>
+                            <span class="error-message">Vous devez accepter d'être contacté</span>
+                        </div>
+                        
+                        <div class="form-group checkbox-group consent-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="consent-conditions" id="consent-conditions" required>
+                                J'accepte les conditions de partenariat <span class="required">*</span>
+                            </label>
+                            <span class="error-message">Vous devez accepter les conditions</span>
+                        </div>
+                        
+                        <p class="validation-notice">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            Demandes soumises à validation.
+                        </p>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-partenaire">
+                            <span>Envoyer ma demande</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Message de confirmation -->
+                <div id="confirmation-partenaire" class="confirmation-message" style="display: none;">
+                    <div class="confirmation-icon">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h4>Demande envoyée !</h4>
+                    <p>Notre équipe vous contactera bientôt.</p>
+                    <button type="button" class="btn-secondary" onclick="resetFormPartenaire()">Nouvelle demande</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="avantages-exclusifs" class="content-section">
+            <h2>Vos avantages exclusifs</h2>
+            <div class="avantages-container">
+                <div class="avantage-item">
+                    <h3>Visibilité maximale</h3>
+                </div>
+                <div class="avantage-item">
+                    <h3>Ciblage précis</h3>
+                </div>
+                <div class="avantage-item">
+                    <h3>Coûts maîtrisés</h3>
+                </div>
+                <div class="avantage-item">
+                    <h3>Croissance mesurable</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="comment-rejoindre" class="content-section">
+            <h2>Comment rejoindre la plateforme</h2>
+            <div class="etapes-container">
+                <div class="etape-item">
+                    <h3>Inscription simple</h3>
+                </div>
+                <div class="etape-item">
+                    <h3>Mise en ligne rapide</h3>
+                </div>
+                <div class="etape-item">
+                    <h3>Suivi en temps réel</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="temoignages" class="content-section">
+            <h2>Ils nous font confiance</h2>
+        </section>
+
+        <section id="appel-action" class="content-section cta-section">
+            <h2>Rejoignez-nous dès aujourd'hui</h2>
+        </section>
+
+        <section id="faq" class="content-section">
+            <h2>Questions fréquentes</h2>
+        </section>
+
+        <section id="contact-equipe" class="content-section">
+            <h2>Contactez notre équipe</h2>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Teranga Bio Sénégal. Tous droits réservés.</p>
+    </footer>
+
+    <script src="script.js?v=26"></script>
+</body>
+</html>
+

@@ -1462,7 +1462,12 @@ function actualiserStatistiquesAdmin() {
     const statZones = document.getElementById('stat-zones');
     
     if (statVendeursTotaux) statVendeursTotaux.textContent = tousVendeurs.length;
-    if (statVendeursInscrits) statVendeursInscrits.textContent = vendeursInscrits.filter(v => v.statut === 'valide' || !v.statut).length;
+    // Compter les vendeurs inscrits validés (statut 'valide' ou sans statut pour compatibilité)
+    const vendeursInscritsValides = vendeursInscrits.filter(v => {
+        const statut = v.statut ? String(v.statut).toLowerCase().trim() : '';
+        return statut === 'valide' || (!statut && v.id > 1000); // ID > 1000 = vendeurs inscrits
+    }).length;
+    if (statVendeursInscrits) statVendeursInscrits.textContent = vendeursInscritsValides;
     if (statProduitsTotaux) statProduitsTotaux.textContent = totalProduits;
     if (statZones) statZones.textContent = zones.size;
 }
@@ -2033,6 +2038,112 @@ function reinitialiserToutesDonnees() {
 }
 
 // Fonction pour afficher un message dans l'admin
+// Fonction pour exporter les vendeurs vers un fichier JSON
+function exporterVendeurs() {
+    try {
+        const vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+        const produits = {};
+        
+        // Récupérer tous les produits de tous les vendeurs
+        vendeursInscrits.forEach(vendeur => {
+            const produitsVendeur = chargerProduits(vendeur.id);
+            if (produitsVendeur.length > 0) {
+                produits[`vendeur_${vendeur.id}_produits`] = produitsVendeur;
+            }
+        });
+        
+        const donneesExport = {
+            vendeurs_inscrits: vendeursInscrits,
+            produits: produits,
+            dateExport: new Date().toISOString(),
+            version: '1.0'
+        };
+        
+        const jsonString = JSON.stringify(donneesExport, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `teranga-bio-vendeurs-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        afficherMessageExportImport(`Export réussi ! ${vendeursInscrits.length} vendeur(s) exporté(s).`, 'success');
+        console.log('Export réussi:', vendeursInscrits.length, 'vendeur(s)');
+    } catch (error) {
+        console.error('Erreur lors de l\'export:', error);
+        afficherMessageExportImport('Erreur lors de l\'export des données.', 'error');
+    }
+}
+
+// Fonction pour importer les vendeurs depuis un fichier JSON
+function importerVendeurs(file) {
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const donneesImport = JSON.parse(e.target.result);
+            
+            if (!donneesImport.vendeurs_inscrits || !Array.isArray(donneesImport.vendeurs_inscrits)) {
+                throw new Error('Format de fichier invalide. Le fichier doit contenir un tableau "vendeurs_inscrits".');
+            }
+            
+            // Demander confirmation
+            const nombreVendeurs = donneesImport.vendeurs_inscrits.length;
+            if (!confirm(`Importer ${nombreVendeurs} vendeur(s) ?\n\nCela remplacera les vendeurs existants dans ce navigateur.`)) {
+                return;
+            }
+            
+            // Sauvegarder les vendeurs
+            localStorage.setItem('vendeurs_inscrits', JSON.stringify(donneesImport.vendeurs_inscrits));
+            
+            // Sauvegarder les produits si présents
+            if (donneesImport.produits && typeof donneesImport.produits === 'object') {
+                Object.keys(donneesImport.produits).forEach(key => {
+                    localStorage.setItem(key, JSON.stringify(donneesImport.produits[key]));
+                });
+            }
+            
+            // Actualiser l'affichage
+            actualiserStatistiquesAdmin();
+            afficherInscriptionsEnAttente();
+            afficherListeVendeursAdmin();
+            
+            afficherMessageExportImport(`Import réussi ! ${nombreVendeurs} vendeur(s) importé(s).`, 'success');
+            console.log('Import réussi:', nombreVendeurs, 'vendeur(s)');
+        } catch (error) {
+            console.error('Erreur lors de l\'import:', error);
+            afficherMessageExportImport(`Erreur lors de l'import : ${error.message}`, 'error');
+        }
+    };
+    
+    reader.onerror = function() {
+        console.error('Erreur lors de la lecture du fichier');
+        afficherMessageExportImport('Erreur lors de la lecture du fichier.', 'error');
+    };
+    
+    reader.readAsText(file);
+}
+
+// Fonction pour afficher un message dans la section export/import
+function afficherMessageExportImport(message, type) {
+    const messageDiv = document.getElementById('message-export-import');
+    if (!messageDiv) return;
+    
+    messageDiv.textContent = message;
+    messageDiv.className = type === 'success' ? 'success' : 'error';
+    messageDiv.style.display = 'block';
+    messageDiv.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+    messageDiv.style.color = type === 'success' ? '#155724' : '#721c24';
+    messageDiv.style.border = `1px solid ${type === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
+    
+    setTimeout(function() {
+        messageDiv.style.display = 'none';
+    }, 5000);
+}
+
 function afficherMessageAdmin(message, type) {
     const messageDiv = document.getElementById('message-admin-actions');
     if (!messageDiv) return;
@@ -2190,6 +2301,30 @@ function gererAdministration() {
     }
     if (btnResetTout) {
         btnResetTout.addEventListener('click', reinitialiserToutesDonnees);
+    }
+    
+    // Boutons d'export/import
+    const btnExportVendeurs = document.getElementById('btn-export-vendeurs');
+    const btnImportVendeurs = document.getElementById('btn-import-vendeurs');
+    const inputImportVendeurs = document.getElementById('input-import-vendeurs');
+    
+    if (btnExportVendeurs) {
+        btnExportVendeurs.addEventListener('click', exporterVendeurs);
+    }
+    
+    if (btnImportVendeurs) {
+        btnImportVendeurs.addEventListener('click', function() {
+            inputImportVendeurs.click();
+        });
+    }
+    
+    if (inputImportVendeurs) {
+        inputImportVendeurs.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                importerVendeurs(file);
+            }
+        });
     }
 }
 
@@ -2529,3 +2664,419 @@ function initialiserNavigation() {
     window.addEventListener('scroll', updateActiveNavLink);
     updateActiveNavLink(); // Appel initial
 }
+
+// ===== FORMULAIRE DEVENIR PARTENAIRE =====
+function toggleFormPartenaire(btn) {
+    const container = document.getElementById('form-partenaire-container');
+    if (!container) return;
+    
+    if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function fermerFormPartenaire() {
+    const container = document.getElementById('form-partenaire-container');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+function initFormPartenaire() {
+    const form = document.getElementById('form-partenaire');
+    if (!form) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateFormPartenaire()) {
+            // Sauvegarder la demande
+            sauvegarderDemandePartenaire();
+            
+            // Afficher confirmation
+            form.style.display = 'none';
+            document.getElementById('confirmation-partenaire').style.display = 'block';
+        }
+    });
+    
+    // Validation en temps réel
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        input.addEventListener('input', function() {
+            if (this.closest('.form-group').classList.contains('error')) {
+                validateField(this);
+            }
+        });
+    });
+}
+
+function validateFormPartenaire() {
+    const form = document.getElementById('form-partenaire');
+    let isValid = true;
+    
+    // Champs requis
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        if (!validateField(field)) {
+            isValid = false;
+        }
+    });
+    
+    // Vérifier qu'au moins un type de partenariat est coché
+    const typePartenariat = form.querySelectorAll('input[name="type-partenariat"]:checked');
+    const checkboxGroup = form.querySelector('input[name="type-partenariat"]').closest('.checkbox-group');
+    if (typePartenariat.length === 0) {
+        checkboxGroup.classList.add('error');
+        isValid = false;
+    } else {
+        checkboxGroup.classList.remove('error');
+    }
+    
+    return isValid;
+}
+
+function validateField(field) {
+    const formGroup = field.closest('.form-group');
+    if (!formGroup) return true;
+    
+    let isValid = true;
+    
+    if (field.hasAttribute('required')) {
+        if (field.type === 'checkbox') {
+            isValid = field.checked;
+        } else if (field.value.trim() === '') {
+            isValid = false;
+        } else if (field.type === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            isValid = emailRegex.test(field.value);
+        }
+    }
+    
+    if (isValid) {
+        formGroup.classList.remove('error');
+    } else {
+        formGroup.classList.add('error');
+    }
+    
+    return isValid;
+}
+
+function sauvegarderDemandePartenaire() {
+    const form = document.getElementById('form-partenaire');
+    const formData = new FormData(form);
+    
+    const demande = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        nomRaisonSociale: formData.get('nom-raison-sociale'),
+        typePartenaire: formData.get('type-partenaire'),
+        secteurActivite: formData.get('secteur-activite'),
+        email: formData.get('email-pro'),
+        telephone: formData.get('telephone'),
+        villeZone: formData.get('ville-zone'),
+        servicesOffres: formData.get('services-offres'),
+        typesPartenariat: formData.getAll('type-partenariat'),
+        messageProposition: formData.get('message-proposition'),
+        statut: 'en_attente'
+    };
+    
+    // Récupérer les demandes existantes
+    let demandes = JSON.parse(localStorage.getItem('demandesPartenaires') || '[]');
+    demandes.push(demande);
+    localStorage.setItem('demandesPartenaires', JSON.stringify(demandes));
+    
+    console.log('Demande partenaire sauvegardée:', demande);
+}
+
+function resetFormPartenaire() {
+    const form = document.getElementById('form-partenaire');
+    const confirmation = document.getElementById('confirmation-partenaire');
+    
+    form.reset();
+    form.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+    
+    confirmation.style.display = 'none';
+    form.style.display = 'block';
+}
+
+// ===== FORMULAIRE LANCER UNE CAMPAGNE =====
+function toggleFormCampagne(btn) {
+    const container = document.getElementById('form-campagne-container');
+    if (!container) return;
+    
+    if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function fermerFormCampagne() {
+    const container = document.getElementById('form-campagne-container');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+function initFormCampagne() {
+    const form = document.getElementById('form-campagne');
+    if (!form) return;
+    
+    // Compteur de caractères pour le titre
+    const titreInput = document.getElementById('titre-annonce');
+    const titreCount = document.getElementById('titre-count');
+    if (titreInput && titreCount) {
+        titreInput.addEventListener('input', function() {
+            titreCount.textContent = this.value.length;
+            if (this.value.length > 50) {
+                titreCount.style.color = '#e53935';
+            } else {
+                titreCount.style.color = '#1e6b3a';
+            }
+        });
+    }
+    
+    // Afficher/masquer le champ de contact selon le moyen sélectionné
+    const moyenContact = document.getElementById('moyen-contact');
+    const contactDetailsGroup = document.getElementById('contact-details-group');
+    const contactDetails = document.getElementById('contact-details');
+    
+    if (moyenContact && contactDetailsGroup && contactDetails) {
+        moyenContact.addEventListener('change', function() {
+            if (this.value) {
+                contactDetailsGroup.style.display = 'block';
+                contactDetails.required = true;
+                contactDetails.placeholder = this.value === 'lien-externe' 
+                    ? 'Ex: https://www.votre-site.sn ou @votre_compte' 
+                    : 'Ex: +221 77 123 45 67';
+            } else {
+                contactDetailsGroup.style.display = 'none';
+                contactDetails.required = false;
+            }
+        });
+    }
+    
+    // Gestion de l'upload d'images
+    const imagesInput = document.getElementById('images-annonce');
+    const imagesPreview = document.getElementById('images-preview');
+    let selectedImages = [];
+    
+    if (imagesInput && imagesPreview) {
+        imagesInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            // Limiter à 3 images
+            if (files.length > 3) {
+                alert('Vous ne pouvez sélectionner que 3 images maximum.');
+                this.value = '';
+                return;
+            }
+            
+            // Vérifier la taille (5MB max par image)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const validFiles = files.filter(file => {
+                if (file.size > maxSize) {
+                    alert(`L'image "${file.name}" est trop volumineuse (max 5MB).`);
+                    return false;
+                }
+                return true;
+            });
+            
+            selectedImages = validFiles;
+            afficherPrevisualisationImages(validFiles, imagesPreview);
+        });
+    }
+    
+    // Soumission du formulaire
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateFormCampagne()) {
+            // Sauvegarder la campagne
+            sauvegarderCampagne();
+            
+            // Afficher confirmation
+            form.style.display = 'none';
+            document.getElementById('confirmation-campagne').style.display = 'block';
+        }
+    });
+    
+    // Validation en temps réel
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        input.addEventListener('input', function() {
+            if (this.closest('.form-group').classList.contains('error')) {
+                validateField(this);
+            }
+        });
+    });
+}
+
+function afficherPrevisualisationImages(files, container) {
+    container.innerHTML = '';
+    
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'image-preview-item';
+            div.innerHTML = `
+                <img src="${e.target.result}" alt="Preview ${index + 1}">
+                <button type="button" class="remove-image" onclick="supprimerImage(${index})">×</button>
+            `;
+            container.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function supprimerImage(index) {
+    const imagesInput = document.getElementById('images-annonce');
+    const imagesPreview = document.getElementById('images-preview');
+    
+    if (!imagesInput || !imagesPreview) return;
+    
+    // Recréer la liste des fichiers sans celui supprimé
+    const dt = new DataTransfer();
+    const files = Array.from(imagesInput.files);
+    files.forEach((file, i) => {
+        if (i !== index) {
+            dt.items.add(file);
+        }
+    });
+    
+    imagesInput.files = dt.files;
+    
+    // Réafficher la prévisualisation
+    afficherPrevisualisationImages(Array.from(imagesInput.files), imagesPreview);
+}
+
+function validateFormCampagne() {
+    const form = document.getElementById('form-campagne');
+    let isValid = true;
+    
+    // Champs requis
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        if (!validateField(field)) {
+            isValid = false;
+        }
+    });
+    
+    // Vérifier le titre (max 60 caractères)
+    const titreInput = document.getElementById('titre-annonce');
+    if (titreInput && titreInput.value.length > 60) {
+        titreInput.closest('.form-group').classList.add('error');
+        isValid = false;
+    }
+    
+    // Vérifier les images (1 à 3)
+    const imagesInput = document.getElementById('images-annonce');
+    if (imagesInput) {
+        const imagesGroup = imagesInput.closest('.form-group');
+        if (imagesInput.files.length === 0) {
+            imagesGroup.classList.add('error');
+            isValid = false;
+        } else if (imagesInput.files.length > 3) {
+            imagesGroup.classList.add('error');
+            isValid = false;
+        } else {
+            imagesGroup.classList.remove('error');
+        }
+    }
+    
+    // Vérifier la durée de diffusion (radio)
+    const dureeRadio = form.querySelector('input[name="duree-diffusion"]:checked');
+    const dureeGroup = form.querySelector('.radio-group').closest('.form-group');
+    if (!dureeRadio) {
+        dureeGroup.classList.add('error');
+        isValid = false;
+    } else {
+        dureeGroup.classList.remove('error');
+    }
+    
+    return isValid;
+}
+
+function sauvegarderCampagne() {
+    const form = document.getElementById('form-campagne');
+    const formData = new FormData(form);
+    
+    // Récupérer les images (on stocke juste les noms pour l'instant)
+    const imagesInput = document.getElementById('images-annonce');
+    const imagesNames = [];
+    if (imagesInput && imagesInput.files.length > 0) {
+        Array.from(imagesInput.files).forEach(file => {
+            imagesNames.push(file.name);
+        });
+    }
+    
+    // Récupérer l'audience ciblée
+    const audience = formData.getAll('audience');
+    
+    // Récupérer la durée et le prix
+    const dureeRadio = form.querySelector('input[name="duree-diffusion"]:checked');
+    const duree = dureeRadio ? dureeRadio.value : null;
+    const prix = dureeRadio ? dureeRadio.dataset.prix : null;
+    
+    const campagne = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        nomCampagne: formData.get('nom-campagne'),
+        objectif: formData.get('objectif-campagne'),
+        titre: formData.get('titre-annonce'),
+        description: formData.get('description-annonce'),
+        images: imagesNames,
+        moyenContact: formData.get('moyen-contact'),
+        contactDetails: formData.get('contact-details'),
+        ville: formData.get('ville-campagne'),
+        zoneQuartier: formData.get('zone-quartier'),
+        audience: audience,
+        duree: duree,
+        prix: prix,
+        statut: 'en_attente'
+    };
+    
+    // Récupérer les campagnes existantes
+    let campagnes = JSON.parse(localStorage.getItem('campagnes') || '[]');
+    campagnes.push(campagne);
+    localStorage.setItem('campagnes', JSON.stringify(campagnes));
+    
+    console.log('Campagne sauvegardée:', campagne);
+}
+
+function resetFormCampagne() {
+    const form = document.getElementById('form-campagne');
+    const confirmation = document.getElementById('confirmation-campagne');
+    const imagesPreview = document.getElementById('images-preview');
+    const titreCount = document.getElementById('titre-count');
+    
+    form.reset();
+    form.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+    
+    if (imagesPreview) imagesPreview.innerHTML = '';
+    if (titreCount) titreCount.textContent = '0';
+    
+    // Masquer le champ de contact
+    const contactDetailsGroup = document.getElementById('contact-details-group');
+    if (contactDetailsGroup) contactDetailsGroup.style.display = 'none';
+    
+    confirmation.style.display = 'none';
+    form.style.display = 'block';
+}
+
+// Initialiser le formulaire au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    initFormPartenaire();
+    initFormCampagne();
+});
