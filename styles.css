@@ -4641,6 +4641,182 @@ body.page-opportunite .form-help-text {
     visibility: visible !important;
 }
 
+/* Section Conditions de diffusion */
+body.page-opportunite .conditions-fieldset {
+    margin-bottom: 25px;
+    border: 2px solid #e8f5e9;
+    background: #f8fdf9;
+}
+
+body.page-opportunite .conditions-fieldset legend {
+    color: #1e6b3a;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0 12px;
+}
+
+body.page-opportunite .conditions-container {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    overflow: hidden;
+}
+
+body.page-opportunite .conditions-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+body.page-opportunite .conditions-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+body.page-opportunite .conditions-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+body.page-opportunite .conditions-content::-webkit-scrollbar-thumb {
+    background: #1e6b3a;
+    border-radius: 4px;
+}
+
+body.page-opportunite .conditions-content::-webkit-scrollbar-thumb:hover {
+    background: #155d2e;
+}
+
+body.page-opportunite .conditions-content h4 {
+    color: #1e6b3a;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8f5e9;
+}
+
+body.page-opportunite .conditions-content h5 {
+    color: #1e6b3a;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 10px;
+}
+
+body.page-opportunite .conditions-content p {
+    margin-bottom: 12px;
+    text-align: justify;
+}
+
+body.page-opportunite .conditions-content ul {
+    margin: 10px 0 12px 20px;
+    padding-left: 0;
+}
+
+body.page-opportunite .conditions-content li {
+    margin-bottom: 8px;
+    list-style-type: disc;
+}
+
+body.page-opportunite .conditions-content strong {
+    color: #1e6b3a;
+    font-weight: 600;
+}
+
+body.page-opportunite .required-checkbox {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+body.page-opportunite .required-checkbox:hover {
+    border-color: #1e6b3a;
+    background: #f8fdf9;
+}
+
+body.page-opportunite .required-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #1e6b3a;
+    cursor: pointer;
+}
+
+body.page-opportunite .required-checkbox input[type="checkbox"]:checked + span {
+    color: #1e6b3a;
+    font-weight: 500;
+}
+
+body.page-opportunite .required-checkbox:has(input[type="checkbox"]:checked) {
+    border-color: #1e6b3a;
+    background: #e8f5e9;
+}
+
+@media (max-width: 768px) {
+    body.page-opportunite .conditions-content {
+        max-height: 300px;
+        padding: 15px;
+        font-size: 0.85rem;
+    }
+    
+    body.page-opportunite .conditions-content h4 {
+        font-size: 1rem;
+    }
+    
+    body.page-opportunite .conditions-content h5 {
+        font-size: 0.95rem;
+    }
+}
+
+/* Champs désactivés - formulaire verrouillé jusqu'à acceptation des conditions */
+body.page-opportunite fieldset[disabled],
+body.page-opportunite fieldset:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+body.page-opportunite fieldset[disabled]::before,
+body.page-opportunite fieldset:disabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    border-radius: 8px;
+}
+
+body.page-opportunite fieldset[disabled] input:not(#accept-conditions-campagne),
+body.page-opportunite fieldset[disabled] select,
+body.page-opportunite fieldset[disabled] textarea,
+body.page-opportunite fieldset[disabled] button,
+body.page-opportunite fieldset:disabled input:not(#accept-conditions-campagne),
+body.page-opportunite fieldset:disabled select,
+body.page-opportunite fieldset:disabled textarea,
+body.page-opportunite fieldset:disabled button {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+body.page-opportunite input[disabled]:not(#accept-conditions-campagne),
+body.page-opportunite select[disabled],
+body.page-opportunite textarea[disabled],
+body.page-opportunite button[disabled] {
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    background-color: #f5f5f5;
+}
+
 /* Upload d'images */
 body.page-opportunite .images-preview {
     display: grid;

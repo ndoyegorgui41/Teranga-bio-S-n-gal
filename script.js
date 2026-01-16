@@ -2829,6 +2829,51 @@ function initFormCampagne() {
     const form = document.getElementById('form-campagne');
     if (!form) return;
     
+    // Gestion de l'activation/désactivation des champs selon l'acceptation des conditions
+    const acceptConditionsCheckbox = document.getElementById('accept-conditions-campagne');
+    
+    // Fonction pour activer/désactiver tous les champs du formulaire
+    function toggleFormFields(enabled) {
+        // Activer/désactiver tous les fieldsets sauf celui des conditions
+        const otherFieldsets = form.querySelectorAll('.form-fieldset:not(.conditions-fieldset)');
+        otherFieldsets.forEach(fieldset => {
+            if (enabled) {
+                fieldset.removeAttribute('disabled');
+            } else {
+                fieldset.setAttribute('disabled', 'disabled');
+            }
+            
+            // Activer/désactiver chaque champ individuellement
+            const fieldsInFieldset = fieldset.querySelectorAll('input:not(#accept-conditions-campagne), select, textarea, button[type="submit"], button[type="button"]');
+            fieldsInFieldset.forEach(field => {
+                field.disabled = !enabled;
+            });
+        });
+        
+        // Activer/désactiver aussi les champs qui ne sont pas dans un fieldset
+        const allFormFields = form.querySelectorAll('input:not(#accept-conditions-campagne), select, textarea, button[type="submit"]');
+        allFormFields.forEach(field => {
+            // Ne pas toucher aux champs dans le fieldset des conditions
+            const isInConditionsFieldset = field.closest('.conditions-fieldset');
+            if (!isInConditionsFieldset) {
+                field.disabled = !enabled;
+            }
+        });
+    }
+    
+    // Désactiver tous les champs au chargement
+    toggleFormFields(false);
+    
+    // Activer/désactiver selon l'état de la checkbox
+    if (acceptConditionsCheckbox) {
+        acceptConditionsCheckbox.addEventListener('change', function() {
+            toggleFormFields(this.checked);
+        });
+        
+        // Vérifier l'état initial (au cas où la checkbox serait déjà cochée)
+        toggleFormFields(acceptConditionsCheckbox.checked);
+    }
+    
     // Compteur de caractères pour le titre
     const titreInput = document.getElementById('titre-annonce');
     const titreCount = document.getElementById('titre-count');
