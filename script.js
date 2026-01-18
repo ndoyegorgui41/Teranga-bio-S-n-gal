@@ -2665,6 +2665,164 @@ function initialiserNavigation() {
     updateActiveNavLink(); // Appel initial
 }
 
+// ===== FORMULAIRE INSCRIPTION VENDEUR (PAGE OPPORTUNITÉ) =====
+function toggleFormulaireVendeur(btn) {
+    const container = document.getElementById('form-vendeur-container');
+    if (!container) return;
+    
+    if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+function fermerFormVendeur() {
+    const container = document.getElementById('form-vendeur-container');
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
+function initFormVendeurOpportunite() {
+    const form = document.getElementById('form-inscription-opportunite');
+    if (!form) return;
+    
+    // Gestion de l'activation/désactivation des champs selon l'acceptation de la charte
+    const accepteCharte = document.getElementById('accepte-charte-opp');
+    
+    // Fonction pour activer/désactiver tous les champs du formulaire
+    function toggleFormFields(enabled) {
+        // Activer/désactiver tous les fieldsets sauf celui de la charte
+        const otherFieldsets = form.querySelectorAll('.form-fieldset:not(.conditions-fieldset)');
+        otherFieldsets.forEach(fieldset => {
+            if (enabled) {
+                fieldset.removeAttribute('disabled');
+            } else {
+                fieldset.setAttribute('disabled', 'disabled');
+            }
+            
+            // Activer/désactiver chaque champ individuellement
+            const fieldsInFieldset = fieldset.querySelectorAll('input:not(#accepte-charte-opp), select, textarea, button[type="submit"], button[type="button"]');
+            fieldsInFieldset.forEach(field => {
+                field.disabled = !enabled;
+            });
+        });
+        
+        // Activer/désactiver aussi les champs qui ne sont pas dans un fieldset
+        const allFormFields = form.querySelectorAll('input:not(#accepte-charte-opp), select, textarea, button[type="submit"]');
+        allFormFields.forEach(field => {
+            // Ne pas toucher aux champs dans le fieldset de la charte
+            const isInConditionsFieldset = field.closest('.conditions-fieldset');
+            if (!isInConditionsFieldset) {
+                field.disabled = !enabled;
+            }
+        });
+    }
+    
+    // Désactiver tous les champs au chargement
+    toggleFormFields(false);
+    
+    // Activer/désactiver selon l'état de la checkbox
+    if (accepteCharte) {
+        accepteCharte.addEventListener('change', function() {
+            toggleFormFields(this.checked);
+        });
+        
+        // Vérifier l'état initial (au cas où la checkbox serait déjà cochée)
+        toggleFormFields(accepteCharte.checked);
+    }
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Récupérer les valeurs du formulaire
+        const nom = document.getElementById('nom-vendeur-opp').value.trim();
+        const description = document.getElementById('description-vendeur-opp').value.trim();
+        const zone = document.getElementById('zone-vendeur-opp').value.trim();
+        const telephone = document.getElementById('telephone-vendeur-opp').value.trim();
+        let whatsapp = document.getElementById('whatsapp-vendeur-opp').value.trim();
+        const disponibilite = document.getElementById('disponibilite-vendeur-opp').value.trim();
+        const password = document.getElementById('password-vendeur-opp').value;
+
+        // Validation basique
+        if (!nom || !description || !zone || !telephone || !whatsapp || !disponibilite || !password) {
+            afficherMessageInscriptionOpportunite('Veuillez remplir tous les champs.', 'error');
+            return;
+        }
+        
+        // Vérifier que la charte a été acceptée
+        if (!accepteCharte || !accepteCharte.checked) {
+            afficherMessageInscriptionOpportunite('Vous devez accepter la charte vendeur pour continuer l\'inscription.', 'error');
+            if (accepteCharte) {
+                accepteCharte.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                accepteCharte.focus();
+            }
+            return;
+        }
+
+        try {
+            // Convertir le format national WhatsApp en format international
+            whatsapp = whatsapp.replace(/\s/g, '');
+            if (!whatsapp.startsWith('221')) {
+                whatsapp = '221' + whatsapp;
+            }
+
+            // Générer un ID unique
+            const tousVendeurs = chargerTousVendeurs();
+            let nouvelId;
+            do {
+                nouvelId = Date.now() + Math.floor(Math.random() * 1000);
+            } while (tousVendeurs.find(v => v.id === nouvelId));
+
+            // Créer l'objet vendeur avec statut "en_attente"
+            const nouveauVendeur = {
+                id: nouvelId,
+                nom: sanitizeInput(nom),
+                description: sanitizeInput(description),
+                zone: sanitizeInput(zone),
+                telephone: sanitizeInput(telephone),
+                disponibilite: sanitizeInput(disponibilite),
+                whatsapp: whatsapp,
+                password: password,
+                produits: [],
+                statut: 'en_attente',
+                dateInscription: new Date().toISOString()
+            };
+
+            // Sauvegarder le vendeur
+            sauvegarderVendeur(nouveauVendeur);
+
+            // Afficher message de succès
+            afficherMessageInscriptionOpportunite(`Inscription réussie ! Votre demande a été enregistrée. Votre profil sera visible sur la plateforme une fois validé par l'administrateur. Votre ID vendeur est : ${nouvelId}`, 'success');
+            
+            // Réinitialiser le formulaire
+            form.reset();
+
+            // Rediriger vers la liste des vendeurs après 3 secondes
+            setTimeout(function() {
+                window.location.href = 'vendeurs.html';
+            }, 3000);
+        } catch (error) {
+            afficherMessageInscriptionOpportunite(error.message || 'Erreur de validation. Veuillez vérifier vos données.', 'error');
+            return;
+        }
+    });
+}
+
+function afficherMessageInscriptionOpportunite(message, type) {
+    const messageDiv = document.getElementById('message-inscription-opp');
+    if (!messageDiv) return;
+    
+    messageDiv.textContent = message;
+    messageDiv.className = type;
+    messageDiv.style.display = 'block';
+    
+    // Faire défiler jusqu'au message
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 // ===== FORMULAIRE DEVENIR PARTENAIRE =====
 function toggleFormPartenaire(btn) {
     const container = document.getElementById('form-partenaire-container');
@@ -2689,8 +2847,63 @@ function initFormPartenaire() {
     const form = document.getElementById('form-partenaire');
     if (!form) return;
     
+    // Gestion de l'activation/désactivation des champs selon l'acceptation de la charte
+    const acceptCharteCheckbox = document.getElementById('accept-charte-partenaire');
+    
+    // Fonction pour activer/désactiver tous les champs du formulaire
+    function toggleFormFields(enabled) {
+        // Activer/désactiver tous les fieldsets sauf celui de la charte
+        const otherFieldsets = form.querySelectorAll('.form-fieldset:not(.conditions-fieldset)');
+        otherFieldsets.forEach(fieldset => {
+            if (enabled) {
+                fieldset.removeAttribute('disabled');
+            } else {
+                fieldset.setAttribute('disabled', 'disabled');
+            }
+            
+            // Activer/désactiver chaque champ individuellement
+            const fieldsInFieldset = fieldset.querySelectorAll('input:not(#accept-charte-partenaire), select, textarea, button[type="submit"], button[type="button"]');
+            fieldsInFieldset.forEach(field => {
+                field.disabled = !enabled;
+            });
+        });
+        
+        // Activer/désactiver aussi les champs qui ne sont pas dans un fieldset
+        const allFormFields = form.querySelectorAll('input:not(#accept-charte-partenaire), select, textarea, button[type="submit"]');
+        allFormFields.forEach(field => {
+            // Ne pas toucher aux champs dans le fieldset de la charte
+            const isInConditionsFieldset = field.closest('.conditions-fieldset');
+            if (!isInConditionsFieldset) {
+                field.disabled = !enabled;
+            }
+        });
+    }
+    
+    // Désactiver tous les champs au chargement
+    toggleFormFields(false);
+    
+    // Activer/désactiver selon l'état de la checkbox
+    if (acceptCharteCheckbox) {
+        acceptCharteCheckbox.addEventListener('change', function() {
+            toggleFormFields(this.checked);
+        });
+        
+        // Vérifier l'état initial (au cas où la checkbox serait déjà cochée)
+        toggleFormFields(acceptCharteCheckbox.checked);
+    }
+    
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Vérifier que la charte a été acceptée
+        if (!acceptCharteCheckbox || !acceptCharteCheckbox.checked) {
+            alert('Vous devez accepter la charte de partenariat pour continuer.');
+            if (acceptCharteCheckbox) {
+                acceptCharteCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                acceptCharteCheckbox.focus();
+            }
+            return;
+        }
         
         if (validateFormPartenaire()) {
             // Sauvegarder la demande
@@ -3124,4 +3337,79 @@ function resetFormCampagne() {
 document.addEventListener('DOMContentLoaded', function() {
     initFormPartenaire();
     initFormCampagne();
+    initFormVendeurOpportunite();
+    loadFooter();
 });
+
+// ===== FONCTION DE CHARGEMENT DU FOOTER =====
+/**
+ * Charge le footer depuis footer.html et l'injecte dans toutes les pages
+ */
+async function loadFooter() {
+    let container = document.getElementById('footer-placeholder');
+    
+    if (!container) {
+        // Si aucun placeholder n'existe, on cherche un footer existant pour le remplacer
+        const existingFooter = document.querySelector('footer');
+        if (existingFooter) {
+            container = document.createElement('div');
+            container.id = 'footer-placeholder';
+            existingFooter.parentNode.replaceChild(container, existingFooter);
+        } else {
+            // Si aucun footer n'existe, on en crée un avant la balise de fermeture body
+            const body = document.body;
+            if (body) {
+                container = document.createElement('div');
+                container.id = 'footer-placeholder';
+                body.appendChild(container);
+            } else {
+                console.error('Impossible de trouver un conteneur pour le footer');
+                return;
+            }
+        }
+    }
+    
+    await injectFooter(container);
+}
+
+/**
+ * Injecte le contenu du footer dans le placeholder
+ */
+async function injectFooter(container) {
+    if (!container) {
+        console.error('Conteneur du footer introuvable');
+        return;
+    }
+    
+    try {
+        const response = await fetch('footer.html');
+        if (!response.ok) {
+            throw new Error(`Erreur lors du chargement du footer: ${response.status} ${response.statusText}`);
+        }
+        const html = await response.text();
+        
+        // Injecter le contenu HTML directement
+        container.innerHTML = html;
+        
+        // Déclencher un événement personnalisé pour signaler que le footer est chargé
+        const event = new CustomEvent('footerLoaded', { detail: { container } });
+        document.dispatchEvent(event);
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement du footer:', error);
+        // Fallback : afficher un message d'erreur discret mais fonctionnel
+        container.innerHTML = `
+            <footer class="main-footer">
+                <div class="footer-container">
+                    <div class="footer-block footer-identity">
+                        <h3>Teranga Bio Sénégal</h3>
+                        <p>Plateforme de mise en relation entre vendeurs et acheteurs de produits bio locaux au Sénégal.</p>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2026 Teranga Bio Sénégal. Tous droits réservés.</p>
+                </div>
+            </footer>
+        `;
+    }
+}
