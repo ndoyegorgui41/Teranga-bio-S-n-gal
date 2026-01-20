@@ -46,6 +46,9 @@ let currentCategorieFilter = null;
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
+    // S'assurer que le scroll est restauré au chargement
+    document.body.style.overflow = '';
+    
     // Charger le footer
     if (typeof loadFooter === 'function') {
         loadFooter();
@@ -67,7 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const categorieFilter = urlParams.get('categorie');
     currentCategorieFilter = categorieFilter;
     
-    initModal();
+    // Le modal est maintenant géré par modal-publication.js
+    
+    // Charger les annonces
     loadAnnonces(categorieFilter);
     setupInfiniteScroll();
     setupMediaInteraction();
@@ -76,68 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (categorieFilter) {
         displayCategoryFilter(categorieFilter);
     }
+    
 });
-
-// ============================================
-// MODAL DE PUBLICATION
-// ============================================
-
-function initModal() {
-    const btnPublier = document.getElementById('btn-publier-annonce-page');
-    const modalOverlay = document.getElementById('modal-overlay');
-    const modalClose = document.getElementById('modal-close');
-    
-    if (btnPublier) {
-        btnPublier.addEventListener('click', function() {
-            openModal();
-        });
-    }
-    
-    if (modalClose) {
-        modalClose.addEventListener('click', function() {
-            closeModal();
-        });
-    }
-    
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {
-                closeModal();
-            }
-        });
-    }
-    
-    // Initialiser la logique du modal (réutiliser depuis index.html)
-    initModalLogic();
-}
-
-function openModal() {
-    const modal = document.getElementById('modal-overlay');
-    if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        // Réinitialiser le modal à l'étape 1
-        showStep(1);
-    }
-}
-
-function closeModal() {
-    const modal = document.getElementById('modal-overlay');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-}
-
-function showStep(stepNumber) {
-    document.querySelectorAll('.modal-step').forEach(step => {
-        step.style.display = 'none';
-    });
-    const step = document.getElementById(`step-${stepNumber}`);
-    if (step) {
-        step.style.display = 'block';
-    }
-}
 
 // ============================================
 // CHARGEMENT DES ANNONCES
@@ -459,7 +404,23 @@ function contacterVendeur(contact) {
 // LOGIQUE DU MODAL (réutilisée depuis index.html)
 // ============================================
 
+let modalLogicInitialized = false;
+
 function initModalLogic() {
+    // Éviter l'initialisation multiple
+    if (modalLogicInitialized) {
+        return;
+    }
+    
+    // S'assurer que tous les éléments du modal existent
+    const modalOverlay = document.getElementById('modal-publication');
+    if (!modalOverlay) {
+        console.warn('Modal overlay non trouvé');
+        return;
+    }
+    
+    modalLogicInitialized = true;
+    
     let currentStep = 1;
     let selectedMode = null;
     let selectedFormat = null;
@@ -722,7 +683,9 @@ function initModalLogic() {
     // ÉTAPE 5 : Confirmation
     const btnCloseModal = document.getElementById('btn-close-modal');
     if (btnCloseModal) {
-        btnCloseModal.addEventListener('click', function() {
+        btnCloseModal.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             closeModal();
             // Recharger les annonces après publication
             setTimeout(() => {

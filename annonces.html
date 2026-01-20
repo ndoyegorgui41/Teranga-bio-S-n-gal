@@ -93,14 +93,9 @@
     <div id="footer-placeholder"></div>
 
     <!-- Modal de publication (complet) -->
-    <div class="modal-overlay" id="modal-overlay" style="display: none;">
+    <div id="modal-publication" class="modal-publication" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Publier une annonce</h2>
-                <button type="button" class="modal-close" id="modal-close">&times;</button>
-            </div>
-            
-            <div class="modal-body">
+            <button class="modal-close" id="modal-close" aria-label="Fermer">&times;</button>
                 <!-- ÉTAPE 1 : Choisir le mode de publication -->
                 <div class="modal-step" id="step-1" data-step="1">
                     <h2>Choisissez votre mode de publication</h2>
@@ -265,11 +260,11 @@
                         <button type="button" class="btn btn-primary" id="btn-close-modal">Fermer</button>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script src="modal-publication.js"></script>
     <script src="annonces.js"></script>
 </body>
 </html>

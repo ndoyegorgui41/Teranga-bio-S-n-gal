@@ -95,22 +95,179 @@
     <!-- Footer dynamique -->
     <div id="footer-placeholder"></div>
 
-    <!-- Modal de publication (réutilisé depuis index.html) -->
-    <div class="modal-overlay" id="modal-overlay" style="display: none;">
+    <!-- Modal de publication (complet) -->
+    <div id="modal-publication" class="modal-publication" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Publier une annonce</h2>
-                <button type="button" class="modal-close" id="modal-close">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <!-- Le contenu du modal sera chargé depuis index.html -->
-                <p>Redirection vers la page d'accueil pour publier...</p>
-            </div>
+            <button class="modal-close" id="modal-close" aria-label="Fermer">&times;</button>
+                <!-- ÉTAPE 1 : Choisir le mode de publication -->
+                <div class="modal-step" id="step-1" data-step="1">
+                    <h2>Choisissez votre mode de publication</h2>
+                    <p class="step-description">Choisissez ce qui est le plus simple pour vous</p>
+                    <div class="format-buttons">
+                        <button type="button" class="format-btn" data-mode="record-video">
+                            <span class="format-emoji">📹</span>
+                            <span>Enregistrer une vidéo</span>
+                        </button>
+                        <button type="button" class="format-btn" data-mode="record-audio">
+                            <span class="format-emoji">🎙</span>
+                            <span>Enregistrer un audio</span>
+                        </button>
+                        <button type="button" class="format-btn" data-mode="import">
+                            <span class="format-emoji">📁</span>
+                            <span>Importer une vidéo ou un audio</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- ÉTAPE 2 : Enregistrement ou Importation -->
+                <div class="modal-step" id="step-2" data-step="2" style="display: none;">
+                    <!-- Section Enregistrement -->
+                    <div id="recording-section" style="display: none;">
+                        <h2>Enregistrez votre annonce</h2>
+                        <p class="step-guide">Montrez votre produit ou expliquez votre activité, dites le prix, le lieu et comment vous contacter</p>
+                        
+                        <div class="recording-container">
+                            <div class="recording-preview" id="recording-preview">
+                                <video id="video-preview" style="display: none;" playsinline></video>
+                                <audio id="audio-preview" style="display: none;" controls></audio>
+                                <div class="recording-placeholder" id="recording-placeholder">
+                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="recording-controls">
+                                <div class="timer" id="recording-timer">00:00</div>
+                                <button type="button" class="btn-record" id="btn-start-record">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                                    </svg>
+                                    <span>Commencer</span>
+                                </button>
+                                <button type="button" class="btn-record btn-stop" id="btn-stop-record" style="display: none;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                                    </svg>
+                                    <span>Arrêter</span>
+                                </button>
+                                <button type="button" class="btn-record btn-restart" id="btn-restart-record" style="display: none;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                                    </svg>
+                                    <span>Recommencer</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section Importation -->
+                    <div id="import-section" style="display: none;">
+                        <h2>Importez votre vidéo ou audio</h2>
+                        <p class="step-guide">Vous pouvez importer une vidéo ou un audio déjà enregistré</p>
+                        
+                        <div class="import-container">
+                            <input type="file" id="file-input" accept="video/mp4,video/quicktime,audio/mpeg,audio/mp4,audio/x-m4a" style="display: none;">
+                            <button type="button" class="btn-import" id="btn-select-file">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                                </svg>
+                                <span>Choisir un fichier</span>
+                                <small>MP4, MOV, MP3, M4A</small>
+                            </button>
+                            
+                            <div class="import-preview" id="import-preview" style="display: none;">
+                                <video id="imported-video-preview" controls style="display: none; width: 100%; max-height: 300px; border-radius: 10px;"></video>
+                                <audio id="imported-audio-preview" controls style="display: none; width: 100%;"></audio>
+                                <div class="file-info" id="file-info"></div>
+                                <button type="button" class="btn btn-secondary" id="btn-change-file" style="margin-top: 15px;">
+                                    Changer de fichier
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ÉTAPE 3 : Informations essentielles -->
+                <div class="modal-step" id="step-3" data-step="3" style="display: none;">
+                    <h2>Quelques informations</h2>
+                    <p class="step-description">Remplissez rapidement ces détails</p>
+                    
+                    <div class="form-simple">
+                        <div class="form-group">
+                            <label>Lieu</label>
+                            <button type="button" class="btn-location" id="btn-location">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                <span id="location-text">Utiliser ma position actuelle</span>
+                            </button>
+                            <input type="text" id="location-input" placeholder="Ou saisir un lieu" style="display: none;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Type de produit</label>
+                            <div class="product-buttons">
+                                <button type="button" class="product-btn" data-product="fruits">Fruits</button>
+                                <button type="button" class="product-btn" data-product="legumes">Légumes</button>
+                                <button type="button" class="product-btn" data-product="cereales">Céréales</button>
+                                <button type="button" class="product-btn" data-product="transformes">Produits transformés</button>
+                                <button type="button" class="product-btn" data-product="autre">Autre</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Contact (WhatsApp ou téléphone)</label>
+                            <input type="tel" id="contact-input" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}">
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" id="btn-continue-step3" style="margin-top: 30px; width: 100%;">
+                            Continuer
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- ÉTAPE 4 : Prévisualisation -->
+                <div class="modal-step" id="step-4" data-step="4" style="display: none;">
+                    <h2>Vérifiez votre annonce</h2>
+                    <p class="step-description">Écoutez ou regardez avant de publier</p>
+                    
+                    <div class="preview-container">
+                        <video id="final-video-preview" controls style="display: none; width: 100%; max-height: 300px; border-radius: 10px;"></video>
+                        <audio id="final-audio-preview" controls style="display: none; width: 100%;"></audio>
+                        
+                        <div class="preview-info">
+                            <p><strong>Lieu:</strong> <span id="preview-location">-</span></p>
+                            <p><strong>Produit:</strong> <span id="preview-product">-</span></p>
+                            <p><strong>Contact:</strong> <span id="preview-contact">-</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-modify">Modifier</button>
+                        <button type="button" class="btn btn-primary" id="btn-publish">Publier l'annonce</button>
+                    </div>
+                </div>
+                
+                <!-- ÉTAPE 5 : Confirmation -->
+                <div class="modal-step" id="step-5" data-step="5" style="display: none;">
+                    <div class="confirmation-content">
+                        <div class="confirmation-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <h2>Annonce envoyée !</h2>
+                        <p class="confirmation-message">Votre annonce est envoyée et sera visible après une vérification rapide</p>
+                        <button type="button" class="btn btn-primary" id="btn-close-modal">Fermer</button>
+                    </div>
+                </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script src="modal-publication.js"></script>
     <script src="categories.js"></script>
 </body>
 </html>
