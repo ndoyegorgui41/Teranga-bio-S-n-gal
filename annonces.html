@@ -96,7 +96,81 @@
     <div id="modal-publication" class="modal-publication" style="display: none;">
         <div class="modal-content">
             <button class="modal-close" id="modal-close" aria-label="Fermer">&times;</button>
-                <!-- ÉTAPE 1 : Choisir le mode de publication -->
+            
+            <!-- ÉTAPE 0 : Acceptation des règles de publication -->
+            <div class="modal-step" id="step-0" data-step="0">
+                <h2>Règles de publication</h2>
+                <p class="step-description">Avant de publier votre annonce, prenez connaissance des règles essentielles</p>
+                
+                <!-- Règles visuelles -->
+                <div class="rules-visual">
+                    <div class="rule-item">
+                        <span class="rule-icon">🧺</span>
+                        <span class="rule-text">Produits bio locaux uniquement</span>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">📍</span>
+                        <span class="rule-text">Indiquer clairement le lieu</span>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">📞</span>
+                        <span class="rule-text">Donner un moyen de contact</span>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">❌</span>
+                        <span class="rule-text">Pas d'arnaque ni de fausses promesses</span>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">🤝</span>
+                        <span class="rule-text">Respect et honnêteté</span>
+                    </div>
+                </div>
+                
+                <!-- Version audio -->
+                <div class="rules-audio-section">
+                    <button type="button" class="btn-audio-rules" id="btn-audio-rules">
+                        <span class="audio-icon">🎙️</span>
+                        <span>Écouter les règles</span>
+                    </button>
+                    <audio id="audio-rules" preload="none" style="display: none;">
+                        <source src="audio/regles-publication.mp3" type="audio/mpeg">
+                        <source src="audio/regles-publication.m4a" type="audio/mp4">
+                    </audio>
+                    <div id="audio-status" class="audio-status" style="display: none;">
+                        <span class="audio-playing-icon">🔊</span>
+                        <span>Lecture en cours...</span>
+                    </div>
+                </div>
+                
+                <!-- Lien vers le texte complet -->
+                <div class="rules-link-section">
+                    <a href="informations-legales.html#regles-publication" target="_blank" class="rules-full-link">
+                        <span>📄</span>
+                        <span>Lire toutes les règles de publication</span>
+                    </a>
+                </div>
+                
+                <!-- Acceptation obligatoire -->
+                <div class="rules-acceptance">
+                    <label class="rules-checkbox-label" id="rules-checkbox-label">
+                        <input type="checkbox" id="accept-rules" name="accept-rules" required>
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text">J'ai compris et j'accepte les règles de publication <span class="required">*</span></span>
+                    </label>
+                    <div id="rules-error" class="rules-error" style="display: none;">
+                        Vous devez accepter les règles pour continuer
+                    </div>
+                </div>
+                
+                <!-- Bouton continuer -->
+                <button type="button" class="btn btn-primary btn-continue-rules" id="btn-continue-rules" disabled>
+                    Continuer
+                </button>
+                
+                <p class="rules-timer-info" id="rules-timer-info">Veuillez prendre le temps de lire les règles (5 secondes minimum)</p>
+            </div>
+            
+            <!-- ÉTAPE 1 : Choisir le mode de publication -->
                 <div class="modal-step" id="step-1" data-step="1">
                     <h2>Choisissez votre mode de publication</h2>
                     <p class="step-description">Choisissez ce qui est le plus simple pour vous</p>

@@ -22,7 +22,7 @@
         const btnClose = document.getElementById('modal-close');
         const btnCloseFinal = document.getElementById('btn-close-modal');
         
-        let currentStep = 1;
+        let currentStep = 0; // Commencer à l'étape 0 (règles)
         let selectedMode = null; // 'record-video', 'record-audio', 'import'
         let selectedFormat = null; // 'video' ou 'audio' (déterminé après)
         let mediaRecorder = null;
@@ -32,20 +32,29 @@
         let recordingTime = 0;
         const MAX_RECORDING_TIME = 90; // 90 secondes maximum
         
+        // Variables pour l'acceptation des règles
+        let rulesAccepted = false;
+        let rulesTimerStart = null;
+        let rulesTimerMinimum = 5000; // 5 secondes minimum
+        let audioRulesPlayed = false;
+        
         const formData = {
             mode: null,
             format: null,
             media: null,
             location: null,
             product: null,
-            contact: null
+            contact: null,
+            rulesAccepted: false,
+            rulesAcceptedDate: null,
+            rulesVersion: '1.0'
         };
         
         // Ouvrir le modal
         function openModal() {
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            showStep(1);
+            showStep(0); // Commencer par l'étape des règles
         }
         
         // Fermer le modal
@@ -98,8 +107,186 @@
             if (stepEl) {
                 stepEl.style.display = 'block';
                 currentStep = step;
+                
+                // Initialiser l'étape 0 (règles) si nécessaire
+                if (step === 0) {
+                    initRulesStep();
+                }
             }
         }
+        
+        // Initialiser l'étape des règles
+        function initRulesStep() {
+            rulesAccepted = false;
+            rulesTimerStart = Date.now();
+            audioRulesPlayed = false;
+            
+            const acceptCheckbox = document.getElementById('accept-rules');
+            const continueBtn = document.getElementById('btn-continue-rules');
+            const timerInfo = document.getElementById('rules-timer-info');
+            const btnAudioRules = document.getElementById('btn-audio-rules');
+            const audioRules = document.getElementById('audio-rules');
+            const audioStatus = document.getElementById('audio-status');
+            
+            // Réinitialiser l'état
+            if (acceptCheckbox) {
+                acceptCheckbox.checked = false;
+            }
+            if (continueBtn) {
+                continueBtn.disabled = true;
+            }
+            if (timerInfo) {
+                timerInfo.style.display = 'block';
+            }
+            if (audioStatus) {
+                audioStatus.style.display = 'none';
+            }
+            
+            // Gérer la case à cocher
+            if (acceptCheckbox) {
+                // Retirer les anciens listeners
+                const newCheckbox = acceptCheckbox.cloneNode(true);
+                acceptCheckbox.parentNode.replaceChild(newCheckbox, acceptCheckbox);
+                newCheckbox.addEventListener('change', function() {
+                    checkRulesAcceptance();
+                });
+            }
+            
+            // Gérer le bouton audio
+            if (btnAudioRules && audioRules) {
+                btnAudioRules.onclick = function() {
+                    if (audioRules.paused || audioRules.ended || audioRules.readyState === 0) {
+                        // Vérifier si le fichier audio existe
+                        audioRules.load(); // Forcer le chargement
+                        
+                        audioRules.play().then(function() {
+                            // Audio joué avec succès
+                            if (audioStatus) {
+                                audioStatus.style.display = 'flex';
+                            }
+                        }).catch(function(error) {
+                            console.log('Erreur lecture audio:', error);
+                            // Si l'audio n'existe pas, afficher un message et activer après le timer
+                            if (audioStatus) {
+                                audioStatus.innerHTML = '<span class="audio-playing-icon">⚠️</span><span>Fichier audio non disponible. Vous pouvez continuer après 5 secondes.</span>';
+                                audioStatus.style.display = 'flex';
+                                audioStatus.style.background = 'rgba(255, 193, 7, 0.1)';
+                                audioStatus.style.color = '#f57c00';
+                            }
+                            // Ne pas bloquer si l'audio n'existe pas - le timer suffira
+                        });
+                    } else {
+                        audioRules.pause();
+                        audioRules.currentTime = 0;
+                        if (audioStatus) {
+                            audioStatus.style.display = 'none';
+                        }
+                    }
+                };
+                
+                // Gérer les erreurs de chargement
+                audioRules.addEventListener('error', function(e) {
+                    console.log('Erreur chargement audio:', e);
+                    if (audioStatus) {
+                        audioStatus.innerHTML = '<span class="audio-playing-icon">⚠️</span><span>Fichier audio non disponible. Vous pouvez continuer après 5 secondes.</span>';
+                        audioStatus.style.display = 'flex';
+                        audioStatus.style.background = 'rgba(255, 193, 7, 0.1)';
+                        audioStatus.style.color = '#f57c00';
+                    }
+                });
+                
+                // Quand l'audio se termine, activer le bouton
+                audioRules.addEventListener('ended', function() {
+                    audioRulesPlayed = true;
+                    if (audioStatus) {
+                        audioStatus.style.display = 'none';
+                    }
+                    checkRulesAcceptance();
+                });
+            }
+            
+            // Vérifier périodiquement si on peut activer le bouton
+            const checkInterval = setInterval(function() {
+                if (currentStep === 0) {
+                    checkRulesAcceptance();
+                } else {
+                    clearInterval(checkInterval);
+                }
+            }, 500);
+        }
+        
+        // Vérifier si on peut accepter les règles
+        function checkRulesAcceptance() {
+            const acceptCheckbox = document.getElementById('accept-rules');
+            const continueBtn = document.getElementById('btn-continue-rules');
+            const timerInfo = document.getElementById('rules-timer-info');
+            
+            if (!acceptCheckbox || !continueBtn) return;
+            
+            const timeElapsed = Date.now() - rulesTimerStart;
+            const minimumTimePassed = timeElapsed >= rulesTimerMinimum;
+            const checkboxChecked = acceptCheckbox.checked;
+            
+            // Activer le bouton si : case cochée ET (5 secondes passées OU audio terminé)
+            if (checkboxChecked && (minimumTimePassed || audioRulesPlayed)) {
+                continueBtn.disabled = false;
+                if (timerInfo) {
+                    timerInfo.style.display = 'none';
+                }
+            } else {
+                continueBtn.disabled = true;
+                if (timerInfo && !minimumTimePassed && !audioRulesPlayed) {
+                    const remaining = Math.ceil((rulesTimerMinimum - timeElapsed) / 1000);
+                    if (remaining > 0) {
+                        timerInfo.textContent = `Veuillez prendre le temps de lire les règles (${remaining} seconde${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''})`;
+                    }
+                }
+            }
+        }
+        
+        // Gérer le bouton continuer des règles (une seule fois)
+        let btnContinueRulesHandler = null;
+        function setupContinueRulesButton() {
+            const btnContinueRules = document.getElementById('btn-continue-rules');
+            if (btnContinueRules && !btnContinueRulesHandler) {
+                btnContinueRulesHandler = function() {
+                    const acceptCheckbox = document.getElementById('accept-rules');
+                    if (!acceptCheckbox || !acceptCheckbox.checked) {
+                        const rulesError = document.getElementById('rules-error');
+                        if (rulesError) {
+                            rulesError.style.display = 'block';
+                        }
+                        return;
+                    }
+                    
+                    // Enregistrer l'acceptation
+                    rulesAccepted = true;
+                    formData.rulesAccepted = true;
+                    formData.rulesAcceptedDate = new Date().toISOString();
+                    
+                    // Sauvegarder dans localStorage (pour traçage)
+                    try {
+                        const acceptanceRecord = {
+                            date: formData.rulesAcceptedDate,
+                            version: formData.rulesVersion,
+                            userAgent: navigator.userAgent
+                        };
+                        const existingRecords = JSON.parse(localStorage.getItem('rulesAcceptances') || '[]');
+                        existingRecords.push(acceptanceRecord);
+                        localStorage.setItem('rulesAcceptances', JSON.stringify(existingRecords));
+                    } catch (e) {
+                        console.log('Erreur sauvegarde acceptation:', e);
+                    }
+                    
+                    // Passer à l'étape suivante
+                    showStep(1);
+                };
+                btnContinueRules.addEventListener('click', btnContinueRulesHandler);
+            }
+        }
+        
+        // Initialiser le bouton au chargement
+        setupContinueRulesButton();
         
         // ÉTAPE 1 : Choix du mode de publication
         document.querySelectorAll('.format-btn').forEach(btn => {
@@ -504,16 +691,21 @@
         
         // Réinitialiser le formulaire
         function resetForm() {
-            currentStep = 1;
+            currentStep = 0;
             selectedMode = null;
             selectedFormat = null;
             recordedBlob = null;
+            rulesAccepted = false;
+            rulesTimerStart = null;
+            audioRulesPlayed = false;
             formData.mode = null;
             formData.format = null;
             formData.media = null;
             formData.location = null;
             formData.product = null;
             formData.contact = null;
+            formData.rulesAccepted = false;
+            formData.rulesAcceptedDate = null;
             
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());

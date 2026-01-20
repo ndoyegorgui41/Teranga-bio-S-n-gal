@@ -8314,3 +8314,277 @@ body.page-legales .legal-notice strong {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* ============================================
+   STYLES POUR L'ÉTAPE D'ACCEPTATION DES RÈGLES
+   ============================================ */
+
+/* Règles visuelles */
+.rules-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 25px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+.rule-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.rule-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.rule-text {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Section audio */
+.rules-audio-section {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.btn-audio-rules {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(30, 107, 58, 0.3);
+}
+
+.btn-audio-rules:hover {
+    background: linear-gradient(135deg, #2d8f4f 0%, #1e6b3a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 107, 58, 0.4);
+}
+
+.btn-audio-rules:active {
+    transform: translateY(0);
+}
+
+.audio-icon {
+    font-size: 1.2rem;
+}
+
+.audio-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(30, 107, 58, 0.1);
+    border-radius: 8px;
+    color: #1e6b3a;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.audio-playing-icon {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Lien vers le texte complet */
+.rules-link-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.rules-full-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1e6b3a;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.rules-full-link:hover {
+    background: rgba(30, 107, 58, 0.1);
+    border-color: #1e6b3a;
+    text-decoration: underline;
+}
+
+/* Acceptation obligatoire */
+.rules-acceptance {
+    margin: 30px 0;
+    padding: 20px;
+    background: #fff;
+    border: 2px solid #1e6b3a;
+    border-radius: 12px;
+}
+
+.rules-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.rules-checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #1e6b3a;
+    border-radius: 4px;
+    background: white;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.rules-checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    background: #1e6b3a;
+    border-color: #1e6b3a;
+}
+
+.rules-checkbox-label input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.checkbox-text {
+    flex: 1;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.checkbox-text .required {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.rules-error {
+    margin-top: 10px;
+    padding: 10px;
+    background: #ffebee;
+    border: 1px solid #d32f2f;
+    border-radius: 8px;
+    color: #d32f2f;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Bouton continuer */
+.btn-continue-rules {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn-continue-rules:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #ccc;
+}
+
+.rules-timer-info {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Rappel des règles sur la prévisualisation */
+.rules-reminder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: #e8f5e9;
+    border-left: 4px solid #1e6b3a;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #2e7d32;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.rules-reminder svg {
+    flex-shrink: 0;
+    color: #1e6b3a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rules-visual {
+        padding: 15px;
+    }
+    
+    .rule-item {
+        padding: 10px;
+    }
+    
+    .rule-icon {
+        font-size: 1.3rem;
+    }
+    
+    .rule-text {
+        font-size: 0.95rem;
+    }
+    
+    .btn-audio-rules {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+    }
+    
+    .rules-acceptance {
+        padding: 15px;
+    }
+    
+    .checkbox-custom {
+        width: 22px;
+        height: 22px;
+    }
+}
