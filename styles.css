@@ -7963,3 +7963,354 @@ body.page-legales .legal-notice strong {
         font-size: 1.3rem;
     }
 }
+
+/* ============================================
+   STYLES POUR LES CAMPAGNES PARTENAIRES
+   ============================================ */
+
+/* Badge de campagne partenaire */
+.campagne-badge {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+}
+
+/* Carte de campagne pour le feed */
+.campagne-card {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+    border: 2px solid #FF8C00;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campagne-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 140, 0, 0.25);
+}
+
+.campagne-content {
+    margin-top: 15px;
+}
+
+.campagne-titre {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1e6b3a;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.campagne-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.campagne-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.campagne-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.campagne-icon {
+    font-size: 1.1rem;
+}
+
+/* Bouton campagne */
+.btn-campagne {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+}
+
+.btn-campagne:hover {
+    background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.btn-campagne:active {
+    transform: translateY(0);
+}
+
+/* Média de campagne */
+.campagne-media-container {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.campagne-media {
+    width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+}
+
+.campagne-media-placeholder {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffe8cc 0%, #fff5e6 100%);
+    border: 2px dashed #FF8C00;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #FF8C00;
+}
+
+.campagne-media-placeholder:hover {
+    background: linear-gradient(135deg, #ffd9a3 0%, #ffe8cc 100%);
+    border-color: #FF6B00;
+}
+
+.campagne-media-placeholder svg {
+    margin-bottom: 10px;
+}
+
+.campagne-media-placeholder p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Campagne pour la page d'accueil */
+.campagne-section-accueil {
+    margin: 40px 20px;
+    padding: 0;
+}
+
+.campagne-card-accueil {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+    border: 2px solid #FF8C00;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(255, 140, 0, 0.2);
+}
+
+.campagne-accueil-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.campagne-accueil-text h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e6b3a;
+    margin-bottom: 10px;
+}
+
+.campagne-accueil-text p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.campagne-accueil-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.btn-campagne-accueil {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+    width: fit-content;
+}
+
+.btn-campagne-accueil:hover {
+    background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+/* Campagne pour la page Opportunités */
+.campagnes-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.campagne-opportunite-card {
+    background: white;
+    border: 2px solid #FF8C00;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campagne-opportunite-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 140, 0, 0.25);
+}
+
+.campagne-opportunite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.campagne-opportunite-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1e6b3a;
+    margin: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.campagne-type-badge {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.campagne-objectif {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.campagne-opportunite-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.btn-campagne-opportunite {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+    width: 100%;
+}
+
+.btn-campagne-opportunite:hover {
+    background: linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.no-campagnes {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Campagne pour la page Catégories */
+.campagne-section-categories {
+    margin: 30px 20px;
+    padding: 0;
+}
+
+.campagne-card-categories {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+    border: 2px solid #FF8C00;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(255, 140, 0, 0.2);
+}
+
+.campagne-categories-header {
+    margin-bottom: 15px;
+}
+
+/* Responsive pour les campagnes */
+@media (min-width: 768px) {
+    .campagne-accueil-content {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .campagne-accueil-text {
+        flex: 1;
+    }
+    
+    .campagne-accueil-media {
+        flex: 1;
+        max-width: 400px;
+    }
+    
+    .campagne-accueil-info {
+        flex-direction: row;
+        gap: 20px;
+    }
+    
+    .campagnes-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .campagne-opportunite-header {
+        flex-wrap: nowrap;
+    }
+}
+
+@media (min-width: 1024px) {
+    .campagnes-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

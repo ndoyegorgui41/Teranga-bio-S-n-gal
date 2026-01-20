@@ -2,6 +2,9 @@
 // GESTION DES ANNONCES - TERANGA BIO SÉNÉGAL
 // ============================================
 
+// Charger le script des campagnes
+let campagnesActives = [];
+
 // Structure de données d'exemple (sera remplacée par Supabase plus tard)
 let annonces = [
     {
@@ -96,6 +99,11 @@ function loadAnnonces(categorieFilter = null) {
     
     isLoading = true;
     
+    // Charger les campagnes actives
+    if (typeof getCampagnesActives === 'function') {
+        campagnesActives = getCampagnesActives();
+    }
+    
     // Filtrer les annonces par catégorie si un filtre est présent
     let annoncesToDisplay = annonces;
     if (categorieFilter) {
@@ -142,9 +150,35 @@ function loadAnnonces(categorieFilter = null) {
         
         if (loading) loading.style.display = 'none';
         
-        annoncesToLoad.forEach(annonce => {
+        // Intégrer les campagnes dans le feed : 1 campagne toutes les 6-8 annonces
+        // Compter le nombre total d'annonces déjà affichées (pour éviter deux campagnes consécutives)
+        const existingAnnonces = feed.querySelectorAll('.annonce-card').length;
+        let annonceCount = existingAnnonces;
+        let lastCampagneIndex = -1; // Pour éviter deux campagnes consécutives
+        
+        annoncesToLoad.forEach((annonce, index) => {
             const card = createAnnonceCard(annonce);
             feed.appendChild(card);
+            annonceCount++;
+            
+            // Insérer une campagne toutes les 6-8 annonces (aléatoire entre 6 et 8)
+            // Vérifier qu'on n'a pas déjà inséré une campagne juste avant
+            const shouldInsertCampagne = annonceCount % 7 === 0 && campagnesActives.length > 0;
+            
+            if (shouldInsertCampagne) {
+                // Choisir une campagne différente de la précédente
+                let campagneIndex = Math.floor(Math.random() * campagnesActives.length);
+                if (campagneIndex === lastCampagneIndex && campagnesActives.length > 1) {
+                    campagneIndex = (campagneIndex + 1) % campagnesActives.length;
+                }
+                
+                const campagne = campagnesActives[campagneIndex];
+                if (campagne && typeof createCampagneCard === 'function') {
+                    const campagneCard = createCampagneCard(campagne, 'feed');
+                    feed.appendChild(campagneCard);
+                    lastCampagneIndex = campagneIndex;
+                }
+            }
         });
         
         currentPage++;

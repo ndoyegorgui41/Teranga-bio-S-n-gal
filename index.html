@@ -223,7 +223,7 @@
                 <h2>La vidéo comme moyen d'expression</h2>
                 <p class="video-intro">Sur Teranga Bio Sénégal, chacun peut s'exprimer librement, même sans écrire. La vidéo permet aux vendeurs, partenaires et producteurs locaux de présenter leurs produits, leur activité et leur savoir-faire avec leurs propres mots, dans leur langue, simplement.</p>
                 
-                <div class="video-wrapper" id="video-wrapper" data-video-url="">
+                <div class="video-wrapper" id="video-wrapper" data-video-url="videos/WhatsApp Video 2026-01-20 at 11.17.20.mp4">
                     <div class="video-placeholder" id="video-placeholder">
                         <div class="video-poster">
                             <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" class="play-icon">
@@ -826,6 +826,16 @@
                     videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
                 }
                 
+                // Encoder l'URL pour gérer les espaces et caractères spéciaux dans le nom du fichier
+                if (videoUrl && videoUrl.includes(' ')) {
+                    // Séparer le chemin et le nom de fichier
+                    const parts = videoUrl.split('/');
+                    const filename = parts.pop();
+                    const path = parts.join('/');
+                    // Encoder uniquement le nom de fichier
+                    videoUrl = path + '/' + encodeURIComponent(filename);
+                }
+                
                 // Fonction pour charger la vidéo
                 function loadVideo() {
                     if (!videoUrl || videoUrl === '') {
@@ -899,6 +909,22 @@
     </script>
     
     <!-- Script pour le parcours de publication d'annonce -->
+    <script src="campagnes.js"></script>
     <script src="modal-publication.js"></script>
+    <script>
+        // Charger une campagne sur la page d'accueil
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof getCampagneAleatoire === 'function') {
+                const campagne = getCampagneAleatoire();
+                const section = document.getElementById('campagne-accueil');
+                
+                if (section && campagne && typeof createCampagneCard === 'function') {
+                    const card = createCampagneCard(campagne, 'accueil');
+                    section.appendChild(card);
+                    section.style.display = 'block';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

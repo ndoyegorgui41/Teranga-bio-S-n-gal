@@ -83,6 +83,11 @@
             </div>
         </section>
 
+        <!-- Section Campagne partenaire (si correspond à la catégorie) -->
+        <section id="campagne-categories" class="campagne-section-categories" style="display: none;">
+            <!-- La campagne sera chargée dynamiquement -->
+        </section>
+
         <!-- CTA principal -->
         <section class="categories-cta-section">
             <button type="button" class="btn btn-categories-cta" id="btn-publier-annonce-categories">
@@ -267,7 +272,26 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="campagnes.js"></script>
     <script src="modal-publication.js"></script>
     <script src="categories.js"></script>
+    <script>
+        // Charger une campagne si elle correspond à la catégorie consultée
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const categorieFilter = urlParams.get('categorie');
+            
+            if (categorieFilter && typeof getCampagneByCategorie === 'function') {
+                const campagne = getCampagneByCategorie(categorieFilter);
+                const section = document.getElementById('campagne-categories');
+                
+                if (section && campagne && typeof createCampagneCard === 'function') {
+                    const card = createCampagneCard(campagne, 'categories');
+                    section.appendChild(card);
+                    section.style.display = 'block';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
