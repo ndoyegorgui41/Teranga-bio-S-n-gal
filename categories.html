@@ -374,11 +374,30 @@
                 }
             }
             
-            // S'assurer que la navigation est initialisée
-            if (typeof initialiserNavigation === 'function') {
-                initialiserNavigation();
+            // S'assurer que la navigation est initialisée après le chargement de script.js
+            function initNav() {
+                if (typeof initialiserNavigation === 'function') {
+                    initialiserNavigation();
+                } else {
+                    // Réessayer après un court délai si la fonction n'est pas encore disponible
+                    setTimeout(initNav, 50);
+                }
             }
+            
+            setTimeout(initNav, 100);
         });
+        
+        // Backup au cas où le DOM est déjà chargé
+        if (document.readyState !== 'loading') {
+            function initNavBackup() {
+                if (typeof initialiserNavigation === 'function') {
+                    initialiserNavigation();
+                } else {
+                    setTimeout(initNavBackup, 50);
+                }
+            }
+            setTimeout(initNavBackup, 200);
+        }
     </script>
 </body>
 </html>

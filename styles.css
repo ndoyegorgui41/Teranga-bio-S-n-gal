@@ -4973,7 +4973,7 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         top: 10px;
         right: 5px;
         left: auto;
-        z-index: 101;
+        z-index: 10002 !important;
         margin: 0;
     }
     
@@ -5011,7 +5011,7 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         top: 0;
         left: 0;
         right: 0;
-        background-color: rgba(70, 90, 75, 0.85);
+        background-color: rgba(70, 90, 75, 0.95);
         backdrop-filter: blur(10px);
         flex-direction: column;
         padding: 80px 20px 20px 20px;
@@ -5020,7 +5020,7 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
-        z-index: 999;
+        z-index: 10001 !important;
         max-height: 100vh;
         overflow-y: auto;
         align-self: stretch;
@@ -5034,6 +5034,44 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
         transform: translateX(0) !important;
         opacity: 1 !important;
         visibility: visible !important;
+    }
+    
+    /* Réduire le z-index des boutons CTA sticky quand le menu est ouvert */
+    body:has(.main-nav.active) .annonces-cta-sticky,
+    body:has(.main-nav.active) .categories-cta-section {
+        z-index: 1 !important;
+    }
+    
+    /* Alternative pour les navigateurs qui ne supportent pas :has() */
+    .main-nav.active ~ * .annonces-cta-sticky,
+    .main-nav.active ~ * .categories-cta-section {
+        z-index: 1 !important;
+    }
+    
+    /* S'assurer que le header et le bouton toggle restent au-dessus */
+    header {
+        z-index: 10000 !important;
+        position: relative;
+    }
+    
+    /* Quand le menu est actif, réduire le z-index de toutes les sections sticky */
+    .main-nav.active ~ main .annonces-cta-section,
+    .main-nav.active ~ main .categories-cta-section {
+        z-index: 1 !important;
+    }
+    
+    /* Réduire le z-index des sections CTA sticky quand le menu est ouvert (mobile) */
+    @media (max-width: 767px) {
+        .main-nav.active ~ * .annonces-cta-section,
+        .main-nav.active ~ * .categories-cta-section {
+            z-index: 1 !important;
+        }
+        
+        /* Alternative : utiliser JavaScript pour ajouter une classe au body */
+        body.menu-open .annonces-cta-section,
+        body.menu-open .categories-cta-section {
+            z-index: 1 !important;
+        }
     }
     
     .nav-link {

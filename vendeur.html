@@ -113,5 +113,24 @@
     <!-- Footer chargé dynamiquement -->
     <div id="footer-placeholder"></div>
     <script src="script.js?v=23"></script>
+    <script>
+        // S'assurer que la navigation est initialisée après le chargement de script.js
+        function initNav() {
+            if (typeof initialiserNavigation === 'function') {
+                initialiserNavigation();
+            } else {
+                // Réessayer après un court délai si la fonction n'est pas encore disponible
+                setTimeout(initNav, 50);
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initNav, 100);
+            });
+        } else {
+            setTimeout(initNav, 100);
+        }
+    </script>
 </body>
 </html>
