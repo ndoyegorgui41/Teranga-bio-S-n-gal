@@ -373,6 +373,11 @@
                     section.style.display = 'block';
                 }
             }
+            
+            // S'assurer que la navigation est initialisée
+            if (typeof initialiserNavigation === 'function') {
+                initialiserNavigation();
+            }
         });
     </script>
 </body>

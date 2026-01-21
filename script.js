@@ -2409,6 +2409,9 @@ function initialiserPage() {
             afficherZonesSurCarte();
         }
     }
+    
+    // Initialiser la navigation pour toutes les pages (pas seulement la page d'accueil)
+    initialiserNavigation();
 }
 
 // Initialisation selon la page
