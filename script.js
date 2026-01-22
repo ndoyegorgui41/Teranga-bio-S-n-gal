@@ -135,6 +135,50 @@ function trouverVendeur(id) {
     return tousVendeurs.find(v => v.id === id);
 }
 
+// Fonction pour compter les annonces d'un vendeur
+function compterAnnoncesVendeur(vendeur) {
+    let count = 0;
+    
+    // Compter dans le tableau annonces (si disponible globalement)
+    if (typeof annonces !== 'undefined' && Array.isArray(annonces)) {
+        const contactVendeur = vendeur.telephone || vendeur.contact || '';
+        count += annonces.filter(annonce => {
+            const contactAnnonce = annonce.contact || '';
+            // Comparer les contacts (normaliser les espaces)
+            return contactAnnonce.replace(/\s/g, '') === contactVendeur.replace(/\s/g, '');
+        }).length;
+    }
+    
+    // Compter dans localStorage (si des annonces y sont stockées)
+    try {
+        const annoncesLocales = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+        const contactVendeur = vendeur.telephone || vendeur.contact || '';
+        count += annoncesLocales.filter(annonce => {
+            const contactAnnonce = annonce.contact || '';
+            return contactAnnonce.replace(/\s/g, '') === contactVendeur.replace(/\s/g, '');
+        }).length;
+    } catch (e) {
+        console.log('Erreur lecture annonces locales:', e);
+    }
+    
+    return count;
+}
+
+// Fonction pour déterminer le statut d'un vendeur
+function getStatutVendeur(vendeur) {
+    // Vendeur inscrit récemment (moins de 30 jours) = "Nouveau"
+    if (vendeur.dateInscription) {
+        const dateInscription = new Date(vendeur.dateInscription);
+        const maintenant = new Date();
+        const joursDepuisInscription = (maintenant - dateInscription) / (1000 * 60 * 60 * 24);
+        if (joursDepuisInscription <= 30) {
+            return 'Nouveau';
+        }
+    }
+    // Sinon "Actif"
+    return 'Actif';
+}
+
 // Fonction pour afficher la liste des vendeurs sur vendeurs.html
 function afficherListeVendeurs(vendeursFiltres = null) {
     const liste = document.getElementById('liste-vendeurs');
@@ -178,8 +222,22 @@ function afficherListeVendeurs(vendeursFiltres = null) {
             card.appendChild(zoneP);
         }
         
+        // Ajouter le nombre d'annonces
+        const nbAnnonces = compterAnnoncesVendeur(vendeur);
+        const annoncesP = document.createElement('p');
+        annoncesP.className = 'vendeur-annonces';
+        annoncesP.innerHTML = `📹 ${nbAnnonces} annonce${nbAnnonces > 1 ? 's' : ''}`;
+        card.appendChild(annoncesP);
+        
+        // Ajouter le statut
+        const statut = getStatutVendeur(vendeur);
+        const statutP = document.createElement('p');
+        statutP.className = `vendeur-statut vendeur-statut-${statut.toLowerCase()}`;
+        statutP.textContent = statut;
+        card.appendChild(statutP);
+        
         const a = document.createElement('a');
-        a.href = `vendeur.html?id=${vendeur.id}`;
+        a.href = `vendeur-profil.html?id=${vendeur.id}`;
         a.className = 'btn';
         a.textContent = 'Voir le profil';
         card.appendChild(a);
@@ -3435,4 +3493,53 @@ async function injectFooter(container) {
             </footer>
         `;
     }
+}
+
+// ============================================
+// BOUTON DE RETOUR MOBILE
+// ============================================
+
+// Fonction pour initialiser le bouton de retour mobile
+function initialiserBoutonRetour() {
+    const boutonRetour = document.getElementById('mobile-back-button');
+    if (!boutonRetour) return;
+    
+    boutonRetour.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Vérifier si on est sur la page d'accueil
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath === '';
+        
+        if (isHomePage) {
+            // Sur la page d'accueil, ne rien faire ou fermer la page
+            return;
+        }
+        
+        // Vérifier s'il y a une page précédente dans l'historique
+        // Utiliser une approche simple : essayer de revenir en arrière
+        // Si ça ne fonctionne pas, rediriger vers l'accueil
+        try {
+            // Vérifier si on peut revenir en arrière
+            if (window.history.length > 1 && document.referrer) {
+                // Il y a une page précédente, revenir en arrière
+                window.history.back();
+            } else {
+                // Pas de page précédente, rediriger vers l'accueil
+                window.location.href = 'index.html';
+            }
+        } catch (error) {
+            // En cas d'erreur, rediriger vers l'accueil
+            window.location.href = 'index.html';
+        }
+    });
+}
+
+// Initialiser le bouton de retour au chargement de la page
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        initialiserBoutonRetour();
+    });
+} else {
+    initialiserBoutonRetour();
 }

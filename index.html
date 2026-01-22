@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body class="page-accueil">
+    <button id="mobile-back-button" class="mobile-back-button" aria-label="Retour">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </button>
     <header>
         <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
         <div class="header-content">
@@ -74,48 +79,39 @@
                     </picture>
                 </div>
                 <div class="accueil-content">
-                    <h2>Produits Bio Locaux du Sénégal</h2>
-                    <p class="accueil-intro">Connectez-vous directement avec les producteurs locaux pour des produits frais, naturels et cultivés avec soin. Commandez facilement via WhatsApp et recevez des produits authentiques directement de la ferme à votre table.</p>
+                    <h2>Produits bio locaux du Sénégal</h2>
+                    <p class="accueil-intro">Connectez-vous directement avec les producteurs et vendeurs de produits bio locaux, partout au Sénégal.</p>
+                    <p class="accueil-intro">Sur Teranga Bio Sénégal, chacun peut présenter ses produits en vidéo ou en audio, même sans savoir lire ou écrire.</p>
+                    <p class="accueil-intro">Les échanges se font directement entre vendeurs et acheteurs, par téléphone ou WhatsApp, dans la langue de votre choix.</p>
+                    <p class="accueil-intro">Ici, pas d'intermédiaire : seulement des produits authentiques, des producteurs locaux et une relation de confiance.</p>
+                    <p class="accueil-reassurance">Aucune écriture requise • Vidéo et audio acceptés • Mise en relation directe</p>
                     <div class="boutons-accueil">
                         <a href="vendeurs.html" class="btn">Découvrir les vendeurs</a>
                         <div class="bouton-formulaire-wrapper">
                             <button type="button" id="btn-devenir-vendeur" class="btn" onclick="toggleFormulaire(this)">Rejoindre comme vendeur</button>
-                            <div id="inscription-vendeur" class="formulaire-inscription-popup" style="display: none;">
-                                <h3 class="formulaire-titre">Devenir Vendeur</h3>
-                                <p class="formulaire-intro">Vous vendez des produits bio locaux ? Inscrivez-vous pour apparaître sur notre plateforme.</p>
-                                <form id="form-inscription">
-                                    <label for="nom-vendeur">Nom du vendeur :</label>
-                                    <input type="text" id="nom-vendeur" required>
-                                    
-                                    <label for="description-vendeur">Description :</label>
-                                    <textarea id="description-vendeur" required></textarea>
-                                    
-                                    <label for="zone-vendeur">Zone de production :</label>
-                                    <input type="text" id="zone-vendeur" placeholder="Ex: Région de Dakar" required>
-                                    
-                                    <label for="telephone-vendeur">Téléphone :</label>
-                                    <input type="text" id="telephone-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
-                                    
-                                    <label for="whatsapp-vendeur">Numéro WhatsApp :</label>
-                                    <input type="text" id="whatsapp-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
-                                    
-                                    <label for="disponibilite-vendeur">Disponibilité :</label>
-                                    <input type="text" id="disponibilite-vendeur" placeholder="Ex: Ouvert de 8h à 18h" required>
-                                    
-                                    <label for="password-vendeur">Mot de passe (pour accès vendeur) :</label>
-                                    <input type="password" id="password-vendeur" required>
-                                    
-                                    <div class="charte-vendeur-container" id="charte-vendeur-container">
-                                        <h4 class="charte-titre">Charte Vendeur - Teranga Bio Sénégal</h4>
-                                        <div class="charte-content">
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">Préambule</h5>
+                            <div id="form-overlay" class="form-overlay" style="display: none;" onclick="fermerFormVendeurAccueil()"></div>
+                            <div id="inscription-vendeur" class="form-vendeur-inline" style="display: none;">
+                                <button type="button" class="close-form-btn" onclick="fermerFormVendeurAccueil()">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                    </svg>
+                                </button>
+                                <h3>Devenir Vendeur</h3>
+                                <p class="form-intro">Vous vendez des produits bio locaux ? Inscrivez-vous pour apparaître sur notre plateforme.</p>
+                                <form id="form-inscription" class="vendeur-form" novalidate>
+                                    <!-- 0. Charte Vendeur -->
+                                    <fieldset class="form-fieldset conditions-fieldset">
+                                        <legend>Charte Vendeur</legend>
+                                        
+                                        <div class="conditions-container">
+                                            <div class="conditions-content">
+                                                <h4>Charte Vendeur - Teranga Bio Sénégal</h4>
+                                                
+                                                <h5>Préambule</h5>
                                                 <p>La plateforme Teranga Bio Sénégal est un service de mise en relation entre vendeurs de produits bio locaux et acheteurs.</p>
                                                 <p>En s'inscrivant sur la plateforme, le vendeur reconnait avoir pris connaissance de la présente charte et s'engage à la respecter intégralement.</p>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">1. Condition d'adhésion</h5>
+                                                
+                                                <h5>1. Condition d'adhésion</h5>
                                                 <p>Peut s'inscrire comme vendeur toute personne ou structure qui :</p>
                                                 <ul>
                                                     <li>Produit ou commercialise des produits bio ou naturels ;</li>
@@ -123,41 +119,35 @@
                                                     <li>Fournit des informations exactes et vérifiables.</li>
                                                 </ul>
                                                 <p>L'inscription est gratuite mais soumise à validation par l'administrateur de la plateforme.</p>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">2. Engagement du vendeur</h5>
+                                                
+                                                <h5>2. Engagement du vendeur</h5>
                                                 <p>En rejoignant Teranga Bio Sénégal, le vendeur s'engage à :</p>
-                                                <p class="charte-sous-titre"><strong>Qualité et authenticité</strong></p>
+                                                <p><strong>Qualité et authenticité</strong></p>
                                                 <ul>
                                                     <li>Proposer uniquement des produits bio, naturels ou issus de pratiques respectueuses ;</li>
                                                     <li>Ne pas tromper les acheteurs sur l'origine, la qualité ou la nature des produits.</li>
                                                 </ul>
-                                                <p class="charte-sous-titre"><strong>Exactitude des informations</strong></p>
+                                                <p><strong>Exactitude des informations</strong></p>
                                                 <ul>
                                                     <li>Fournir des informations sincères (nom, contact, zone, produit, disponibilité) ;</li>
                                                     <li>Mettre à jour ses informations en cas de changement.</li>
                                                 </ul>
-                                                <p class="charte-sous-titre"><strong>Relation avec les acheteurs</strong></p>
+                                                <p><strong>Relation avec les acheteurs</strong></p>
                                                 <ul>
                                                     <li>Répondre avec courtoisie et professionnalisme ;</li>
                                                     <li>Respecter les engagements pris avec les acheteurs ;</li>
                                                     <li>Éviter toute pratique abusive ou frauduleuse.</li>
                                                 </ul>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">3. Paiement et livraison</h5>
+                                                
+                                                <h5>3. Paiement et livraison</h5>
                                                 <p>Le vendeur reconnait expressément que :</p>
                                                 <ul>
                                                     <li>Teranga Bio Sénégal ne gère ni les paiements ni les livraisons ;</li>
                                                     <li>Toute transaction se fait directement entre le vendeur et l'acheteur ;</li>
                                                     <li>Le vendeur est seul responsable des prix fixés, des modalités de paiement, des délais et conditions de livraison.</li>
                                                 </ul>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">4. Utilisation de la plateforme</h5>
+                                                
+                                                <h5>4. Utilisation de la plateforme</h5>
                                                 <p>Le vendeur s'engage à :</p>
                                                 <ul>
                                                     <li>Utiliser la plateforme uniquement à des fins professionnelles ;</li>
@@ -169,49 +159,116 @@
                                                     <li>La suspension temporaire du compte ;</li>
                                                     <li>Ou la suspension définitive sans préavis.</li>
                                                 </ul>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">5. Responsabilité</h5>
+                                                
+                                                <h5>5. Responsabilité</h5>
                                                 <p>Le vendeur reconnaît que :</p>
                                                 <ul>
                                                     <li>La plateforme agit uniquement comme facilitateur de mise en relation ;</li>
                                                     <li>Teranga Bio Sénégal ne peut être tenu responsable des litiges financiers, des pertes financières et de la qualité finale des produits.</li>
                                                 </ul>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">6. Publicité et visibilité</h5>
+                                                
+                                                <h5>6. Publicité et visibilité</h5>
                                                 <p>Le vendeur accepte que :</p>
                                                 <ul>
                                                     <li>Ses informations puissent être affichées publiquement sur la plateforme ;</li>
                                                     <li>Des offres de mise en avant ou de publicité puissent lui être proposées ultérieurement.</li>
                                                 </ul>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">7. Modification de la charte</h5>
+                                                
+                                                <h5>7. Modification de la charte</h5>
                                                 <p>Teranga Bio Sénégal se réserve le droit de modifier la présente charte. Les vendeurs seront informés en cas de mise à jour importante.</p>
-                                            </div>
-                                            
-                                            <div class="charte-section">
-                                                <h5 class="charte-section-titre">8. Acceptation</h5>
+                                                
+                                                <h5>8. Acceptation</h5>
                                                 <p>En cochant la case « J'ai lu et j'accepte la charte vendeur », le vendeur reconnaît avoir pris connaissance de l'ensemble des conditions ci-dessus et s'engage à les respecter.</p>
                                             </div>
                                         </div>
-                                    </div>
+                                        
+                                        <div class="form-group checkbox-group">
+                                            <label class="checkbox-label required-checkbox">
+                                                <input type="checkbox" id="accepte-charte" name="accepte-charte" required>
+                                                <span>J'ai lu et j'accepte la charte vendeur <span class="required">*</span></span>
+                                            </label>
+                                            <span class="error-message">Vous devez accepter la charte pour continuer</span>
+                                        </div>
+                                    </fieldset>
                                     
-                                    <div class="charte-acceptation">
-                                        <label for="accepte-charte" class="charte-checkbox-label">
-                                            <input type="checkbox" id="accepte-charte" name="accepte-charte" required>
-                                            <span class="charte-checkbox-text">J'ai lu et j'accepte la charte vendeur</span>
-                                        </label>
-                                        <p class="lire-charte-note">Lire la charte complète</p>
-                                    </div>
+                                    <!-- 1. Informations personnelles -->
+                                    <fieldset class="form-fieldset" disabled>
+                                        <legend>Informations personnelles</legend>
+                                        
+                                        <div class="form-group">
+                                            <label for="nom-vendeur">Nom du vendeur <span class="required">*</span></label>
+                                            <input type="text" id="nom-vendeur" name="nom-vendeur" required>
+                                            <span class="error-message">Veuillez entrer un nom</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="description-vendeur">Description <span class="required">*</span></label>
+                                            <textarea id="description-vendeur" name="description-vendeur" rows="4" required></textarea>
+                                            <span class="error-message">Veuillez entrer une description</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="zone-vendeur">Zone de production <span class="required">*</span></label>
+                                            <input type="text" id="zone-vendeur" name="zone-vendeur" placeholder="Ex: Région de Dakar" required>
+                                            <span class="error-message">Veuillez entrer une zone</span>
+                                        </div>
+                                    </fieldset>
                                     
-                                    <button type="submit" class="btn" id="btn-inscription-submit">S'inscrire</button>
+                                    <!-- 2. Coordonnées -->
+                                    <fieldset class="form-fieldset" disabled>
+                                        <legend>Coordonnées</legend>
+                                        
+                                        <div class="form-group">
+                                            <label for="telephone-vendeur">Téléphone <span class="required">*</span></label>
+                                            <input type="text" id="telephone-vendeur" name="telephone-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
+                                            <span class="error-message">Veuillez entrer un numéro de téléphone</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="whatsapp-vendeur">Numéro WhatsApp <span class="required">*</span></label>
+                                            <input type="text" id="whatsapp-vendeur" name="whatsapp-vendeur" placeholder="Ex: 77 123 45 67" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}" required>
+                                            <span class="error-message">Veuillez entrer un numéro WhatsApp</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="disponibilite-vendeur">Disponibilité <span class="required">*</span></label>
+                                            <input type="text" id="disponibilite-vendeur" name="disponibilite-vendeur" placeholder="Ex: Ouvert de 8h à 18h" required>
+                                            <span class="error-message">Veuillez indiquer vos disponibilités</span>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <!-- 3. Accès -->
+                                    <fieldset class="form-fieldset" disabled>
+                                        <legend>Accès vendeur</legend>
+                                        
+                                        <div class="form-group">
+                                            <label for="password-vendeur">Mot de passe (pour accès vendeur) <span class="required">*</span></label>
+                                            <input type="password" id="password-vendeur" name="password-vendeur" required>
+                                            <span class="error-message">Veuillez choisir un mot de passe</span>
+                                        </div>
+                                    </fieldset>
+                                    
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn-vendeur" id="btn-inscription-submit">
+                                            <span>S'inscrire</span>
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </form>
-                                <div id="message-inscription" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+
+                                <!-- Message de confirmation -->
+                                <div id="confirmation-vendeur-accueil" class="confirmation-message" style="display: none;">
+                                    <div class="confirmation-icon">
+                                        <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <h4>Demande d'inscription envoyée !</h4>
+                                    <p>Votre demande a été enregistrée. Notre équipe va valider votre compte sous peu.</p>
+                                    <button type="button" class="btn-secondary" onclick="resetFormVendeurAccueil()">Nouvelle inscription</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -821,56 +878,203 @@
                 formulaire.style.setProperty('visibility', 'visible', 'important');
                 formulaire.style.setProperty('opacity', '1', 'important');
                 
-                // Ajuster le positionnement par rapport au bouton cliqué
-                if (boutonElement) {
-                    ajusterPositionFormulaire(boutonElement);
+                // Afficher l'overlay
+                const overlay = document.getElementById('form-overlay');
+                if (overlay) {
+                    overlay.style.display = 'block';
+                    overlay.classList.add('visible');
+                }
+                
+                // Initialiser le formulaire avec validation progressive
+                initFormVendeurAccueil();
+            }
+        }
+        
+        function fermerFormVendeurAccueil() {
+            const container = document.getElementById('inscription-vendeur');
+            const overlay = document.getElementById('form-overlay');
+            if (container) {
+                container.style.display = 'none';
+                container.classList.remove('visible');
+                boutonActif = null;
+            }
+            if (overlay) {
+                overlay.style.display = 'none';
+                overlay.classList.remove('visible');
+            }
+        }
+        
+        function initFormVendeurAccueil() {
+            const form = document.getElementById('form-inscription');
+            if (!form) return;
+            
+            // Gestion de l'activation/désactivation des champs selon l'acceptation de la charte
+            const acceptCharteCheckbox = document.getElementById('accepte-charte');
+            
+            // Fonction pour activer/désactiver tous les champs du formulaire
+            function toggleFormFields(enabled) {
+                // Activer/désactiver tous les fieldsets sauf celui de la charte
+                const otherFieldsets = form.querySelectorAll('.form-fieldset:not(.conditions-fieldset)');
+                otherFieldsets.forEach(fieldset => {
+                    if (enabled) {
+                        fieldset.removeAttribute('disabled');
+                    } else {
+                        fieldset.setAttribute('disabled', 'disabled');
+                    }
                     
-                    // Sur mobile, faire défiler vers le formulaire après un court délai
-                    if (window.innerWidth < 769) {
-                        setTimeout(function() {
-                            const formulaireRect = formulaire.getBoundingClientRect();
-                            const boutonRect = boutonElement.getBoundingClientRect();
-                            const scrollPosition = window.scrollY || window.pageYOffset;
-                            
-                            // Calculer la position de défilement pour centrer le formulaire dans la vue
-                            const formulaireTop = scrollPosition + formulaireRect.top;
-                            const viewportHeight = window.innerHeight;
-                            const formulaireHeight = formulaireRect.height;
-                            
-                            // Défiler pour que le formulaire soit bien visible
-                            const targetScroll = formulaireTop - (viewportHeight / 2) + (formulaireHeight / 2);
-                            
-                            window.scrollTo({
-                                top: Math.max(0, targetScroll),
-                                behavior: 'smooth'
-                            });
-                        }, 100);
+                    // Activer/désactiver chaque champ individuellement
+                    const fieldsInFieldset = fieldset.querySelectorAll('input:not(#accepte-charte), select, textarea, button[type="submit"]');
+                    fieldsInFieldset.forEach(field => {
+                        field.disabled = !enabled;
+                    });
+                });
+            }
+            
+            // Désactiver tous les champs au chargement
+            toggleFormFields(false);
+            
+            // Activer/désactiver selon l'état de la checkbox
+            if (acceptCharteCheckbox) {
+                // Supprimer les anciens listeners pour éviter les doublons
+                const newCheckbox = acceptCharteCheckbox.cloneNode(true);
+                acceptCharteCheckbox.parentNode.replaceChild(newCheckbox, acceptCharteCheckbox);
+                
+                newCheckbox.addEventListener('change', function() {
+                    toggleFormFields(this.checked);
+                });
+                
+                // Vérifier l'état initial
+                toggleFormFields(newCheckbox.checked);
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Vérifier que la charte a été acceptée
+                const acceptCharte = document.getElementById('accepte-charte');
+                if (!acceptCharte || !acceptCharte.checked) {
+                    alert('Vous devez accepter la charte vendeur pour continuer.');
+                    if (acceptCharte) {
+                        acceptCharte.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        acceptCharte.focus();
                     }
-                } else {
-                    // Fallback: utiliser le bouton par défaut
-                    const btnDefault = document.getElementById('btn-devenir-vendeur');
-                    if (btnDefault) {
-                        ajusterPositionFormulaire(btnDefault);
-                        
-                        // Sur mobile, faire défiler vers le formulaire
-                        if (window.innerWidth < 769) {
-                            setTimeout(function() {
-                                const formulaireRect = formulaire.getBoundingClientRect();
-                                const scrollPosition = window.scrollY || window.pageYOffset;
-                                const formulaireTop = scrollPosition + formulaireRect.top;
-                                const viewportHeight = window.innerHeight;
-                                const formulaireHeight = formulaireRect.height;
-                                const targetScroll = formulaireTop - (viewportHeight / 2) + (formulaireHeight / 2);
-                                
-                                window.scrollTo({
-                                    top: Math.max(0, targetScroll),
-                                    behavior: 'smooth'
-                                });
-                            }, 100);
-                        }
+                    return;
+                }
+                
+                if (validateFormVendeurAccueil()) {
+                    // Sauvegarder la demande
+                    sauvegarderInscriptionVendeurAccueil();
+                    
+                    // Afficher confirmation
+                    form.style.display = 'none';
+                    document.getElementById('confirmation-vendeur-accueil').style.display = 'block';
+                }
+            });
+            
+            // Validation en temps réel
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateFieldAccueil(this);
+                });
+                input.addEventListener('input', function() {
+                    if (this.closest('.form-group').classList.contains('error')) {
+                        validateFieldAccueil(this);
                     }
+                });
+            });
+        }
+        
+        function validateFormVendeurAccueil() {
+            const form = document.getElementById('form-inscription');
+            let isValid = true;
+            
+            // Champs requis
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!validateFieldAccueil(field)) {
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        function validateFieldAccueil(field) {
+            const formGroup = field.closest('.form-group');
+            if (!formGroup) return true;
+            
+            let isValid = true;
+            
+            if (field.hasAttribute('required')) {
+                if (field.type === 'checkbox') {
+                    isValid = field.checked;
+                } else if (field.value.trim() === '') {
+                    isValid = false;
+                } else if (field.type === 'email') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    isValid = emailRegex.test(field.value);
+                } else if (field.hasAttribute('pattern')) {
+                    const pattern = new RegExp(field.getAttribute('pattern'));
+                    isValid = pattern.test(field.value);
                 }
             }
+            
+            if (isValid) {
+                formGroup.classList.remove('error');
+            } else {
+                formGroup.classList.add('error');
+            }
+            
+            return isValid;
+        }
+        
+        function sauvegarderInscriptionVendeurAccueil() {
+            const form = document.getElementById('form-inscription');
+            const formData = new FormData(form);
+            
+            const inscription = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                nomVendeur: formData.get('nom-vendeur'),
+                description: formData.get('description-vendeur'),
+                zone: formData.get('zone-vendeur'),
+                telephone: formData.get('telephone-vendeur'),
+                whatsapp: formData.get('whatsapp-vendeur'),
+                disponibilite: formData.get('disponibilite-vendeur'),
+                statut: 'en_attente'
+            };
+            
+            // Récupérer les inscriptions existantes
+            let inscriptions = JSON.parse(localStorage.getItem('inscriptionsVendeurs') || '[]');
+            inscriptions.push(inscription);
+            localStorage.setItem('inscriptionsVendeurs', JSON.stringify(inscriptions));
+            
+            console.log('Inscription vendeur sauvegardée:', inscription);
+        }
+        
+        function resetFormVendeurAccueil() {
+            const form = document.getElementById('form-inscription');
+            const confirmation = document.getElementById('confirmation-vendeur-accueil');
+            
+            form.reset();
+            form.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+            
+            // Réinitialiser l'état des champs
+            const acceptCharteCheckbox = document.getElementById('accepte-charte');
+            if (acceptCharteCheckbox) {
+                const otherFieldsets = form.querySelectorAll('.form-fieldset:not(.conditions-fieldset)');
+                otherFieldsets.forEach(fieldset => {
+                    fieldset.setAttribute('disabled', 'disabled');
+                    const fieldsInFieldset = fieldset.querySelectorAll('input, select, textarea');
+                    fieldsInFieldset.forEach(field => {
+                        field.disabled = true;
+                    });
+                });
+            }
+            
+            confirmation.style.display = 'none';
+            form.style.display = 'block';
         }
         
         // Fonction pour gérer le clic/touch sur les boutons

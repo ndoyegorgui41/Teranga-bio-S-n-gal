@@ -43,6 +43,44 @@ header {
     z-index: 100;
 }
 
+/* Bouton de retour mobile */
+.mobile-back-button {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    width: 44px;
+    height: 44px;
+    background-color: rgba(30, 107, 58, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    z-index: 10003;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-back-button:hover,
+.mobile-back-button:focus {
+    background-color: rgba(30, 107, 58, 1);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+    outline: none;
+}
+
+.mobile-back-button:active {
+    transform: scale(0.95);
+}
+
+.mobile-back-button svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
 .logo-header {
     max-width: 60px;
     max-height: 60px;
@@ -545,13 +583,27 @@ body.page-accueil section#accueil h2 {
 .accueil-intro {
     color: #000000;
     font-size: 1.15em;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
     text-shadow: none;
     line-height: 1.8;
     font-weight: 400;
+}
+
+.accueil-reassurance {
+    color: #1e6b3a;
+    font-size: 1em;
+    font-weight: 600;
+    margin: 30px auto 35px;
+    max-width: 700px;
+    text-align: center;
+    padding: 15px 20px;
+    background-color: rgba(30, 107, 58, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #1e6b3a;
+    line-height: 1.6;
 }
 
 body.page-accueil section#accueil p {
@@ -587,6 +639,389 @@ body.page-accueil section#accueil p {
 
 .formulaire-inscription-popup.visible {
     display: block !important;
+}
+
+/* Formulaire vendeur sur la page d'accueil */
+body.page-accueil .form-vendeur-inline {
+    margin-top: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 30px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: none;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 10000;
+    animation: fadeIn 0.4s ease;
+    display: none;
+}
+
+@media (min-width: 769px) {
+    body.page-accueil .form-vendeur-inline {
+        width: 50vw;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Overlay pour le formulaire */
+.form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.form-overlay.visible {
+    display: block !important;
+}
+
+body.page-accueil .form-vendeur-inline.visible {
+    display: block !important;
+}
+
+body.page-accueil .form-vendeur-inline h3 {
+    color: #1e6b3a;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    text-align: center;
+    padding-right: 40px;
+}
+
+body.page-accueil .close-form-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+body.page-accueil .close-form-btn:hover {
+    background: #e53935;
+    color: white;
+}
+
+body.page-accueil .close-form-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Styles communs pour le formulaire vendeur (page accueil et page vendeur) */
+body.page-accueil .form-vendeur-inline .form-intro,
+body.page-vendeur .form-vendeur-inline .form-intro {
+    text-align: center;
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.page-accueil .vendeur-form,
+body.page-vendeur .vendeur-form {
+    max-width: 100%;
+    margin: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.page-accueil .form-fieldset,
+body.page-vendeur .form-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 35px 0;
+}
+
+body.page-accueil .form-fieldset legend,
+body.page-vendeur .form-fieldset legend {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e6b3a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8f5e9;
+    width: 100%;
+}
+
+body.page-accueil .form-fieldset[disabled],
+body.page-vendeur .form-fieldset[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+body.page-accueil .form-group,
+body.page-vendeur .form-group {
+    margin-bottom: 20px;
+}
+
+body.page-accueil .form-group label,
+body.page-vendeur .form-group label {
+    display: block;
+    color: #1e6b3a;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+body.page-accueil .form-group .required,
+body.page-vendeur .form-group .required {
+    color: #e74c3c;
+}
+
+body.page-accueil .form-group input,
+body.page-accueil .form-group textarea,
+body.page-accueil .form-group select,
+body.page-vendeur .form-group input,
+body.page-vendeur .form-group textarea,
+body.page-vendeur .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.05em;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #333;
+}
+
+body.page-accueil .form-group input:focus,
+body.page-accueil .form-group textarea:focus,
+body.page-accueil .form-group select:focus,
+body.page-vendeur .form-group input:focus,
+body.page-vendeur .form-group textarea:focus,
+body.page-vendeur .form-group select:focus {
+    outline: none;
+    border-color: #1e6b3a;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(30, 107, 58, 0.1);
+}
+
+body.page-accueil .form-group input:disabled,
+body.page-accueil .form-group textarea:disabled,
+body.page-accueil .form-group select:disabled,
+body.page-vendeur .form-group input:disabled,
+body.page-vendeur .form-group textarea:disabled,
+body.page-vendeur .form-group select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+body.page-accueil .form-group textarea,
+body.page-vendeur .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+body.page-accueil .form-group.error input,
+body.page-accueil .form-group.error textarea,
+body.page-accueil .form-group.error select,
+body.page-vendeur .form-group.error input,
+body.page-vendeur .form-group.error textarea,
+body.page-vendeur .form-group.error select {
+    border-color: #e74c3c;
+}
+
+body.page-accueil .error-message,
+body.page-vendeur .error-message {
+    display: none;
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+body.page-accueil .form-group.error .error-message,
+body.page-vendeur .form-group.error .error-message {
+    display: block;
+}
+
+body.page-accueil .conditions-fieldset,
+body.page-vendeur .conditions-fieldset {
+    margin-bottom: 25px;
+    border: 2px solid #e8f5e9;
+    background: #f8fdf9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+body.page-accueil .conditions-fieldset legend,
+body.page-vendeur .conditions-fieldset legend {
+    color: #1e6b3a;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0 12px;
+}
+
+body.page-accueil .conditions-container,
+body.page-vendeur .conditions-container {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+body.page-accueil .conditions-content h4,
+body.page-vendeur .conditions-content h4 {
+    color: #1e6b3a;
+    font-size: 1.3em;
+    margin: 0 0 15px 0;
+}
+
+body.page-accueil .conditions-content h5,
+body.page-vendeur .conditions-content h5 {
+    color: #1e6b3a;
+    font-size: 1.1em;
+    margin: 20px 0 10px 0;
+    font-weight: 600;
+}
+
+body.page-accueil .conditions-content p,
+body.page-vendeur .conditions-content p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+body.page-accueil .conditions-content ul,
+body.page-vendeur .conditions-content ul {
+    margin: 10px 0 10px 20px;
+    padding: 0;
+}
+
+body.page-accueil .conditions-content li,
+body.page-vendeur .conditions-content li {
+    margin: 5px 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+body.page-accueil .checkbox-group,
+body.page-vendeur .checkbox-group {
+    margin-top: 15px;
+}
+
+body.page-accueil .checkbox-label,
+body.page-vendeur .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+body.page-accueil .checkbox-label input[type="checkbox"],
+body.page-vendeur .checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+body.page-accueil .form-actions,
+body.page-vendeur .form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+body.page-accueil .btn-vendeur,
+body.page-vendeur .btn-vendeur {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.page-accueil .btn-vendeur:hover,
+body.page-vendeur .btn-vendeur:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 107, 58, 0.4);
+}
+
+body.page-accueil .confirmation-message,
+body.page-vendeur .confirmation-message {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+body.page-accueil .confirmation-icon,
+body.page-vendeur .confirmation-icon {
+    color: #1e6b3a;
+    margin-bottom: 20px;
+}
+
+body.page-accueil .confirmation-message h4,
+body.page-vendeur .confirmation-message h4 {
+    color: #1e6b3a;
+    font-size: 1.5rem;
+    margin: 0 0 15px 0;
+}
+
+body.page-accueil .confirmation-message p,
+body.page-vendeur .confirmation-message p {
+    color: #666;
+    margin: 0 0 25px 0;
+    line-height: 1.6;
+}
+
+body.page-accueil .btn-secondary,
+body.page-vendeur .btn-secondary {
+    background: white;
+    color: #1e6b3a;
+    padding: 12px 25px;
+    border: 2px solid #1e6b3a;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+body.page-accueil .btn-secondary:hover,
+body.page-vendeur .btn-secondary:hover {
+    background: #1e6b3a;
+    color: white;
 }
 
 /* Titre du formulaire */
@@ -852,6 +1287,11 @@ body.page-accueil section#accueil p {
 
 /* Responsive pour la charte */
 @media (max-width: 768px) {
+    /* Afficher le bouton de retour sur mobile */
+    .mobile-back-button {
+        display: flex;
+    }
+    
     .charte-vendeur-container {
         padding: 15px;
         max-height: 350px;
@@ -923,6 +1363,32 @@ body.page-accueil section#accueil p {
     .marqueur-cercle {
         z-index: 1000 !important;
         position: relative;
+    }
+    
+    /* Formulaire vendeur sur la page d'accueil - mobile */
+    body.page-accueil .form-vendeur-inline {
+        padding: 20px;
+        width: 95%;
+        max-height: 95vh;
+        transform: translate(-50%, -50%);
+    }
+    
+    body.page-accueil .form-vendeur-inline h3 {
+        font-size: 1.2rem;
+        padding-right: 40px;
+    }
+    
+    body.page-accueil .conditions-container {
+        max-height: 300px;
+        padding: 15px;
+    }
+    
+    body.page-accueil .form-fieldset {
+        margin-bottom: 25px;
+    }
+    
+    body.page-accueil .form-group {
+        margin-bottom: 15px;
     }
     
     /* S'assurer que les popups sont aussi visibles */
@@ -1361,6 +1827,37 @@ body.page-accueil #message-inscription.error {
 
 .vendeur-zone strong {
     color: #4CAF50;
+}
+
+/* Nombre d'annonces du vendeur */
+.vendeur-annonces {
+    margin-top: 8px;
+    color: #1e6b3a;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+
+/* Statut du vendeur */
+.vendeur-statut {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.vendeur-statut-actif {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.vendeur-statut-nouveau {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
 }
 
 /* Recherche produits */
@@ -4499,10 +4996,18 @@ body.page-accueil #contactez-nous.animate-on-scroll.visible {
     }
     
     body.page-accueil section#accueil p {
-        font-size: 1.25em;
+        font-size: 1.1em;
         margin-left: 0;
         margin-right: 0;
         text-align: left;
+        margin-bottom: 15px;
+    }
+    
+    .accueil-reassurance {
+        font-size: 0.95em;
+        margin: 25px auto 30px;
+        padding: 12px 15px;
+        text-align: center;
     }
     
     .boutons-accueil {
@@ -7412,6 +7917,687 @@ body.page-categories main {
     line-height: 1.6;
 }
 
+/* Headers pour les pages Vendeurs et Vendeur */
+.vendeurs-header,
+.vendeur-header {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.vendeurs-header h1,
+.vendeur-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 15px 0;
+    color: white;
+    font-weight: 700;
+}
+
+.vendeurs-subtitle,
+.vendeur-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 25px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.vendeurs-intro {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 25px 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* Message clé de sensibilisation */
+.vendeur-key-message {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px 25px;
+    margin: 30px auto 0;
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.vendeur-key-message .key-message-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.vendeur-key-message .key-message-text {
+    font-size: 1.1rem;
+    color: white;
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* Section étapes */
+.vendeur-etapes {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+}
+
+.etapes-title {
+    font-size: 2rem;
+    color: #1e6b3a;
+    text-align: center;
+    margin: 0 0 50px 0;
+    font-weight: 700;
+}
+
+.etapes-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.etape-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 25px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.etape-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(30, 107, 58, 0.15);
+    border-color: #1e6b3a;
+}
+
+.etape-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.etape-content {
+    flex: 1;
+}
+
+.etape-title {
+    font-size: 1.3rem;
+    color: #1e6b3a;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.etape-text {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* CTA Principal */
+.vendeur-cta-principal {
+    padding: 50px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.btn-vendeur-inscription {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    padding: 20px 50px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(30, 107, 58, 0.4);
+    display: inline-block;
+}
+
+.btn-vendeur-inscription:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 107, 58, 0.5);
+    background: linear-gradient(135deg, #2d8f4f 0%, #1e6b3a 100%);
+}
+
+.btn-vendeur-inscription:active {
+    transform: translateY(-1px);
+}
+
+.cta-reassurance {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* CTA Secondaire */
+.vendeur-cta-secondaire {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.btn-vendeur-aide {
+    background-color: white;
+    color: #1e6b3a;
+    padding: 15px 40px;
+    border: 2px solid #1e6b3a;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-vendeur-aide:hover {
+    background-color: #1e6b3a;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(30, 107, 58, 0.3);
+}
+
+.cta-aide-text {
+    margin-top: 15px;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Bloc de rassurance */
+.vendeur-rassurance {
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+}
+
+.rassurance-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-left: 5px solid #1e6b3a;
+}
+
+.rassurance-icon {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.rassurance-text {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* Mention importante */
+.vendeur-mention {
+    padding: 40px 20px;
+    background-color: white;
+}
+
+/* Formulaire d'inscription sur la page vendeur */
+body.page-vendeur .vendeur-cta-principal {
+    position: relative;
+}
+
+body.page-vendeur .bouton-formulaire-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.mention-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.mention-title {
+    font-size: 1.2rem;
+    color: #856404;
+    margin: 0 0 15px 0;
+    font-weight: 700;
+}
+
+.mention-text {
+    font-size: 1rem;
+    color: #856404;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ===== FORMULAIRE D'INSCRIPTION VENDEUR (PAGE VENDEUR) ===== */
+body.page-vendeur .form-vendeur-inline {
+    margin-top: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 30px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: none;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 10000;
+    animation: fadeIn 0.4s ease;
+    display: none;
+}
+
+@media (min-width: 769px) {
+    body.page-vendeur .form-vendeur-inline {
+        width: 50vw;
+    }
+}
+
+body.page-vendeur .form-vendeur-inline.visible {
+    display: block !important;
+}
+
+body.page-vendeur .form-vendeur-inline h3 {
+    color: #1e6b3a;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+    text-align: center;
+    padding-right: 40px;
+}
+
+body.page-vendeur .close-form-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+body.page-vendeur .close-form-btn:hover {
+    background: #e53935;
+    color: white;
+}
+
+body.page-vendeur .close-form-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+body.page-vendeur .form-intro {
+    text-align: center;
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.page-vendeur .vendeur-form {
+    max-width: 100%;
+    margin: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.page-vendeur .form-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 35px 0;
+}
+
+body.page-vendeur .form-fieldset legend {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e6b3a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8f5e9;
+    width: 100%;
+}
+
+body.page-vendeur .form-fieldset[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+body.page-vendeur .form-group {
+    margin-bottom: 20px;
+}
+
+body.page-vendeur .form-group label {
+    display: block;
+    color: #1e6b3a;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+body.page-vendeur .form-group .required {
+    color: #e74c3c;
+}
+
+body.page-vendeur .form-group input,
+body.page-vendeur .form-group textarea,
+body.page-vendeur .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.05em;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    color: #333;
+}
+
+body.page-vendeur .form-group input:focus,
+body.page-vendeur .form-group textarea:focus,
+body.page-vendeur .form-group select:focus {
+    outline: none;
+    border-color: #1e6b3a;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(30, 107, 58, 0.1);
+}
+
+body.page-vendeur .form-group input:disabled,
+body.page-vendeur .form-group textarea:disabled,
+body.page-vendeur .form-group select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+body.page-vendeur .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+body.page-vendeur .form-group.error input,
+body.page-vendeur .form-group.error textarea,
+body.page-vendeur .form-group.error select {
+    border-color: #e74c3c;
+}
+
+body.page-vendeur .error-message {
+    display: none;
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+body.page-vendeur .form-group.error .error-message {
+    display: block;
+}
+
+body.page-vendeur .conditions-fieldset {
+    margin-bottom: 25px;
+    border: 2px solid #e8f5e9;
+    background: #f8fdf9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+body.page-vendeur .conditions-fieldset legend {
+    color: #1e6b3a;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0 12px;
+}
+
+body.page-vendeur .conditions-container {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+body.page-vendeur .conditions-content h4 {
+    color: #1e6b3a;
+    font-size: 1.3em;
+    margin: 0 0 15px 0;
+}
+
+body.page-vendeur .conditions-content h5 {
+    color: #1e6b3a;
+    font-size: 1.1em;
+    margin: 20px 0 10px 0;
+    font-weight: 600;
+}
+
+body.page-vendeur .conditions-content p {
+    margin: 10px 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+body.page-vendeur .conditions-content ul {
+    margin: 10px 0 10px 20px;
+    padding: 0;
+}
+
+body.page-vendeur .conditions-content li {
+    margin: 5px 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+body.page-vendeur .checkbox-group {
+    margin-top: 15px;
+}
+
+body.page-vendeur .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+body.page-vendeur .checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+body.page-vendeur .form-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+body.page-vendeur .btn-vendeur {
+    background: linear-gradient(135deg, #1e6b3a 0%, #2d8f4f 100%);
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.page-vendeur .btn-vendeur:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 107, 58, 0.4);
+}
+
+body.page-vendeur .confirmation-message {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+body.page-vendeur .confirmation-icon {
+    color: #1e6b3a;
+    margin-bottom: 20px;
+}
+
+body.page-vendeur .confirmation-message h4 {
+    color: #1e6b3a;
+    font-size: 1.5rem;
+    margin: 0 0 15px 0;
+}
+
+body.page-vendeur .confirmation-message p {
+    color: #666;
+    margin: 0 0 25px 0;
+    line-height: 1.6;
+}
+
+body.page-vendeur .btn-secondary {
+    background: white;
+    color: #1e6b3a;
+    padding: 12px 25px;
+    border: 2px solid #1e6b3a;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+body.page-vendeur .btn-secondary:hover {
+    background: #1e6b3a;
+    color: white;
+}
+
+/* Formulaire d'inscription sur la page vendeur */
+body.page-vendeur .vendeur-cta-principal {
+    position: relative;
+}
+
+body.page-vendeur .bouton-formulaire-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Main container pour les pages vendeurs */
+.vendeurs-main,
+.vendeur-main {
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 200px);
+}
+
+/* Section recherche-filtres avec style cohérent */
+body.page-vendeurs #recherche-filtres {
+    background-color: white;
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.page-vendeurs #recherche-filtres h2 {
+    font-size: 1.8rem;
+    color: #1e6b3a;
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+body.page-vendeurs #liste-vendeurs {
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Section produits pour la page vendeur */
+body.page-vendeur #produits {
+    background-color: white;
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.page-vendeur #produits h2 {
+    font-size: 1.8rem;
+    color: #1e6b3a;
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+body.page-vendeur #profil-vendeur {
+    background-color: white;
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.page-vendeur #acces-vendeur,
+body.page-vendeur #ajouter-produit,
+body.page-vendeur #contact {
+    background-color: white;
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.page-vendeur #mentions,
+body.page-vendeurs #mentions {
+    background-color: white;
+    padding: 30px 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    color: #666;
+}
+
 /* Section CTA */
 .annonces-cta-section {
     padding: 30px 20px;
@@ -7846,6 +9032,143 @@ body.page-categories main {
         font-size: 1rem;
     }
     
+    .vendeurs-header,
+    .vendeur-header {
+        padding: 30px 15px;
+    }
+    
+    .vendeurs-header h1,
+    .vendeur-header h1 {
+        font-size: 2rem;
+    }
+    
+    .vendeurs-subtitle,
+    .vendeur-subtitle {
+        font-size: 1rem;
+    }
+    
+    body.page-vendeurs #recherche-filtres,
+    body.page-vendeur #produits,
+    body.page-vendeur #profil-vendeur,
+    body.page-vendeur #acces-vendeur,
+    body.page-vendeur #ajouter-produit,
+    body.page-vendeur #contact {
+        padding: 20px 15px;
+        margin: 20px 15px;
+    }
+    
+    body.page-vendeurs #liste-vendeurs {
+        padding: 20px 15px;
+    }
+    
+    /* Responsive pour la page devenir vendeur */
+    .vendeur-key-message {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    .vendeur-key-message .key-message-icon {
+        font-size: 2rem;
+    }
+    
+    .vendeur-key-message .key-message-text {
+        font-size: 1rem;
+    }
+    
+    .vendeur-etapes {
+        padding: 40px 15px;
+    }
+    
+    .etapes-title {
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+    }
+    
+    .etapes-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .etape-item {
+        padding: 20px;
+    }
+    
+    .etape-number {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .etape-title {
+        font-size: 1.1rem;
+    }
+    
+    .etape-text {
+        font-size: 0.95rem;
+    }
+    
+    .vendeur-cta-principal {
+        padding: 40px 15px;
+    }
+    
+    .btn-vendeur-inscription {
+        padding: 18px 40px;
+        font-size: 1.2rem;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .cta-reassurance {
+        font-size: 0.95rem;
+    }
+    
+    .vendeur-cta-secondaire {
+        padding: 30px 15px;
+    }
+    
+    .btn-vendeur-aide {
+        padding: 14px 35px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .vendeur-rassurance {
+        padding: 30px 15px;
+    }
+    
+    .rassurance-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .rassurance-icon {
+        font-size: 2.5rem;
+    }
+    
+    .rassurance-text {
+        font-size: 1rem;
+    }
+    
+    .vendeur-mention {
+        padding: 30px 15px;
+    }
+    
+    .mention-content {
+        padding: 20px;
+    }
+    
+    .mention-title {
+        font-size: 1.1rem;
+    }
+    
+    .mention-text {
+        font-size: 0.95rem;
+    }
+    
     .annonces-cta-section {
         padding: 20px 15px;
     }
@@ -7900,6 +9223,43 @@ body.page-categories main {
 @media (max-width: 480px) {
     .annonces-header h1 {
         font-size: 1.8rem;
+    }
+    
+    .vendeurs-header h1,
+    .vendeur-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .vendeurs-subtitle,
+    .vendeur-subtitle {
+        font-size: 0.95rem;
+    }
+    
+    body.page-vendeurs #recherche-filtres h2,
+    body.page-vendeur #produits h2 {
+        font-size: 1.5rem;
+    }
+    
+    /* Responsive pour la page de profil vendeur */
+    .vendeur-profil-header {
+        padding: 30px 15px;
+    }
+    
+    .vendeur-profil-info h1 {
+        font-size: 2rem;
+    }
+    
+    .vendeur-profil-contact {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .vendeur-profil-annonces h2 {
+        font-size: 1.5rem;
+    }
+    
+    .annonces-vendeur-container {
+        grid-template-columns: 1fr;
     }
     
     .annonce-media-container.audio-only {
