@@ -5824,6 +5824,24 @@ body.page-opportunite .etape-item {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-top: 3px solid #1e6b3a;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+body.page-opportunite .etape-item h3 {
+    margin: 0 0 10px 0;
+    color: #1e6b3a;
+    font-size: 1.3rem;
+    font-weight: 600;
+    order: 1;
+}
+
+body.page-opportunite .etape-item p {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+    order: 2;
 }
 
 body.page-opportunite .cible-item:nth-child(2),
