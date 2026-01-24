@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Vendeur - Teranga Bio Sénégal</title>
+    <link rel="stylesheet" href="styles.css?v=31">
+</head>
+<body class="page-dashboard">
+    <button id="mobile-back-button" class="mobile-back-button" aria-label="Retour">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </button>
+    
+    <header class="dashboard-header">
+        <div class="dashboard-header-content">
+            <div class="dashboard-header-left">
+                <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
+                <h1>Espace Vendeur</h1>
+            </div>
+            <div class="dashboard-header-right">
+                <span id="dashboard-user-name" class="dashboard-user-name"></span>
+                <button id="btn-deconnexion" class="btn btn-secondary btn-deconnexion">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    <span>Déconnexion</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <div id="dashboard-content" class="dashboard-content">
+                <div class="dashboard-welcome">
+                    <h2>Bienvenue dans votre espace vendeur</h2>
+                    <p>Gérez vos produits, vos annonces et consultez vos messages.</p>
+                </div>
+                
+                <div class="dashboard-sections">
+                    <section class="dashboard-section">
+                        <h3>📢 Mes annonces</h3>
+                        <div id="mes-annonces" class="dashboard-list">
+                            <p class="dashboard-empty">Aucune annonce pour le moment.</p>
+                        </div>
+                    </section>
+                    
+                    <section class="dashboard-section">
+                        <h3>💬 Mes messages</h3>
+                        <div id="mes-messages" class="dashboard-list">
+                            <p class="dashboard-empty">Aucun message pour le moment.</p>
+                        </div>
+                    </section>
+                    
+                    <section class="dashboard-section">
+                        <h3>📊 Statistiques</h3>
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat-item">
+                                <span class="stat-label">Annonces actives</span>
+                                <span class="stat-value" id="stat-annonces">0</span>
+                            </div>
+                            <div class="dashboard-stat-item">
+                                <span class="stat-label">Messages non lus</span>
+                                <span class="stat-value" id="stat-messages">0</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer chargé dynamiquement -->
+    <div id="footer-placeholder"></div>
+    
+    <script src="script.js?v=23"></script>
+    <script>
+        // Vérifier la session au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+            
+            if (!session || session.role !== 'vendeur') {
+                // Pas de session ou mauvais rôle : rediriger vers l'accueil
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Afficher le nom de l'utilisateur
+            const userName = document.getElementById('dashboard-user-name');
+            if (userName) {
+                userName.textContent = session.nom || session.email;
+            }
+            
+            // Charger les données du vendeur
+            chargerDonneesVendeur(session.id);
+            
+            // Gérer la déconnexion
+            const btnDeconnexion = document.getElementById('btn-deconnexion');
+            if (btnDeconnexion) {
+                btnDeconnexion.addEventListener('click', function() {
+                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                        localStorage.removeItem('user_session');
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+            
+            // Initialiser le bouton de retour mobile
+            if (typeof initialiserBoutonRetour === 'function') {
+                initialiserBoutonRetour();
+            }
+        });
+        
+        function chargerDonneesVendeur(vendeurId) {
+            // Charger les annonces du vendeur
+            try {
+                const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+                const annoncesVendeur = annonces.filter(a => {
+                    // Vérifier si l'annonce appartient à ce vendeur
+                    const vendeur = trouverVendeur(vendeurId);
+                    if (vendeur) {
+                        const contactVendeur = vendeur.telephone || vendeur.email || '';
+                        const contactAnnonce = a.contact || '';
+                        return contactAnnonce.replace(/\s/g, '') === contactVendeur.replace(/\s/g, '');
+                    }
+                    return false;
+                });
+                
+                const mesAnnoncesDiv = document.getElementById('mes-annonces');
+                if (mesAnnoncesDiv) {
+                    if (annoncesVendeur.length > 0) {
+                        mesAnnoncesDiv.innerHTML = annoncesVendeur.map(annonce => `
+                            <div class="dashboard-item">
+                                <h4>${annonce.titre || 'Annonce sans titre'}</h4>
+                                <p>${annonce.lieu || 'Lieu non spécifié'}</p>
+                                <span class="dashboard-badge">${annonce.type || 'Annonce'}</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        mesAnnoncesDiv.innerHTML = '<p class="dashboard-empty">Aucune annonce pour le moment.</p>';
+                    }
+                }
+                
+                // Mettre à jour les statistiques
+                const statAnnonces = document.getElementById('stat-annonces');
+                if (statAnnonces) {
+                    statAnnonces.textContent = annoncesVendeur.length;
+                }
+            } catch (e) {
+                console.error('Erreur chargement annonces:', e);
+            }
+            
+            // Charger les messages du vendeur
+            try {
+                const messages = JSON.parse(localStorage.getItem(`messages_vendeur_${vendeurId}`) || '[]');
+                const messagesNonLus = messages.filter(m => !m.lu);
+                
+                const mesMessagesDiv = document.getElementById('mes-messages');
+                if (mesMessagesDiv) {
+                    if (messages.length > 0) {
+                        mesMessagesDiv.innerHTML = messages.map(message => `
+                            <div class="dashboard-item ${message.lu ? '' : 'dashboard-item-unread'}">
+                                <h4>${message.titre || 'Message'}</h4>
+                                <p>${message.contenu.substring(0, 100)}${message.contenu.length > 100 ? '...' : ''}</p>
+                                <span class="dashboard-date">${new Date(message.dateCreation).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        mesMessagesDiv.innerHTML = '<p class="dashboard-empty">Aucun message pour le moment.</p>';
+                    }
+                }
+                
+                // Mettre à jour les statistiques
+                const statMessages = document.getElementById('stat-messages');
+                if (statMessages) {
+                    statMessages.textContent = messagesNonLus.length;
+                }
+            } catch (e) {
+                console.error('Erreur chargement messages:', e);
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -533,24 +533,26 @@
             const form = document.getElementById('form-inscription');
             const formData = new FormData(form);
             
-            const inscription = {
+            // Format compatible avec admin.js : utiliser 'nom' au lieu de 'nomVendeur'
+            const vendeur = {
                 id: Date.now(),
                 date: new Date().toISOString(),
-                nomVendeur: formData.get('nom-vendeur'),
+                nom: formData.get('nom-vendeur'), // Format attendu par l'admin
                 description: formData.get('description-vendeur'),
                 zone: formData.get('zone-vendeur'),
                 telephone: formData.get('telephone-vendeur'),
                 whatsapp: formData.get('whatsapp-vendeur'),
                 disponibilite: formData.get('disponibilite-vendeur'),
+                password: formData.get('password-vendeur'), // Mot de passe pour l'accès vendeur
                 statut: 'en_attente'
             };
             
-            // Récupérer les inscriptions existantes
-            let inscriptions = JSON.parse(localStorage.getItem('inscriptionsVendeurs') || '[]');
-            inscriptions.push(inscription);
-            localStorage.setItem('inscriptionsVendeurs', JSON.stringify(inscriptions));
+            // Sauvegarder dans 'vendeurs_inscrits' pour que l'admin puisse le voir
+            let vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+            vendeursInscrits.push(vendeur);
+            localStorage.setItem('vendeurs_inscrits', JSON.stringify(vendeursInscrits));
             
-            console.log('Inscription vendeur sauvegardée:', inscription);
+            console.log('Inscription vendeur sauvegardée:', vendeur);
         }
         
         function resetFormVendeur() {

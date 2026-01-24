@@ -12,8 +12,9 @@
             <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
         </svg>
     </button>
+    
     <!-- Section de connexion -->
-    <div id="admin-login" class="admin-login-container" style="display: flex !important; visibility: visible !important;">
+    <div id="admin-login" class="admin-login-container">
         <div class="admin-login-box">
             <h1>Administration</h1>
             <h2>Connexion administrateur</h2>
@@ -29,95 +30,359 @@
 
     <!-- Tableau de bord administrateur -->
     <div id="admin-dashboard" style="display: none;">
-        <header>
-            <h1>Administration - Teranga Bio</h1>
-            <div class="admin-header-actions">
-                <button id="btn-deconnexion" class="btn-secondary">Déconnexion</button>
-                <a href="index.html" class="btn">Retour à l'accueil</a>
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <h1>Administration - Teranga Bio Sénégal</h1>
+                <div class="admin-header-actions">
+                    <button id="btn-deconnexion" class="btn-secondary">Déconnexion</button>
+                    <a href="index.html" class="btn">Retour à l'accueil</a>
+                </div>
             </div>
         </header>
-        <main>
-            <!-- Avertissement localStorage -->
-            <section id="admin-avertissement" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                <h3 style="color: #856404; margin-top: 0;">⚠️ Important : Stockage local</h3>
-                <p style="color: #856404; margin-bottom: 10px;">
-                    Les données sont stockées localement dans votre navigateur (localStorage). 
-                    <strong>Les vendeurs inscrits sur d'autres appareils ou navigateurs ne seront pas visibles ici.</strong>
-                </p>
-                <p style="color: #856404; margin-bottom: 0;">
-                    Pour partager les données entre appareils, utilisez les boutons d'export/import ci-dessous.
-                </p>
-            </section>
+        
+        <main class="admin-main">
+            <!-- Navigation par onglets -->
+            <nav class="admin-tabs">
+                <button class="admin-tab active" data-tab="dashboard">📊 Tableau de bord</button>
+                <button class="admin-tab" data-tab="vendeurs">👥 Vendeurs</button>
+                <button class="admin-tab" data-tab="partenaires">🤝 Partenaires</button>
+                <button class="admin-tab" data-tab="annonces">📢 Annonces</button>
+                <button class="admin-tab" data-tab="campagnes">⭐ Campagnes</button>
+                <button class="admin-tab" data-tab="categories">📁 Catégories & Zones</button>
+            </nav>
 
-            <!-- Statistiques -->
-            <section id="admin-stats">
-                <h2>Statistiques de la plateforme</h2>
+            <!-- Onglet : Tableau de bord -->
+            <section id="tab-dashboard" class="admin-tab-content active">
+                <h2>Tableau de bord</h2>
+                
+                <!-- Encart sécurité et responsabilité -->
+                <div class="admin-security-info">
+                    <h3>🔒 Rôle et responsabilités administrateur</h3>
+                    <p><strong>Rôle :</strong> Vous êtes responsable de la modération des contenus, de la validation des vendeurs et partenaires, et de la gestion éditoriale de la plateforme.</p>
+                    <p><strong>Responsabilité éditoriale :</strong> Tous les contenus publiés (annonces, campagnes) doivent respecter les valeurs de Teranga Bio Sénégal et les règles de publication.</p>
+                    <p><strong>Modération :</strong> Vérifiez chaque annonce avant publication, validez les demandes de vendeurs et partenaires selon les critères établis.</p>
+                </div>
+
+                <!-- Avertissement localStorage -->
+                <div class="admin-warning">
+                    <h3>⚠️ Important : Stockage local</h3>
+                    <p>Les données sont stockées localement dans votre navigateur (localStorage). Les données sur d'autres appareils ne seront pas visibles ici.</p>
+                </div>
+
+                <!-- État de la plateforme - KPI -->
+                <div class="admin-kpi-section">
+                    <h3>📊 État de la plateforme</h3>
+                    <div class="admin-kpi-grid">
+                        <div class="admin-kpi-card">
+                            <div class="kpi-icon">📢</div>
+                            <div class="kpi-content">
+                                <h4>Annonces totales</h4>
+                                <p class="kpi-number" id="kpi-annonces-totales">0</p>
+                                <p class="kpi-detail" id="kpi-annonces-detail">-</p>
+                            </div>
+                        </div>
+                        <div class="admin-kpi-card">
+                            <div class="kpi-icon">📅</div>
+                            <div class="kpi-content">
+                                <h4>Annonces cette semaine</h4>
+                                <p class="kpi-number" id="kpi-annonces-semaine">0</p>
+                                <p class="kpi-detail" id="kpi-annonces-aujourdhui">Aujourd'hui: 0</p>
+                            </div>
+                        </div>
+                        <div class="admin-kpi-card">
+                            <div class="kpi-icon">👥</div>
+                            <div class="kpi-content">
+                                <h4>Vendeurs actifs</h4>
+                                <p class="kpi-number" id="kpi-vendeurs-actifs">0</p>
+                                <p class="kpi-detail">Avec au moins une annonce</p>
+                            </div>
+                        </div>
+                        <div class="admin-kpi-card">
+                            <div class="kpi-icon">🎬</div>
+                            <div class="kpi-content">
+                                <h4>Répartition média</h4>
+                                <p class="kpi-number" id="kpi-video-audio">-</p>
+                                <p class="kpi-detail" id="kpi-video-audio-detail">-</p>
+                            </div>
+                        </div>
+                        <div class="admin-kpi-card kpi-card-large">
+                            <div class="kpi-icon">📍</div>
+                            <div class="kpi-content">
+                                <h4>Zones les plus actives</h4>
+                                <div class="kpi-zones-list" id="kpi-zones-actives">
+                                    <p class="kpi-detail">Chargement...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Centre de décisions -->
+                <div class="admin-decision-center">
+                    <h3>🎯 Centre de décisions</h3>
+                    <div class="admin-decision-grid">
+                        <div class="admin-decision-card decision-pending">
+                            <div class="decision-icon" data-target="tab-vendeurs" data-filter="en_attente" role="button" tabindex="0" aria-label="Voir les vendeurs en attente">⚠️</div>
+                            <div class="decision-content">
+                                <h4>Vendeurs en attente</h4>
+                                <p class="decision-number" id="decision-vendeurs-pending">0</p>
+                                <button class="btn btn-decision" data-target="tab-vendeurs" data-filter="en_attente">
+                                    Voir / Traiter maintenant
+                                </button>
+                            </div>
+                        </div>
+                        <div class="admin-decision-card decision-pending">
+                            <div class="decision-icon" data-target="tab-partenaires" data-filter="en_attente" role="button" tabindex="0" aria-label="Voir les partenaires en attente">🔔</div>
+                            <div class="decision-content">
+                                <h4>Partenaires en attente</h4>
+                                <p class="decision-number" id="decision-partenaires-pending">0</p>
+                                <button class="btn btn-decision" data-target="tab-partenaires" data-filter="en_attente">
+                                    Voir / Traiter maintenant
+                                </button>
+                            </div>
+                        </div>
+                        <div class="admin-decision-card decision-moderation">
+                            <div class="decision-icon" data-target="tab-annonces" data-filter="en_attente" role="button" tabindex="0" aria-label="Voir les annonces à modérer">📣</div>
+                            <div class="decision-content">
+                                <h4>Annonces à modérer</h4>
+                                <p class="decision-number" id="decision-annonces-pending">0</p>
+                                <button class="btn btn-decision" data-target="tab-annonces" data-filter="en_attente">
+                                    Voir / Traiter maintenant
+                                </button>
+                            </div>
+                        </div>
+                        <div class="admin-decision-card decision-active">
+                            <div class="decision-icon" data-target="tab-campagnes" role="button" tabindex="0" aria-label="Voir les campagnes actives">⭐</div>
+                            <div class="decision-content">
+                                <h4>Campagnes actives</h4>
+                                <p class="decision-number" id="decision-campagnes-active">0</p>
+                                <button class="btn btn-decision" data-target="tab-campagnes">
+                                    Voir / Traiter maintenant
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistiques générales -->
                 <div class="admin-stats-grid">
                     <div class="admin-stat-card">
                         <h3>Vendeurs totaux</h3>
                         <p class="admin-stat-number" id="stat-vendeurs-totaux">-</p>
+                        <p class="admin-stat-detail" id="stat-vendeurs-detail">-</p>
                     </div>
                     <div class="admin-stat-card">
-                        <h3>Vendeurs inscrits</h3>
-                        <p class="admin-stat-number" id="stat-vendeurs-inscrits">-</p>
+                        <h3>Partenaires totaux</h3>
+                        <p class="admin-stat-number" id="stat-partenaires-totaux">-</p>
+                        <p class="admin-stat-detail" id="stat-partenaires-detail">-</p>
                     </div>
                     <div class="admin-stat-card">
-                        <h3>Produits totaux</h3>
-                        <p class="admin-stat-number" id="stat-produits-totaux">-</p>
+                        <h3>Annonces totales</h3>
+                        <p class="admin-stat-number" id="stat-annonces-totales">-</p>
+                        <p class="admin-stat-detail" id="stat-annonces-detail">-</p>
                     </div>
                     <div class="admin-stat-card">
-                        <h3>Zones couvertes</h3>
-                        <p class="admin-stat-number" id="stat-zones">-</p>
+                        <h3>Campagnes actives</h3>
+                        <p class="admin-stat-number" id="stat-campagnes-actives">-</p>
+                        <p class="admin-stat-detail" id="stat-campagnes-detail">-</p>
+                    </div>
+                </div>
+
+                <!-- En attente de validation -->
+                <div class="admin-pending-section">
+                    <h3>En attente de validation</h3>
+                    <div class="admin-pending-grid">
+                        <div class="admin-pending-card">
+                            <h4>Vendeurs en attente</h4>
+                            <p class="admin-pending-number" id="pending-vendeurs">0</p>
+                            <button class="btn" onclick="adminSwitchTab('vendeurs', 'en_attente')">Voir la liste</button>
+                        </div>
+                        <div class="admin-pending-card">
+                            <h4>Partenaires en attente</h4>
+                            <p class="admin-pending-number" id="pending-partenaires">0</p>
+                            <button class="btn" onclick="adminSwitchTab('partenaires', 'en_attente')">Voir la liste</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Annonces récentes -->
+                <div class="admin-recent-section">
+                    <h3>Annonces récentes</h3>
+                    <div id="admin-recent-annonces" class="admin-recent-list">
+                        <!-- Généré par JS -->
+                    </div>
+                </div>
+
+                <!-- Historique des actions admin -->
+                <div class="admin-history-section">
+                    <div class="admin-section-header">
+                        <h3>📋 Historique des actions administrateur</h3>
+                        <button id="btn-clear-history" class="btn-secondary btn-small">Effacer l'historique</button>
+                    </div>
+                    <div id="admin-history" class="admin-history-list">
+                        <!-- Généré par JS -->
                     </div>
                 </div>
             </section>
 
-            <!-- Inscriptions en attente -->
-            <section id="admin-en-attente">
-                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 15px !important; flex-wrap: wrap; gap: 15px;">
-                    <h2 style="margin: 0;">Inscriptions en attente de validation</h2>
-                    <button id="btn-refresh-en-attente" class="btn" type="button" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important;">🔄 Actualiser</button>
+            <!-- Onglet : Vendeurs -->
+            <section id="tab-vendeurs" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des vendeurs</h2>
+                    <button id="btn-refresh-vendeurs" class="btn-secondary">🔄 Actualiser</button>
                 </div>
-                <div id="liste-en-attente">
+                
+                <!-- Filtres -->
+                <div class="admin-filters">
+                    <input type="text" id="filter-vendeurs-search" placeholder="Rechercher un vendeur..." class="admin-filter-input">
+                    <select id="filter-vendeurs-statut" class="admin-filter-select">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente">En attente</option>
+                        <option value="valide">Validé</option>
+                        <option value="suspendu">Suspendu</option>
+                    </select>
+                    <select id="filter-vendeurs-zone" class="admin-filter-select">
+                        <option value="">Toutes les zones</option>
+                    </select>
+                </div>
+
+                <div id="admin-vendeurs-list" class="admin-list">
                     <!-- Liste générée par JS -->
                 </div>
-                <div id="message-validation" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+                
+                <!-- Message de confirmation -->
+                <div id="message-vendeurs" class="admin-message" style="display: none;"></div>
             </section>
 
-            <!-- Liste des vendeurs -->
-            <section id="admin-vendeurs">
-                <h2>Gestion des vendeurs validés</h2>
-                <div id="liste-admin-vendeurs">
+            <!-- Onglet : Partenaires -->
+            <section id="tab-partenaires" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des partenaires</h2>
+                    <button id="btn-refresh-partenaires" class="btn-secondary">🔄 Actualiser</button>
+                </div>
+                
+                <!-- Filtres -->
+                <div class="admin-filters">
+                    <input type="text" id="filter-partenaires-search" placeholder="Rechercher un partenaire..." class="admin-filter-input">
+                    <select id="filter-partenaires-statut" class="admin-filter-select">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente">En attente</option>
+                        <option value="valide">Validé</option>
+                        <option value="suspendu">Suspendu</option>
+                    </select>
+                    <select id="filter-partenaires-type" class="admin-filter-select">
+                        <option value="">Tous les types</option>
+                        <option value="ONG">ONG</option>
+                        <option value="coopérative">Coopérative</option>
+                        <option value="projet">Projet</option>
+                        <option value="institution">Institution</option>
+                        <option value="entreprise">Entreprise</option>
+                    </select>
+                </div>
+
+                <div id="admin-partenaires-list" class="admin-list">
                     <!-- Liste générée par JS -->
                 </div>
+                
+                <!-- Message de confirmation -->
+                <div id="message-partenaires" class="admin-message" style="display: none;"></div>
             </section>
 
-            <!-- Export/Import de données -->
-            <section id="admin-export-import" style="margin-bottom: 30px;">
-                <h2>Export/Import des données</h2>
-                <div class="admin-actions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
-                    <button id="btn-export-vendeurs" class="btn" style="background-color: #1e6b3a;">📥 Exporter les vendeurs</button>
-                    <button id="btn-import-vendeurs" class="btn" style="background-color: #1e6b3a;">📤 Importer les vendeurs</button>
-                    <input type="file" id="input-import-vendeurs" accept=".json" style="display: none;">
+            <!-- Onglet : Annonces -->
+            <section id="tab-annonces" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion et modération des annonces</h2>
+                    <button id="btn-refresh-annonces" class="btn-secondary">🔄 Actualiser</button>
                 </div>
-                <div id="message-export-import" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+                
+                <!-- Filtres -->
+                <div class="admin-filters">
+                    <input type="text" id="filter-annonces-search" placeholder="Rechercher par catégorie, zone, contact..." class="admin-filter-input">
+                    <select id="filter-annonces-format" class="admin-filter-select">
+                        <option value="">Tous les formats</option>
+                        <option value="video">📹 Vidéo</option>
+                        <option value="audio">🎙️ Audio</option>
+                    </select>
+                    <select id="filter-annonces-origine" class="admin-filter-select">
+                        <option value="">Toutes les origines</option>
+                        <option value="vendeur">👤 Vendeur</option>
+                        <option value="partenaire">🤝 Partenaire</option>
+                    </select>
+                    <select id="filter-annonces-statut" class="admin-filter-select">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente">⏳ En attente</option>
+                        <option value="publiee">✓ Publiée</option>
+                        <option value="masquee">👁️ Masquée</option>
+                        <option value="refusee">✗ Refusée</option>
+                    </select>
+                    <select id="filter-annonces-categorie" class="admin-filter-select">
+                        <option value="">Toutes les catégories</option>
+                    </select>
+                    <select id="filter-annonces-zone" class="admin-filter-select">
+                        <option value="">Toutes les zones</option>
+                    </select>
+                </div>
+
+                <div id="admin-annonces-list" class="admin-annonces-grid">
+                    <!-- Liste générée par JS -->
+                </div>
+                
+                <!-- Message de confirmation -->
+                <div id="message-annonces" class="admin-message" style="display: none;"></div>
             </section>
 
-            <!-- Actions administratives -->
-            <section id="admin-actions">
-                <h2>Actions administratives</h2>
-                <div class="admin-actions-grid">
-                    <button id="btn-reset-vendeurs" class="btn-danger">Réinitialiser tous les vendeurs inscrits</button>
-                    <button id="btn-reset-produits" class="btn-danger">Réinitialiser tous les produits</button>
-                    <button id="btn-reset-tout" class="btn-danger">Réinitialiser toutes les données</button>
+            <!-- Onglet : Campagnes -->
+            <section id="tab-campagnes" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des campagnes partenaires</h2>
+                    <button id="btn-refresh-campagnes" class="btn-secondary">🔄 Actualiser</button>
                 </div>
-                <div id="message-admin-actions" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
+
+                <div id="admin-campagnes-list" class="admin-list">
+                    <!-- Liste générée par JS -->
+                </div>
+                
+                <!-- Message de confirmation -->
+                <div id="message-campagnes" class="admin-message" style="display: none;"></div>
+            </section>
+
+            <!-- Onglet : Catégories & Zones -->
+            <section id="tab-categories" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des catégories et zones</h2>
+                </div>
+
+                <div class="admin-categories-zones-grid">
+                    <div class="admin-categories-section">
+                        <h3>Catégories de produits</h3>
+                        <div class="admin-add-item">
+                            <input type="text" id="new-categorie" placeholder="Nom de la catégorie" class="admin-input">
+                            <button id="btn-add-categorie" class="btn">Ajouter</button>
+                        </div>
+                        <div id="admin-categories-list" class="admin-items-list">
+                            <!-- Liste générée par JS -->
+                        </div>
+                    </div>
+
+                    <div class="admin-zones-section">
+                        <h3>Zones géographiques</h3>
+                        <div class="admin-add-item">
+                            <input type="text" id="new-zone" placeholder="Nom de la zone" class="admin-input">
+                            <button id="btn-add-zone" class="btn">Ajouter</button>
+                        </div>
+                        <div id="admin-zones-list" class="admin-items-list">
+                            <!-- Liste générée par JS -->
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
+        
         <!-- Footer chargé dynamiquement -->
         <div id="footer-placeholder"></div>
     </div>
+    
     <script src="script.js?v=26"></script>
+    <script src="admin.js?v=1"></script>
 </body>
 </html>
-

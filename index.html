@@ -68,7 +68,74 @@
                 <span></span>
             </button>
         </div>
+        <button id="btn-connexion" class="btn-connexion-header" aria-label="Se connecter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span id="btn-connexion-text">Se connecter</span>
+        </button>
     </header>
+    
+    <!-- Modal de connexion -->
+    <div id="modal-connexion" class="modal-connexion" style="display: none;">
+        <div class="modal-connexion-overlay" id="modal-connexion-overlay"></div>
+        <div class="modal-connexion-content">
+            <button class="modal-connexion-close" id="modal-connexion-close" aria-label="Fermer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            <h2>Connexion</h2>
+            <p class="modal-connexion-intro">Connectez-vous pour accéder à votre espace</p>
+            
+            <form id="form-connexion" class="form-connexion" autocomplete="off">
+                <div class="form-group">
+                    <label for="connexion-email">Email ou Téléphone <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="connexion-email" 
+                        name="connexion-email" 
+                        placeholder="votre@email.com ou 77 123 45 67" 
+                        required
+                        autocomplete="username">
+                    <span class="error-message">Veuillez entrer un email ou un numéro de téléphone</span>
+                    <p class="help-text">Pour les vendeurs : utilisez votre email ou votre numéro de téléphone</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="connexion-password">Mot de passe <span class="required">*</span></label>
+                    <input 
+                        type="password" 
+                        id="connexion-password" 
+                        name="connexion-password" 
+                        placeholder="Votre mot de passe" 
+                        required
+                        autocomplete="current-password">
+                    <span class="error-message">Veuillez entrer votre mot de passe</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="connexion-role">Je suis <span class="required">*</span></label>
+                    <select id="connexion-role" name="connexion-role" required>
+                        <option value="">Sélectionner un rôle</option>
+                        <option value="vendeur">Vendeur</option>
+                        <option value="partenaire">Partenaire</option>
+                    </select>
+                    <span class="error-message">Veuillez sélectionner un rôle</span>
+                </div>
+                
+                <div id="message-connexion" class="message-connexion" style="display: none;"></div>
+                
+                <button type="submit" class="btn btn-primary btn-connexion-submit">
+                    <span>Se connecter</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+    
     <main>
         <section id="accueil">
             <div class="accueil-container">
@@ -1033,24 +1100,26 @@
             const form = document.getElementById('form-inscription');
             const formData = new FormData(form);
             
-            const inscription = {
+            // Format compatible avec admin.js : utiliser 'nom' au lieu de 'nomVendeur'
+            const vendeur = {
                 id: Date.now(),
                 date: new Date().toISOString(),
-                nomVendeur: formData.get('nom-vendeur'),
+                nom: formData.get('nom-vendeur'), // Format attendu par l'admin
                 description: formData.get('description-vendeur'),
                 zone: formData.get('zone-vendeur'),
                 telephone: formData.get('telephone-vendeur'),
                 whatsapp: formData.get('whatsapp-vendeur'),
                 disponibilite: formData.get('disponibilite-vendeur'),
+                password: formData.get('password-vendeur'), // Mot de passe pour l'accès vendeur
                 statut: 'en_attente'
             };
             
-            // Récupérer les inscriptions existantes
-            let inscriptions = JSON.parse(localStorage.getItem('inscriptionsVendeurs') || '[]');
-            inscriptions.push(inscription);
-            localStorage.setItem('inscriptionsVendeurs', JSON.stringify(inscriptions));
+            // Sauvegarder dans 'vendeurs_inscrits' pour que l'admin puisse le voir
+            let vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+            vendeursInscrits.push(vendeur);
+            localStorage.setItem('vendeurs_inscrits', JSON.stringify(vendeursInscrits));
             
-            console.log('Inscription vendeur sauvegardée:', inscription);
+            console.log('Inscription vendeur sauvegardée:', vendeur);
         }
         
         function resetFormVendeurAccueil() {
@@ -1210,6 +1279,233 @@
                 }
             }
         });
+        
+        // ============================================
+        // GESTION DE LA CONNEXION
+        // ============================================
+        
+        // Vérifier si un utilisateur est déjà connecté
+        function verifierConnexion() {
+            const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+            const btnConnexion = document.getElementById('btn-connexion');
+            const btnConnexionText = document.getElementById('btn-connexion-text');
+            
+            if (session && session.id && session.role) {
+                // Utilisateur connecté : changer le texte du bouton
+                if (btnConnexionText) {
+                    btnConnexionText.textContent = 'Mon espace';
+                }
+                if (btnConnexion) {
+                    btnConnexion.setAttribute('data-connected', 'true');
+                }
+            } else {
+                // Utilisateur non connecté
+                if (btnConnexionText) {
+                    btnConnexionText.textContent = 'Se connecter';
+                }
+                if (btnConnexion) {
+                    btnConnexion.removeAttribute('data-connected');
+                }
+            }
+        }
+        
+        // Ouvrir le modal de connexion
+        function ouvrirModalConnexion() {
+            const modal = document.getElementById('modal-connexion');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        // Fermer le modal de connexion
+        function fermerModalConnexion() {
+            const modal = document.getElementById('modal-connexion');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                // Réinitialiser le formulaire
+                const form = document.getElementById('form-connexion');
+                if (form) {
+                    form.reset();
+                    const messageDiv = document.getElementById('message-connexion');
+                    if (messageDiv) {
+                        messageDiv.style.display = 'none';
+                    }
+                }
+            }
+        }
+        
+        // Gérer le clic sur le bouton de connexion
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnConnexion = document.getElementById('btn-connexion');
+            const modal = document.getElementById('modal-connexion');
+            const overlay = document.getElementById('modal-connexion-overlay');
+            const btnClose = document.getElementById('modal-connexion-close');
+            const form = document.getElementById('form-connexion');
+            
+            // Vérifier l'état de connexion au chargement
+            verifierConnexion();
+            
+            // Ouvrir le modal au clic sur le bouton
+            if (btnConnexion) {
+                btnConnexion.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isConnected = btnConnexion.getAttribute('data-connected') === 'true';
+                    
+                    if (isConnected) {
+                        // Rediriger vers le dashboard
+                        const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+                        if (session && session.role) {
+                            if (session.role === 'vendeur') {
+                                window.location.href = 'vendeur-dashboard.html';
+                            } else if (session.role === 'partenaire') {
+                                window.location.href = 'partenaire-dashboard.html';
+                            }
+                        }
+                    } else {
+                        // Ouvrir le modal de connexion
+                        ouvrirModalConnexion();
+                    }
+                });
+            }
+            
+            // Fermer le modal au clic sur l'overlay
+            if (overlay) {
+                overlay.addEventListener('click', fermerModalConnexion);
+            }
+            
+            // Fermer le modal au clic sur le bouton fermer
+            if (btnClose) {
+                btnClose.addEventListener('click', fermerModalConnexion);
+            }
+            
+            // Fermer le modal avec la touche Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+                    fermerModalConnexion();
+                }
+            });
+            
+            // Gérer la soumission du formulaire
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('connexion-email').value.trim();
+                    const password = document.getElementById('connexion-password').value;
+                    const role = document.getElementById('connexion-role').value;
+                    const messageDiv = document.getElementById('message-connexion');
+                    
+                    // Validation
+                    if (!email || !password || !role) {
+                        afficherMessageConnexion('Veuillez remplir tous les champs.', 'error');
+                        return;
+                    }
+                    
+                    // Vérifier les identifiants selon le rôle
+                    const utilisateur = verifierIdentifiants(email, password, role);
+                    
+                    if (utilisateur) {
+                        // Connexion réussie
+                        const session = {
+                            id: utilisateur.id,
+                            email: email,
+                            role: role,
+                            nom: utilisateur.nom || email,
+                            dateConnexion: new Date().toISOString()
+                        };
+                        
+                        localStorage.setItem('user_session', JSON.stringify(session));
+                        
+                        // Fermer le modal
+                        fermerModalConnexion();
+                        
+                        // Rediriger vers le dashboard approprié
+                        if (role === 'vendeur') {
+                            window.location.href = 'vendeur-dashboard.html';
+                        } else if (role === 'partenaire') {
+                            window.location.href = 'partenaire-dashboard.html';
+                        }
+                    } else {
+                        afficherMessageConnexion('Email/téléphone, mot de passe ou rôle incorrect.', 'error');
+                    }
+                });
+            }
+        });
+        
+        /**
+         * Vérifier les identifiants de connexion
+         * Pour les vendeurs : vérifier dans vendeurs_inscrits avec email/telephone et password
+         * Pour les partenaires : vérifier dans demandesPartenaires avec email et password
+         */
+        function verifierIdentifiants(email, password, role) {
+            try {
+                if (role === 'vendeur') {
+                    // Charger les vendeurs
+                    let tousVendeurs = [];
+                    
+                    // Depuis le tableau global si disponible
+                    if (typeof vendeurs !== 'undefined' && Array.isArray(vendeurs)) {
+                        tousVendeurs = [...vendeurs];
+                    }
+                    
+                    // Depuis localStorage
+                    const inscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+                    inscrits.forEach(v => {
+                        if (!tousVendeurs.find(existing => existing.id === v.id)) {
+                            tousVendeurs.push(v);
+                        }
+                    });
+                    
+                    // Chercher un vendeur avec cet email/téléphone et ce mot de passe
+                    const vendeur = tousVendeurs.find(v => {
+                        const emailMatch = (v.email && v.email.toLowerCase() === email.toLowerCase());
+                        const telMatch = (v.telephone && v.telephone.replace(/\s/g, '') === email.replace(/\s/g, ''));
+                        const passwordMatch = v.password === password;
+                        const isValide = !v.statut || v.statut === 'valide';
+                        
+                        return (emailMatch || telMatch) && passwordMatch && isValide;
+                    });
+                    
+                    return vendeur || null;
+                    
+                } else if (role === 'partenaire') {
+                    // Charger les partenaires
+                    const partenaires = JSON.parse(localStorage.getItem('demandesPartenaires') || '[]');
+                    
+                    // Chercher un partenaire avec cet email et ce mot de passe
+                    const partenaire = partenaires.find(p => {
+                        const emailMatch = p.email && p.email.toLowerCase() === email.toLowerCase();
+                        const passwordMatch = p.password === password;
+                        const isValide = !p.statut || p.statut === 'valide';
+                        
+                        return emailMatch && passwordMatch && isValide;
+                    });
+                    
+                    return partenaire || null;
+                }
+            } catch (e) {
+                console.error('Erreur vérification identifiants:', e);
+                return null;
+            }
+            
+            return null;
+        }
+        
+        function afficherMessageConnexion(message, type) {
+            const messageDiv = document.getElementById('message-connexion');
+            if (messageDiv) {
+                messageDiv.textContent = message;
+                messageDiv.className = `message-connexion message-${type}`;
+                messageDiv.style.display = 'block';
+                
+                // Masquer après 5 secondes
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
     </script>
 </body>
 </html>
