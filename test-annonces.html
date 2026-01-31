@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Annonces</title>
+</head>
+<body>
+    <h1>Test des annonces dans localStorage</h1>
+    <button onclick="afficherAnnonces()">Afficher les annonces</button>
+    <div id="result"></div>
+    <script>
+        function afficherAnnonces() {
+            const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+            const result = document.getElementById('result');
+            result.innerHTML = '<h2>Nombre d\'annonces: ' + annonces.length + '</h2>';
+            result.innerHTML += '<pre>' + JSON.stringify(annonces, null, 2) + '</pre>';
+        }
+    </script>
+</body>
+</html>

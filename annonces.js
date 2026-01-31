@@ -104,24 +104,76 @@ function loadAnnonces(categorieFilter = null) {
         campagnesActives = getCampagnesActives();
     }
     
+    // Charger les annonces depuis localStorage ET le tableau statique
+    const annoncesLocales = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+    
+    // Filtrer uniquement les annonces publiées (statut = 'publiee')
+    const annoncesPubliees = annoncesLocales.filter(a => a.statut === 'publiee');
+    
+    // Combiner avec les annonces statiques (qui sont toujours considérées comme publiées)
+    // Convertir les annonces statiques au bon format si nécessaire
+    const annoncesStatiques = annonces.map(a => ({
+        ...a,
+        statut: 'publiee', // Les annonces statiques sont toujours publiées
+        dateCreated: a.dateCreated || new Date().toISOString()
+    }));
+    
+    // Combiner toutes les annonces publiées
+    let annoncesToDisplay = [...annoncesStatiques, ...annoncesPubliees];
+    
+    // Trier par date (plus récentes en premier)
+    annoncesToDisplay.sort((a, b) => {
+        const dateA = new Date(a.dateCreated || a.dateCreation || 0);
+        const dateB = new Date(b.dateCreated || b.dateCreation || 0);
+        return dateB - dateA;
+    });
+    
+    console.log('📢 Annonces chargées pour affichage:', annoncesToDisplay.length, annoncesToDisplay);
+    
     // Filtrer les annonces par catégorie si un filtre est présent
-    let annoncesToDisplay = annonces;
     if (categorieFilter) {
-        annoncesToDisplay = annonces.filter(annonce => {
-            // Mapping des catégories
-            const categoryMapping = {
-                'legumes': 'Légumes',
-                'fruits': 'Fruits',
-                'cereales': 'Céréales',
-                'transformes': 'Produits transformés',
-                'epices': 'Épices & condiments',
-                'elevage': 'Produits d\'élevage',
-                'semences': 'Semences & plants',
-                'artisanaux': 'Produits artisanaux bio'
-            };
-            const categoryName = categoryMapping[categorieFilter] || categorieFilter;
-            return annonce.product === categoryName || annonce.product.toLowerCase().includes(categorieFilter.toLowerCase());
+        // Mapping des catégories (ID vers valeurs possibles stockées dans annonce.product)
+        // Les annonces peuvent avoir product = "fruits", "légumes", etc. (avec accents maintenant)
+        // ou "Fruits", "Légumes", etc. (texte du bouton)
+        const categoryMapping = {
+            'legumes': ['legumes', 'légumes', 'Légumes', 'Légumes'],
+            'fruits': ['fruits', 'Fruits'],
+            'cereales': ['cereales', 'céréales', 'Céréales', 'Céréales & légumineuses'],
+            'transformes': ['transformes', 'produits transformés', 'Produits transformés'],
+            'epices': ['epices', 'épices', 'Épices & condiments', 'épices & condiments'],
+            'elevage': ['elevage', 'élevage', 'Produits d\'élevage', 'produits d\'élevage'],
+            'semences': ['semences', 'Semences & plants', 'semences & plants'],
+            'artisanaux': ['artisanal', 'artisanaux', 'Produits artisanaux bio', 'produits artisanaux bio'],
+            'artisanal': ['artisanal', 'artisanaux', 'Produits artisanaux bio', 'produits artisanaux bio'],
+            'autres': ['autre', 'Autre', 'Autres produits bio', 'autres produits bio'],
+            'autre': ['autre', 'Autre', 'Autres produits bio', 'autres produits bio']
+        };
+        
+        const categoryNames = categoryMapping[categorieFilter] || [categorieFilter];
+        
+        annoncesToDisplay = annoncesToDisplay.filter(annonce => {
+            if (!annonce.product) return false;
+            
+            const productValue = String(annonce.product).toLowerCase().trim();
+            
+            // Vérifier si le produit correspond à l'une des variantes de la catégorie
+            const matches = categoryNames.some(catName => {
+                const catNameLower = String(catName).toLowerCase().trim();
+                // Correspondance exacte ou partielle
+                return productValue === catNameLower || 
+                       productValue.includes(catNameLower) || 
+                       catNameLower.includes(productValue);
+            });
+            
+            if (matches) {
+                console.log('✅ Annonce correspond à la catégorie:', annonce.product, '→', categorieFilter);
+            }
+            
+            return matches;
         });
+        
+        console.log('🔍 Filtre catégorie:', categorieFilter, '→', categoryNames);
+        console.log('📋 Annonces filtrées:', annoncesToDisplay.length, 'sur', annoncesToDisplay.length + (annoncesStatiques.length + annoncesPubliees.length - annoncesToDisplay.length));
     }
     
     // Réinitialiser la page si on change de filtre
@@ -186,6 +238,38 @@ function loadAnnonces(categorieFilter = null) {
     }, 500);
 }
 
+// Normaliser le nom du produit pour l'affichage (corriger l'orthographe)
+function normalizeProductName(product) {
+    if (!product) return '';
+    
+    const productLower = product.toLowerCase().trim();
+    const productMapping = {
+        'legumes': 'Légumes',
+        'légumes': 'Légumes',
+        'fruits': 'Fruits',
+        'cereales': 'Céréales',
+        'céréales': 'Céréales',
+        'transformes': 'Produits transformés',
+        'produits transformés': 'Produits transformés',
+        'autre': 'Autre',
+        'epices': 'Épices & condiments',
+        'épices': 'Épices & condiments',
+        'elevage': 'Produits d\'élevage',
+        'élevage': 'Produits d\'élevage',
+        'semences': 'Semences & plants',
+        'artisanal': 'Produits artisanaux bio',
+        'artisanaux': 'Produits artisanaux bio'
+    };
+    
+    // Si on trouve une correspondance exacte, l'utiliser
+    if (productMapping[productLower]) {
+        return productMapping[productLower];
+    }
+    
+    // Sinon, capitaliser la première lettre et retourner
+    return product.charAt(0).toUpperCase() + product.slice(1);
+}
+
 // Afficher un indicateur de filtre de catégorie actif
 function displayCategoryFilter(categorieFilter) {
     const feed = document.getElementById('annonces-feed');
@@ -233,12 +317,27 @@ function createAnnonceCard(annonce) {
     card.className = 'annonce-card';
     card.dataset.annonceId = annonce.id;
     
-    const isVideo = annonce.format === 'video';
-    const typeIcon = isVideo ? '🎥' : '🎙';
-    const typeText = isVideo ? 'Vidéo' : 'Audio';
+    // Déterminer le format (video, audio, ou image)
+    const format = annonce.format || annonce.type;
+    const isVideo = format === 'video' || annonce.type === 'video';
+    const isAudio = format === 'audio' || annonce.type === 'audio';
+    const isImage = format === 'image' || annonce.type === 'image' || annonce.type === 'image_only';
+    
+    let typeIcon = '📢';
+    let typeText = 'Annonce';
+    if (isVideo) {
+        typeIcon = '🎥';
+        typeText = 'Vidéo';
+    } else if (isAudio) {
+        typeIcon = '🎙';
+        typeText = 'Audio';
+    } else if (isImage) {
+        typeIcon = '🖼️';
+        typeText = 'Image';
+    }
     
     // Calculer les indicateurs
-    const dateCreated = new Date(annonce.dateCreated);
+    const dateCreated = new Date(annonce.dateCreated || annonce.dateCreation || Date.now());
     const now = new Date();
     const diffTime = Math.abs(now - dateCreated);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -255,15 +354,56 @@ function createAnnonceCard(annonce) {
         dateText = `Publié il y a ${diffDays} jours`;
     }
     
-    card.innerHTML = `
-        <div class="annonce-media-container ${!isVideo ? 'audio-only' : ''}" data-media-url="${annonce.mediaUrl}" data-format="${annonce.format}">
-            <div class="annonce-media-placeholder ${!isVideo ? 'audio' : ''}">
-                <div class="annonce-media-placeholder-icon">${typeIcon}</div>
-                <div class="annonce-media-placeholder-text">${typeText}</div>
-                <div class="annonce-media-placeholder-hint">Cliquez pour charger</div>
+    // Déterminer l'URL du média
+    let mediaUrl = annonce.mediaUrl;
+    if (isImage) {
+        // Pour les images, utiliser imageUrl (base64) si disponible, sinon essayer avec le nom
+        mediaUrl = annonce.imageUrl || annonce.mediaUrl || (annonce.image ? `images/annonces/${annonce.image}` : null);
+    } else if (isVideo) {
+        // Pour les vidéos, utiliser videoUrl (base64) si disponible, sinon mediaUrl, sinon essayer avec le nom
+        mediaUrl = annonce.videoUrl || annonce.mediaUrl || (annonce.video ? `videos/annonces/${annonce.video}` : null);
+    } else if (isAudio) {
+        // Pour les audios, utiliser audioUrl (base64) si disponible, sinon mediaUrl, sinon essayer avec le nom
+        mediaUrl = annonce.audioUrl || annonce.mediaUrl || (annonce.audio ? `audio/annonces/${annonce.audio}` : null);
+    }
+    
+    // Construire le HTML du média selon le type
+    let mediaHTML = '';
+    if (isImage) {
+        // Pour les images, afficher directement l'image
+        mediaHTML = `
+            <div class="annonce-media-container image-only" data-media-url="${mediaUrl || ''}" data-format="image">
+                ${mediaUrl ? 
+                    `<img src="${mediaUrl}" alt="Annonce image" style="width: 100%; height: auto; border-radius: 10px; display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div class="annonce-media-placeholder image" style="display: none;">
+                         <div class="annonce-media-placeholder-icon">${typeIcon}</div>
+                         <div class="annonce-media-placeholder-text">${typeText}</div>
+                         <div class="annonce-media-placeholder-hint">Image non disponible</div>
+                     </div>` :
+                    `<div class="annonce-media-placeholder image">
+                         <div class="annonce-media-placeholder-icon">${typeIcon}</div>
+                         <div class="annonce-media-placeholder-text">${typeText}</div>
+                         <div class="annonce-media-placeholder-hint">Image</div>
+                     </div>`
+                }
             </div>
-            ${isVideo ? `<video controls playsinline style="display: none;"></video>` : `<audio controls style="display: none;"></audio>`}
-        </div>
+        `;
+    } else {
+        // Pour vidéo et audio, utiliser le système de chargement à la demande
+        mediaHTML = `
+            <div class="annonce-media-container ${!isVideo ? 'audio-only' : ''}" data-media-url="${mediaUrl || ''}" data-format="${format}">
+                <div class="annonce-media-placeholder ${!isVideo ? 'audio' : ''}">
+                    <div class="annonce-media-placeholder-icon">${typeIcon}</div>
+                    <div class="annonce-media-placeholder-text">${typeText}</div>
+                    <div class="annonce-media-placeholder-hint">Cliquez pour charger</div>
+                </div>
+                ${isVideo ? `<video controls playsinline style="display: none;"></video>` : `<audio controls style="display: none;"></audio>`}
+            </div>
+        `;
+    }
+    
+    card.innerHTML = `
+        ${mediaHTML}
         <div class="annonce-type-badge">
             <span>${typeIcon}</span>
             <span>${typeText}</span>
@@ -285,7 +425,7 @@ function createAnnonceCard(annonce) {
                 </div>
                 <div class="annonce-info-item">
                     <span class="annonce-info-item-icon">🧺</span>
-                    <span class="annonce-info-item-text">${annonce.product}</span>
+                    <span class="annonce-info-item-text">${normalizeProductName(annonce.product)}</span>
                 </div>
             </div>
             <button class="annonce-contact-btn" onclick="contacterVendeur('${annonce.contact}')">
@@ -315,6 +455,12 @@ function loadMedia(container) {
     const mediaUrl = container.dataset.mediaUrl;
     const format = container.dataset.format;
     const placeholder = container.querySelector('.annonce-media-placeholder');
+    
+    // Pour les images, pas besoin de chargement à la demande, elles sont déjà affichées
+    if (format === 'image') {
+        return;
+    }
+    
     const media = container.querySelector(format === 'video' ? 'video' : 'audio');
     
     if (!media || !mediaUrl) return;
@@ -329,8 +475,49 @@ function loadMedia(container) {
     }
     
     // Charger le média
-    media.src = mediaUrl;
-    media.load();
+    // Vérifier si c'est une URL base64 (commence par data:)
+    if (mediaUrl && mediaUrl.startsWith('data:')) {
+        // C'est une URL base64, l'utiliser directement
+        media.src = mediaUrl;
+        media.load();
+    } else if (mediaUrl && (mediaUrl.startsWith('video_') || mediaUrl.startsWith('audio_'))) {
+        // C'est une référence IndexedDB, récupérer le blob
+        if (window.getBlobFromIndexedDB) {
+            window.getBlobFromIndexedDB(mediaUrl).then(blob => {
+                const url = URL.createObjectURL(blob);
+                media.src = url;
+                media.load();
+                
+                // Nettoyer l'URL blob quand le média est chargé
+                media.addEventListener('loadeddata', () => {
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                    }
+                    media.style.display = 'block';
+                }, { once: true });
+            }).catch(error => {
+                console.error('❌ Erreur chargement depuis IndexedDB:', error);
+                if (placeholder) {
+                    placeholder.querySelector('.annonce-media-placeholder-hint').textContent = 'Média non disponible';
+                }
+            });
+        } else {
+            console.error('❌ getBlobFromIndexedDB non disponible');
+            if (placeholder) {
+                placeholder.querySelector('.annonce-media-placeholder-hint').textContent = 'Erreur de chargement';
+            }
+        }
+    } else if (mediaUrl) {
+        // C'est une URL normale
+        media.src = mediaUrl;
+        media.load();
+    } else {
+        console.error('❌ Aucune URL média disponible pour l\'annonce');
+        if (placeholder) {
+            placeholder.querySelector('.annonce-media-placeholder-hint').textContent = 'Média non disponible';
+        }
+        return;
+    }
     
     let hasPlayed = false;
     

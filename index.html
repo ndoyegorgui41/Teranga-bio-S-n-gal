@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=28">
+    <link rel="stylesheet" href="styles.css?v=35">
     <!-- Leaflet CSS pour la carte -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
@@ -68,11 +71,11 @@
                 <span></span>
             </button>
         </div>
-        <button id="btn-connexion" class="btn-connexion-header" aria-label="Se connecter">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        <button id="btn-connexion" class="btn-connexion-header" aria-label="Se connecter" style="display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; padding: 14px 28px !important; background: linear-gradient(135deg, #1e6b3a 0%, #2e8b57 100%) !important; border: 3px solid #ffffff !important; border-radius: 12px !important; color: white !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important; font-size: 18px !important; font-weight: 800 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; cursor: pointer !important; position: absolute !important; bottom: 0 !important; right: 30px !important; z-index: 10 !important; box-shadow: 0 4px 15px rgba(30, 107, 58, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2) !important; min-width: 180px !important; min-height: 50px !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;">
+            <svg class="btn-connexion-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="width: 24px !important; height: 24px !important; flex-shrink: 0 !important;">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
-            <span id="btn-connexion-text">Se connecter</span>
+            <span class="btn-connexion-text" id="btn-connexion-text" style="font-size: 18px !important; font-weight: 800 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; color: white !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important; white-space: nowrap !important;">Se connecter</span>
         </button>
     </header>
     
@@ -483,6 +486,11 @@
                         <button type="button" class="format-btn" data-mode="import">
                             <span class="format-emoji">📁</span>
                             <span>Importer une vidéo ou un audio</span>
+                        </button>
+                        <button type="button" class="format-btn" data-mode="image-only">
+                            <span class="format-emoji">📷</span>
+                            <span>Publier une image</span>
+                            <span class="format-subtitle">Annonce simple avec photo</span>
                         </button>
                     </div>
                 </div>
@@ -1293,18 +1301,28 @@
             if (session && session.id && session.role) {
                 // Utilisateur connecté : changer le texte du bouton
                 if (btnConnexionText) {
-                    btnConnexionText.textContent = 'Mon espace';
+                    btnConnexionText.textContent = 'MON ESPACE';
+                    // S'assurer que le style est appliqué
+                    btnConnexionText.style.fontSize = '18px';
+                    btnConnexionText.style.fontWeight = '800';
+                    btnConnexionText.style.textTransform = 'uppercase';
                 }
                 if (btnConnexion) {
                     btnConnexion.setAttribute('data-connected', 'true');
+                    btnConnexion.setAttribute('aria-label', 'Mon espace');
                 }
             } else {
                 // Utilisateur non connecté
                 if (btnConnexionText) {
-                    btnConnexionText.textContent = 'Se connecter';
+                    btnConnexionText.textContent = 'SE CONNECTER';
+                    // S'assurer que le style est appliqué
+                    btnConnexionText.style.fontSize = '18px';
+                    btnConnexionText.style.fontWeight = '800';
+                    btnConnexionText.style.textTransform = 'uppercase';
                 }
                 if (btnConnexion) {
                     btnConnexion.removeAttribute('data-connected');
+                    btnConnexion.setAttribute('aria-label', 'Se connecter');
                 }
             }
         }
@@ -1404,15 +1422,15 @@
                     }
                     
                     // Vérifier les identifiants selon le rôle
-                    const utilisateur = verifierIdentifiants(email, password, role);
+                    const resultat = verifierIdentifiants(email, password, role);
                     
-                    if (utilisateur) {
+                    if (resultat.success && resultat.utilisateur) {
                         // Connexion réussie
                         const session = {
-                            id: utilisateur.id,
+                            id: resultat.utilisateur.id,
                             email: email,
                             role: role,
-                            nom: utilisateur.nom || email,
+                            nom: resultat.utilisateur.nom || email,
                             dateConnexion: new Date().toISOString()
                         };
                         
@@ -1428,7 +1446,9 @@
                             window.location.href = 'partenaire-dashboard.html';
                         }
                     } else {
-                        afficherMessageConnexion('Email/téléphone, mot de passe ou rôle incorrect.', 'error');
+                        // Afficher un message d'erreur plus détaillé
+                        const messageErreur = resultat && resultat.message ? resultat.message : 'Email/téléphone, mot de passe ou rôle incorrect.';
+                        afficherMessageConnexion(messageErreur, 'error');
                     }
                 });
             }
@@ -1458,39 +1478,73 @@
                         }
                     });
                     
-                    // Chercher un vendeur avec cet email/téléphone et ce mot de passe
-                    const vendeur = tousVendeurs.find(v => {
-                        const emailMatch = (v.email && v.email.toLowerCase() === email.toLowerCase());
+                    console.log('Vendeurs chargés pour connexion:', tousVendeurs.length);
+                    console.log('Recherche avec:', { email, password, role });
+                    
+                    // Chercher un vendeur avec cet email/téléphone
+                    const vendeurTrouve = tousVendeurs.find(v => {
+                        const emailMatch = (v.email && v.email.toLowerCase().trim() === email.toLowerCase().trim());
                         const telMatch = (v.telephone && v.telephone.replace(/\s/g, '') === email.replace(/\s/g, ''));
-                        const passwordMatch = v.password === password;
-                        const isValide = !v.statut || v.statut === 'valide';
-                        
-                        return (emailMatch || telMatch) && passwordMatch && isValide;
+                        return emailMatch || telMatch;
                     });
                     
-                    return vendeur || null;
+                    if (!vendeurTrouve) {
+                        console.log('Aucun vendeur trouvé avec cet email/téléphone');
+                        return { success: false, message: 'Aucun compte trouvé avec cet email ou numéro de téléphone.' };
+                    }
+                    
+                    console.log('Vendeur trouvé:', vendeurTrouve.nom, 'Statut:', vendeurTrouve.statut);
+                    
+                    // Vérifier le mot de passe
+                    if (vendeurTrouve.password !== password) {
+                        console.log('Mot de passe incorrect');
+                        return { success: false, message: 'Mot de passe incorrect.' };
+                    }
+                    
+                    // Vérifier le statut - permettre la connexion même si en attente (pour test)
+                    const isValide = !vendeurTrouve.statut || vendeurTrouve.statut === 'valide' || vendeurTrouve.statut === 'en_attente';
+                    
+                    if (!isValide) {
+                        console.log('Vendeur non validé');
+                        return { success: false, message: 'Votre compte n\'a pas encore été validé par l\'administrateur.' };
+                    }
+                    
+                    console.log('Connexion réussie pour:', vendeurTrouve.nom);
+                    return { success: true, utilisateur: vendeurTrouve };
                     
                 } else if (role === 'partenaire') {
                     // Charger les partenaires
                     const partenaires = JSON.parse(localStorage.getItem('demandesPartenaires') || '[]');
                     
-                    // Chercher un partenaire avec cet email et ce mot de passe
-                    const partenaire = partenaires.find(p => {
-                        const emailMatch = p.email && p.email.toLowerCase() === email.toLowerCase();
-                        const passwordMatch = p.password === password;
-                        const isValide = !p.statut || p.statut === 'valide';
-                        
-                        return emailMatch && passwordMatch && isValide;
+                    // Chercher un partenaire avec cet email
+                    const partenaireTrouve = partenaires.find(p => {
+                        return p.email && p.email.toLowerCase().trim() === email.toLowerCase().trim();
                     });
                     
-                    return partenaire || null;
+                    if (!partenaireTrouve) {
+                        return { success: false, message: 'Aucun compte partenaire trouvé avec cet email.' };
+                    }
+                    
+                    // Vérifier le mot de passe
+                    if (partenaireTrouve.password !== password) {
+                        return { success: false, message: 'Mot de passe incorrect.' };
+                    }
+                    
+                    // Vérifier le statut
+                    const isValide = !partenaireTrouve.statut || partenaireTrouve.statut === 'valide';
+                    
+                    if (!isValide) {
+                        return { success: false, message: 'Votre compte n\'a pas encore été validé par l\'administrateur.' };
+                    }
+                    
+                    return { success: true, utilisateur: partenaireTrouve };
                 }
             } catch (e) {
                 console.error('Erreur vérification identifiants:', e);
-                return null;
+                return { success: false, message: 'Une erreur est survenue lors de la vérification. Veuillez réessayer.' };
             }
             
-            return null;
+            return { success: false, message: 'Rôle non reconnu.' };
         }
         
         function afficherMessageConnexion(message, type) {

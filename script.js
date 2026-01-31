@@ -749,7 +749,7 @@ function gererInscription() {
             if (btnSubmit.disabled) {
                 btnSubmit.style.opacity = '0.6';
                 btnSubmit.style.cursor = 'not-allowed';
-            } else {
+        } else {
                 btnSubmit.style.opacity = '1';
                 btnSubmit.style.cursor = 'pointer';
             }
@@ -2475,7 +2475,7 @@ function initialiserPage() {
 // Initialisation selon la page
 function demarrerInitialisation() {
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
             setTimeout(initialiserPage, 100);
         });
     } else {

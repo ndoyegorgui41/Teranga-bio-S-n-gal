@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Espace Vendeur - Teranga Bio Sénégal</title>
-    <link rel="stylesheet" href="styles.css?v=31">
+    <link rel="stylesheet" href="styles.css?v=46">
+    <link rel="stylesheet" href="dashboard-styles.css?v=3">
 </head>
 <body class="page-dashboard">
     <button id="mobile-back-button" class="mobile-back-button" aria-label="Retour">
@@ -13,70 +17,591 @@
         </svg>
     </button>
     
-    <header class="dashboard-header">
-        <div class="dashboard-header-content">
-            <div class="dashboard-header-left">
-                <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="logo-header">
-                <h1>Espace Vendeur</h1>
-            </div>
-            <div class="dashboard-header-right">
-                <span id="dashboard-user-name" class="dashboard-user-name"></span>
-                <button id="btn-deconnexion" class="btn btn-secondary btn-deconnexion">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                    </svg>
-                    <span>Déconnexion</span>
-                </button>
-            </div>
-        </div>
-    </header>
+    <!-- Overlay pour mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
     
+    <!-- Sidebar de navigation -->
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <!-- Bloc profil vendeur en haut (cliquable vers Paramètres) -->
+        <div class="sidebar-profile-top" id="sidebar-profile-top" data-section="parametres" role="button" tabindex="0" aria-label="Aller aux paramètres du profil">
+            <div class="sidebar-profile-avatar-wrapper">
+                <img id="sidebar-profile-photo" src="" alt="Photo de profil" class="sidebar-profile-photo">
+                <div class="sidebar-profile-avatar" id="sidebar-profile-avatar-fallback">
+                    <span id="sidebar-user-initial">V</span>
+                </div>
+            </div>
+            <p class="sidebar-profile-name" id="sidebar-user-name">Vendeur</p>
+            <span class="sidebar-profile-badge">Vendeur Actif</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-nav-item active" data-section="dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span>Tableau de bord</span>
+            </a>
+            <a href="#" class="sidebar-nav-item" data-section="annonces">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15 12l1.62-1.17L18 8.76 18.92 8H20v6z"/>
+                </svg>
+                <span>Mes annonces</span>
+            </a>
+            <a href="#" class="sidebar-nav-item" data-section="messages">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+                <span>Messages</span>
+            </a>
+            <a href="#" class="sidebar-nav-item" data-section="statistiques">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+                <span>Statistiques</span>
+            </a>
+            <a href="#" class="sidebar-nav-item" data-section="parametres">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                </svg>
+                <span>Paramètres</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button id="btn-deconnexion-sidebar" class="sidebar-deconnexion-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                </svg>
+                <span>Déconnexion</span>
+            </button>
+        </div>
+        
+        <!-- Logo Teranga Bio en bas du sidebar -->
+        <div class="sidebar-logo-bottom">
+            <a href="index.html" class="sidebar-logo-link" aria-label="Retour à l'accueil">
+                <img src="images/logo1.jpeg" alt="Logo Teranga Bio" class="sidebar-logo-img">
+            </a>
+        </div>
+    </aside>
+    
+    <!-- Bouton toggle sidebar mobile -->
+    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+    
+    <!-- Contenu principal -->
     <main class="dashboard-main">
-        <div class="dashboard-container">
-            <div id="dashboard-content" class="dashboard-content">
-                <div class="dashboard-welcome">
-                    <h2>Bienvenue dans votre espace vendeur</h2>
-                    <p>Gérez vos produits, vos annonces et consultez vos messages.</p>
+        <div class="dashboard-content-wrapper">
+            <div class="dashboard-header-top">
+                <h1 id="dashboard-greeting" class="dashboard-greeting">Bonjour 👋</h1>
+                <div class="dashboard-header-actions">
+                    <button id="btn-creer-annonce-header" class="btn btn-primary btn-header-action">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span>Créer une annonce</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Cartes statistiques principales -->
+            <div class="dashboard-stats-cards">
+                <div class="stat-card stat-card-primary">
+                    <div class="stat-card-icon-wrapper">
+                        <div class="stat-card-icon">📢</div>
+                    </div>
+                    <div class="stat-card-content">
+                        <div class="stat-card-label">Annonces actives</div>
+                        <div class="stat-card-value" id="stat-annonces">0</div>
+                        <div class="stat-card-trend">En ligne</div>
+                    </div>
                 </div>
                 
-                <div class="dashboard-sections">
-                    <section class="dashboard-section">
-                        <h3>📢 Mes annonces</h3>
-                        <div id="mes-annonces" class="dashboard-list">
-                            <p class="dashboard-empty">Aucune annonce pour le moment.</p>
-                        </div>
-                    </section>
-                    
-                    <section class="dashboard-section">
-                        <h3>💬 Mes messages</h3>
-                        <div id="mes-messages" class="dashboard-list">
-                            <p class="dashboard-empty">Aucun message pour le moment.</p>
-                        </div>
-                    </section>
-                    
-                    <section class="dashboard-section">
-                        <h3>📊 Statistiques</h3>
-                        <div class="dashboard-stats">
-                            <div class="dashboard-stat-item">
-                                <span class="stat-label">Annonces actives</span>
-                                <span class="stat-value" id="stat-annonces">0</span>
-                            </div>
-                            <div class="dashboard-stat-item">
-                                <span class="stat-label">Messages non lus</span>
-                                <span class="stat-value" id="stat-messages">0</span>
-                            </div>
-                        </div>
-                    </section>
+                <div class="stat-card stat-card-secondary">
+                    <div class="stat-card-icon-wrapper">
+                        <div class="stat-card-icon">💬</div>
+                    </div>
+                    <div class="stat-card-content">
+                        <div class="stat-card-label">Messages non lus</div>
+                        <div class="stat-card-value" id="stat-messages">0</div>
+                        <div class="stat-card-trend">Nouveaux</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card stat-card-tertiary">
+                    <div class="stat-card-icon-wrapper">
+                        <div class="stat-card-icon">👁️</div>
+                    </div>
+                    <div class="stat-card-content">
+                        <div class="stat-card-label">Visibilité</div>
+                        <div class="stat-card-value" id="stat-visibilite">0</div>
+                        <div class="stat-card-trend">Vues ce mois</div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Section Actions rapides -->
+            <div class="dashboard-actions-section">
+                <h2 class="section-title">Actions rapides</h2>
+                <div class="actions-rapides-grid">
+                    <button class="action-rapide-btn action-primary" id="btn-action-creer" data-type="image">
+                        <span class="action-icon">➕</span>
+                        <span class="action-label">Créer une annonce</span>
+                    </button>
+                    <button class="action-rapide-btn action-secondary" id="btn-action-image" data-type="image">
+                        <span class="action-icon">🖼️</span>
+                        <span class="action-label">Publier avec une image</span>
+                    </button>
+                    <button class="action-rapide-btn action-secondary" id="btn-action-video" data-type="video">
+                        <span class="action-icon">🎥</span>
+                        <span class="action-label">Publier une vidéo</span>
+                    </button>
+                    <button class="action-rapide-btn action-secondary" id="btn-action-audio" data-type="audio">
+                        <span class="action-icon">🎙️</span>
+                        <span class="action-label">Publier un audio</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Cartes principales -->
+            <div class="dashboard-main-cards">
+                <!-- Carte Mes annonces -->
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <span class="main-card-icon">📢</span>
+                        <h3 class="main-card-title">Mes annonces</h3>
+                    </div>
+                    <div id="mes-annonces" class="main-card-content">
+                        <p class="dashboard-empty">Aucune annonce pour le moment.</p>
+                    </div>
+                    <button id="btn-creer-annonce" class="btn btn-primary btn-card-action">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span>Créer une annonce</span>
+                    </button>
+                </div>
+                
+                <!-- Carte Mes messages -->
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <span class="main-card-icon">💬</span>
+                        <h3 class="main-card-title">Mes messages</h3>
+                    </div>
+                    <div id="mes-messages" class="main-card-content">
+                        <p class="dashboard-empty">Aucun message pour le moment.</p>
+                    </div>
+                    <button id="btn-voir-messagerie" class="btn btn-secondary btn-card-action">
+                        <span>Voir ma messagerie</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Section Mes Annonces (cachée par défaut) -->
+            <section id="section-annonces" class="dashboard-section" style="display: none;">
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <div class="main-card-icon">📢</div>
+                        <h2 class="main-card-title">Mes annonces</h2>
+                    </div>
+                    <div id="liste-mes-annonces" class="main-card-content">
+                        <p class="dashboard-empty">Aucune annonce pour le moment.</p>
+                    </div>
+                    <button id="btn-creer-annonce-section" class="btn btn-primary btn-card-action">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span>Créer une annonce</span>
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Section Messages (cachée par défaut) -->
+            <section id="section-messages" class="dashboard-section" style="display: none;">
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <div class="main-card-icon">💬</div>
+                        <h2 class="main-card-title">Mes messages</h2>
+                    </div>
+                    <div id="liste-mes-messages" class="main-card-content">
+                        <p class="dashboard-empty">Aucun message pour le moment.</p>
+                    </div>
+                    <button id="btn-voir-messagerie-section" class="btn btn-secondary btn-card-action">
+                        <span>Voir ma messagerie</span>
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Section Statistiques (cachée par défaut) -->
+            <section id="section-statistiques" class="dashboard-section" style="display: none;">
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <div class="main-card-icon">📊</div>
+                        <h2 class="main-card-title">Statistiques</h2>
+                    </div>
+                    <div class="main-card-content">
+                        <div class="dashboard-stats-cards">
+                            <div class="stat-card stat-card-primary">
+                                <div class="stat-card-icon-wrapper">
+                                    <div class="stat-card-icon">📢</div>
+                                </div>
+                                <div class="stat-card-content">
+                                    <div class="stat-card-label">Annonces actives</div>
+                                    <div class="stat-card-value" id="stat-annonces-section">0</div>
+                                    <div class="stat-card-trend">En ligne</div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card stat-card-secondary">
+                                <div class="stat-card-icon-wrapper">
+                                    <div class="stat-card-icon">💬</div>
+                                </div>
+                                <div class="stat-card-content">
+                                    <div class="stat-card-label">Messages non lus</div>
+                                    <div class="stat-card-value" id="stat-messages-section">0</div>
+                                    <div class="stat-card-trend">Nouveaux</div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card stat-card-tertiary">
+                                <div class="stat-card-icon-wrapper">
+                                    <div class="stat-card-icon">👁️</div>
+                                </div>
+                                <div class="stat-card-content">
+                                    <div class="stat-card-label">Visibilité</div>
+                                    <div class="stat-card-value" id="stat-visibilite-section">0</div>
+                                    <div class="stat-card-trend">Vues ce mois</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section Paramètres (cachée par défaut) -->
+            <section id="section-parametres" class="dashboard-section" style="display: none;">
+                <div class="dashboard-main-card">
+                    <div class="main-card-header">
+                        <div class="main-card-icon">⚙️</div>
+                        <h2 class="main-card-title">Paramètres</h2>
+                    </div>
+                    
+                    <form id="form-parametres" class="form-parametres">
+                        <div class="form-parametres-group">
+                            <h3>Informations personnelles</h3>
+                            
+                            <div class="form-group">
+                                <label for="param-nom">Nom complet <span class="required">*</span></label>
+                                <input type="text" id="param-nom" name="nom" required placeholder="Votre nom complet">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-email">Email <span class="required">*</span></label>
+                                <input type="email" id="param-email" name="email" required placeholder="votre@email.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-telephone">Téléphone <span class="required">*</span></label>
+                                <input type="tel" id="param-telephone" name="telephone" required placeholder="77 123 45 67">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-zone">Zone d'activité <span class="required">*</span></label>
+                                <select id="param-zone" name="zone" required>
+                                    <option value="">Sélectionnez une zone</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-description">Description</label>
+                                <textarea id="param-description" name="description" rows="4" placeholder="Décrivez votre activité..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-parametres-group">
+                            <h3>Mot de passe</h3>
+                            
+                            <div class="form-group">
+                                <label for="param-password-actuel">Mot de passe actuel</label>
+                                <input type="password" id="param-password-actuel" name="password-actuel" placeholder="Laissez vide si pas de changement">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-password-nouveau">Nouveau mot de passe</label>
+                                <input type="password" id="param-password-nouveau" name="password-nouveau" placeholder="Minimum 6 caractères">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="param-password-confirm">Confirmer le mot de passe</label>
+                                <input type="password" id="param-password-confirm" name="password-confirm" placeholder="Répétez le nouveau mot de passe">
+                            </div>
+                        </div>
+                        
+                        <div class="form-parametres-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                                <span>Enregistrer les modifications</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-annuler-parametres">
+                                Annuler
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
         </div>
     </main>
     
     <!-- Footer chargé dynamiquement -->
     <div id="footer-placeholder"></div>
     
+    <!-- Modal de création d'annonce -->
+    <div id="modal-creer-annonce" class="modal-creer-annonce" style="display: none;">
+        <div class="modal-creer-annonce-overlay" id="modal-creer-annonce-overlay"></div>
+        <div class="modal-creer-annonce-content">
+            <button class="modal-creer-annonce-close" id="modal-creer-annonce-close" aria-label="Fermer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            <h2>Créer une annonce</h2>
+            
+            <form id="form-creer-annonce" class="form-creer-annonce">
+                <!-- Choix du type d'annonce -->
+                <div class="form-group">
+                    <label>Type d'annonce <span class="required">*</span></label>
+                    <div class="annonce-type-selector" style="display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 15px !important;">
+                        <label class="type-option" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                            <input type="radio" name="annonce-type" value="image" checked>
+                            <div class="type-option-content">
+                                <span class="type-icon">🖼️</span>
+                                <span class="type-label">Image</span>
+                            </div>
+                        </label>
+                        <label class="type-option" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                            <input type="radio" name="annonce-type" value="image_only">
+                            <div class="type-option-content">
+                                <span class="type-icon">📷</span>
+                                <span class="type-label">Publier une image</span>
+                                <span class="type-subtitle">Annonce simple avec photo</span>
+                            </div>
+                        </label>
+                        <label class="type-option" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                            <input type="radio" name="annonce-type" value="video">
+                            <div class="type-option-content">
+                                <span class="type-icon">📹</span>
+                                <span class="type-label">Vidéo</span>
+                            </div>
+                        </label>
+                        <label class="type-option" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                            <input type="radio" name="annonce-type" value="audio">
+                            <div class="type-option-content">
+                                <span class="type-icon">🎙️</span>
+                                <span class="type-label">Audio + Image</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Champs communs -->
+                <div class="form-group" id="group-titre">
+                    <label for="annonce-titre">Titre (facultatif)</label>
+                    <input type="text" id="annonce-titre" name="annonce-titre" placeholder="Ex: Tomates bio fraîches">
+                </div>
+                
+                <!-- Prix (optionnel, visible pour image_only) -->
+                <div class="form-group" id="group-prix" style="display: none;">
+                    <label for="annonce-prix">Prix (facultatif)</label>
+                    <input type="text" id="annonce-prix" name="annonce-prix" placeholder="Ex: 5000 FCFA/kg">
+                </div>
+                
+                <div class="form-group" id="group-description">
+                    <label for="annonce-description">Description (facultatif)</label>
+                    <textarea id="annonce-description" name="annonce-description" rows="3" placeholder="Décrivez vos produits..."></textarea>
+                </div>
+                
+                <!-- Image (obligatoire pour image et audio) -->
+                <div class="form-group" id="group-image">
+                    <label for="annonce-image">Image <span class="required">*</span></label>
+                    <input type="file" id="annonce-image" name="annonce-image" accept="image/*" required>
+                    <p class="help-text">Formats acceptés : JPG, PNG</p>
+                    <div id="image-preview" class="image-preview" style="display: none;">
+                        <img id="image-preview-img" src="" alt="Aperçu">
+                    </div>
+                </div>
+                
+                <!-- Vidéo (uniquement pour type vidéo) -->
+                <div class="form-group" id="group-video" style="display: none;">
+                    <label for="annonce-video">Vidéo <span class="required">*</span></label>
+                    <input type="file" id="annonce-video" name="annonce-video" accept="video/*">
+                    <p class="help-text">Formats acceptés : MP4, MOV</p>
+                </div>
+                
+                <!-- Audio (uniquement pour type audio) -->
+                <div class="form-group" id="group-audio" style="display: none;">
+                    <label for="annonce-audio">Audio <span class="required">*</span></label>
+                    <input type="file" id="annonce-audio" name="annonce-audio" accept="audio/*">
+                    <p class="help-text">Formats acceptés : MP3, WAV</p>
+                </div>
+                
+                <!-- Téléphone (obligatoire) -->
+                <div class="form-group">
+                    <label for="annonce-telephone">Votre numéro de téléphone <span class="required">*</span></label>
+                    <input type="tel" id="annonce-telephone" name="annonce-telephone" placeholder="77 123 45 67" required>
+                </div>
+                
+                <!-- Catégorie (obligatoire) -->
+                <div class="form-group">
+                    <label for="annonce-categorie">Catégorie <span class="required">*</span></label>
+                    <select id="annonce-categorie" name="annonce-categorie" required>
+                        <option value="">Choisir une catégorie</option>
+                    </select>
+                </div>
+                
+                <!-- Zone (facultatif) -->
+                <div class="form-group">
+                    <label for="annonce-zone">Zone (facultatif)</label>
+                    <select id="annonce-zone" name="annonce-zone">
+                        <option value="">Choisir une zone</option>
+                    </select>
+                </div>
+                
+                <div id="message-creer-annonce" class="message-creer-annonce" style="display: none;"></div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-annuler-annonce">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Publier l'annonce</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script src="script.js?v=23"></script>
     <script>
+        // FORCER LES STYLES - SOLUTION FINALE AVEC SURVEILLANCE CONTINUE
+        (function() {
+            function forceStyles() {
+                const sidebar = document.getElementById('dashboard-sidebar');
+                const main = document.querySelector('.dashboard-main');
+                const isMobile = window.innerWidth <= 768;
+                
+                if (sidebar) {
+                    // Utiliser setProperty avec important pour forcer
+                    sidebar.style.setProperty('position', 'fixed', 'important');
+                    sidebar.style.setProperty('left', '0', 'important');
+                    sidebar.style.setProperty('top', '0', 'important');
+                    sidebar.style.setProperty('width', '280px', 'important');
+                    sidebar.style.setProperty('height', '100vh', 'important');
+                    sidebar.style.setProperty('max-height', '100vh', 'important');
+                    sidebar.style.setProperty('background', 'linear-gradient(180deg, #1e6b3a 0%, #2d7a4f 100%)', 'important');
+                    sidebar.style.setProperty('color', 'white', 'important');
+                    sidebar.style.setProperty('display', 'flex', 'important');
+                    sidebar.style.setProperty('flex-direction', 'column', 'important');
+                    sidebar.style.setProperty('z-index', '9999', 'important');
+                    sidebar.style.setProperty('box-shadow', '2px 0 10px rgba(0, 0, 0, 0.1)', 'important');
+                    sidebar.style.setProperty('overflow-y', 'auto', 'important');
+                    sidebar.style.setProperty('margin', '0', 'important');
+                    sidebar.style.setProperty('padding', '0', 'important');
+                    sidebar.style.setProperty('visibility', 'visible', 'important');
+                    sidebar.style.setProperty('opacity', '1', 'important');
+                    sidebar.style.setProperty('pointer-events', 'auto', 'important');
+                    
+                    if (isMobile) {
+                        sidebar.style.setProperty('transform', 'translateX(-100%)', 'important');
+                        sidebar.style.setProperty('transition', 'transform 0.3s ease', 'important');
+                    } else {
+                        sidebar.style.setProperty('transform', 'translateX(0)', 'important');
+                    }
+                    
+                    // Vérifier que les styles sont bien appliqués
+                    const computed = window.getComputedStyle(sidebar);
+                    if (computed.position !== 'fixed' && !isMobile) {
+                        console.warn('⚠️ Sidebar position non fixe détectée, réapplication...');
+                        sidebar.style.cssText = 'position: fixed !important; left: 0 !important; top: 0 !important; width: 280px !important; height: 100vh !important; max-height: 100vh !important; background: linear-gradient(180deg, #1e6b3a 0%, #2d7a4f 100%) !important; color: white !important; display: flex !important; flex-direction: column !important; z-index: 9999 !important; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important; overflow-y: auto !important; margin: 0 !important; padding: 0 !important; transform: translateX(0) !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;';
+                    }
+                }
+                
+                if (main) {
+                    if (isMobile) {
+                        main.style.setProperty('margin-left', '0', 'important');
+                        main.style.setProperty('width', '100%', 'important');
+                        main.style.setProperty('padding', '20px 15px', 'important');
+                    } else {
+                        main.style.setProperty('margin-left', '280px', 'important');
+                        main.style.setProperty('width', 'calc(100% - 280px)', 'important');
+                        main.style.setProperty('padding', '40px 50px', 'important');
+                    }
+                    main.style.setProperty('min-height', '100vh', 'important');
+                    main.style.setProperty('background-color', '#f5f7fa', 'important');
+                    main.style.setProperty('display', 'block', 'important');
+                    main.style.setProperty('position', 'relative', 'important');
+                    main.style.setProperty('box-sizing', 'border-box', 'important');
+                }
+            }
+            
+            // Exécuter immédiatement
+            forceStyles();
+            
+            // Réexécuter après chargement
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', forceStyles);
+            } else {
+                forceStyles();
+            }
+            
+            // Surveiller les changements de style avec MutationObserver
+            const observer = new MutationObserver(function(mutations) {
+                const sidebar = document.getElementById('dashboard-sidebar');
+                if (sidebar && window.innerWidth > 768) {
+                    const computed = window.getComputedStyle(sidebar);
+                    if (computed.position !== 'fixed') {
+                        forceStyles();
+                    }
+                }
+            });
+            
+            // Observer les changements d'attributs style
+            const sidebar = document.getElementById('dashboard-sidebar');
+            if (sidebar) {
+                observer.observe(sidebar, {
+                    attributes: true,
+                    attributeFilter: ['style', 'class']
+                });
+            }
+            
+            // Réexécuter sur resize
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(forceStyles, 100);
+            });
+            
+            // Réexécuter plusieurs fois pour être sûr
+            setTimeout(forceStyles, 50);
+            setTimeout(forceStyles, 200);
+            setTimeout(forceStyles, 500);
+            setTimeout(forceStyles, 1000);
+            
+            // Surveiller en continu toutes les 2 secondes
+            setInterval(function() {
+                if (window.innerWidth > 768) {
+                    const sidebar = document.getElementById('dashboard-sidebar');
+                    if (sidebar) {
+                        const computed = window.getComputedStyle(sidebar);
+                        if (computed.position !== 'fixed') {
+                            console.log('🔧 Correction automatique de la position sidebar');
+                            forceStyles();
+                        }
+                    }
+                }
+            }, 2000);
+            
+            console.log('✅ Styles dashboard forcés avec surveillance - Desktop:', window.innerWidth > 768);
+        })();
+        
         // Vérifier la session au chargement
         document.addEventListener('DOMContentLoaded', function() {
             const session = JSON.parse(localStorage.getItem('user_session') || 'null');
@@ -87,19 +612,462 @@
                 return;
             }
             
-            // Afficher le nom de l'utilisateur
-            const userName = document.getElementById('dashboard-user-name');
-            if (userName) {
-                userName.textContent = session.nom || session.email;
+            // Charger et afficher les données du profil vendeur dans la sidebar
+            function chargerProfilSidebar(session) {
+                if (!session) return;
+                
+                // Charger les données du vendeur depuis localStorage
+                const vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+                const vendeur = vendeursInscrits.find(v => v.id === session.id) || session;
+                
+                // Afficher le nom
+                const sidebarUserName = document.getElementById('sidebar-user-name');
+                const sidebarUserInitial = document.getElementById('sidebar-user-initial');
+                const sidebarProfilePhoto = document.getElementById('sidebar-profile-photo');
+                const sidebarAvatarFallback = document.getElementById('sidebar-profile-avatar-fallback');
+                
+                if (sidebarUserName) {
+                    const nomComplet = vendeur.nom || session.nom || session.email || 'Vendeur';
+                    sidebarUserName.textContent = nomComplet;
+                    if (sidebarUserInitial) {
+                        sidebarUserInitial.textContent = nomComplet.charAt(0).toUpperCase();
+                    }
+                }
+                
+                // Charger la photo de profil si elle existe
+                if (vendeur.photoProfil || vendeur.photo_profil || session.photoProfil || session.photo_profil) {
+                    const photoUrl = vendeur.photoProfil || vendeur.photo_profil || session.photoProfil || session.photo_profil;
+                    if (sidebarProfilePhoto && sidebarAvatarFallback) {
+                        sidebarProfilePhoto.src = photoUrl;
+                        sidebarProfilePhoto.style.display = 'block';
+                        sidebarAvatarFallback.style.display = 'none';
+                        sidebarProfilePhoto.onerror = function() {
+                            // Si l'image ne charge pas, afficher l'avatar par défaut
+                            sidebarProfilePhoto.style.display = 'none';
+                            sidebarAvatarFallback.style.display = 'flex';
+                        };
+                    }
+                } else {
+                    // Aucune photo : afficher l'avatar par défaut
+                    if (sidebarProfilePhoto && sidebarAvatarFallback) {
+                        sidebarProfilePhoto.style.display = 'none';
+                        sidebarAvatarFallback.style.display = 'flex';
+                    }
+                }
+            }
+            
+            // Charger le profil au démarrage
+            chargerProfilSidebar(session);
+            
+            // Gérer le clic sur le bloc profil pour aller vers Paramètres
+            const sidebarProfileTop = document.getElementById('sidebar-profile-top');
+            if (sidebarProfileTop) {
+                sidebarProfileTop.addEventListener('click', function() {
+                    afficherSection('parametres');
+                    // Fermer la sidebar sur mobile après clic
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
+                });
+                
+                // Gérer aussi les événements clavier pour l'accessibilité
+                sidebarProfileTop.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        afficherSection('parametres');
+                        if (window.innerWidth <= 768) {
+                            closeSidebar();
+                        }
+                    }
+                });
+            }
+            
+            // Afficher le message d'accueil personnalisé
+            const greeting = document.getElementById('dashboard-greeting');
+            if (greeting) {
+                const nomComplet = session.nom || session.email || 'Vendeur';
+                const prenom = nomComplet.split(' ')[0]; // Extraire le prénom
+                greeting.textContent = `Bonjour ${prenom} 👋`;
+            }
+            
+            // Gérer le toggle de la sidebar mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('dashboard-sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            
+            console.log('🔍 Debug sidebar:', {
+                sidebarToggle: !!sidebarToggle,
+                sidebar: !!sidebar,
+                sidebarOverlay: !!sidebarOverlay
+            });
+            
+            function toggleSidebar() {
+                if (sidebar) {
+                    const wasOpen = sidebar.classList.contains('sidebar-open');
+                    sidebar.classList.toggle('sidebar-open');
+                    const isOpen = sidebar.classList.contains('sidebar-open');
+                    
+                    console.log('🔄 Toggle sidebar:', { wasOpen, isOpen });
+                    
+                    // Gérer l'overlay
+                    if (sidebarOverlay) {
+                        if (isOpen) {
+                            sidebarOverlay.classList.add('active');
+                        } else {
+                            sidebarOverlay.classList.remove('active');
+                        }
+                    }
+                    
+                    // Forcer le style avec JavaScript si nécessaire
+                    if (window.innerWidth <= 768) {
+                        if (isOpen) {
+                            sidebar.style.setProperty('transform', 'translateX(0)', 'important');
+                        } else {
+                            sidebar.style.setProperty('transform', 'translateX(-100%)', 'important');
+                        }
+                    }
+                }
+            }
+            
+            function closeSidebar() {
+                if (sidebar) {
+                    sidebar.classList.remove('sidebar-open');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                    }
+                    // Forcer le style
+                    if (window.innerWidth <= 768) {
+                        sidebar.style.setProperty('transform', 'translateX(-100%)', 'important');
+                    }
+                }
+            }
+            
+            if (sidebarToggle && sidebar) {
+                // Ajouter l'événement click
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('🍔 Hamburger cliqué !');
+                    toggleSidebar();
+                });
+                
+                // Ajouter aussi touchstart pour mobile
+                sidebarToggle.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('👆 Touch sur hamburger !');
+                    toggleSidebar();
+                });
+                
+                // Vérifier que le bouton est bien cliquable
+                sidebarToggle.style.pointerEvents = 'auto';
+                sidebarToggle.style.cursor = 'pointer';
+                
+                console.log('✅ Event listeners ajoutés au bouton hamburger');
+            } else {
+                console.error('❌ Bouton hamburger ou sidebar non trouvé !', {
+                    sidebarToggle: sidebarToggle,
+                    sidebar: sidebar
+                });
+            }
+            
+            // Vérifier la largeur de l'écran au chargement
+            console.log('📱 Largeur écran:', window.innerWidth);
+            if (window.innerWidth <= 768) {
+                console.log('📱 Mode mobile détecté');
+            }
+            
+            // Fermer la sidebar en cliquant sur l'overlay (mobile)
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    closeSidebar();
+                });
+            }
+            
+            // Gérer la navigation de la sidebar
+            const navItems = document.querySelectorAll('.sidebar-nav-item');
+            const sectionDashboard = document.querySelector('.dashboard-content-wrapper');
+            const sectionParametres = document.getElementById('section-parametres');
+            
+            function afficherSection(sectionName) {
+                // Récupérer toutes les sections
+                const sectionAnnonces = document.getElementById('section-annonces');
+                const sectionMessages = document.getElementById('section-messages');
+                const sectionStatistiques = document.getElementById('section-statistiques');
+                const sectionParametres = document.getElementById('section-parametres');
+                const headerTop = document.querySelector('.dashboard-header-top');
+                
+                // Cacher toutes les sections spécifiques
+                if (sectionAnnonces) sectionAnnonces.style.display = 'none';
+                if (sectionMessages) sectionMessages.style.display = 'none';
+                if (sectionStatistiques) sectionStatistiques.style.display = 'none';
+                if (sectionParametres) sectionParametres.style.display = 'none';
+                
+                // Cacher les sections du dashboard principal (stats, actions, cartes)
+                if (sectionDashboard) {
+                    const sections = sectionDashboard.querySelectorAll('.dashboard-stats-cards, .dashboard-actions-section, .dashboard-main-cards');
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                }
+                
+                // Cacher le header du dashboard pour les autres sections
+                if (headerTop && sectionName !== 'dashboard') {
+                    headerTop.style.display = 'none';
+                }
+                
+                // Afficher la section demandée
+                if (sectionName === 'dashboard') {
+                    // Afficher le header
+                    if (headerTop) {
+                        headerTop.style.display = 'flex';
+                    }
+                    // Afficher toutes les sections du dashboard principal
+                    if (sectionDashboard) {
+                        const sections = sectionDashboard.querySelectorAll('.dashboard-stats-cards, .dashboard-actions-section, .dashboard-main-cards');
+                        sections.forEach(section => {
+                            section.style.display = '';
+                        });
+                    }
+                } else if (sectionName === 'annonces' && sectionAnnonces) {
+                    sectionAnnonces.style.display = 'block';
+                    chargerAnnoncesVendeur(session.id);
+                } else if (sectionName === 'messages' && sectionMessages) {
+                    sectionMessages.style.display = 'block';
+                    chargerMessagesVendeur(session.id);
+                } else if (sectionName === 'statistiques' && sectionStatistiques) {
+                    sectionStatistiques.style.display = 'block';
+                    chargerStatistiquesVendeur(session.id);
+                } else if (sectionName === 'parametres' && sectionParametres) {
+                    sectionParametres.style.display = 'block';
+                    chargerDonneesParametres(session);
+                }
+            }
+            
+            // Fonction pour charger les annonces du vendeur
+            function chargerAnnoncesVendeur(vendeurId) {
+                const listeAnnonces = document.getElementById('liste-mes-annonces');
+                if (!listeAnnonces) return;
+                
+                const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+                const annoncesVendeur = annonces.filter(a => a.vendeurId === vendeurId);
+                
+                if (annoncesVendeur.length === 0) {
+                    listeAnnonces.innerHTML = '<p class="dashboard-empty">Aucune annonce pour le moment.</p>';
+                    return;
+                }
+                
+                let html = '<div class="annonces-liste">';
+                annoncesVendeur.forEach(annonce => {
+                    html += `
+                        <div class="annonce-item">
+                            <div class="annonce-item-header">
+                                <h4>${annonce.titre || 'Sans titre'}</h4>
+                                <span class="annonce-type-badge">${annonce.type === 'image' ? '🖼️ Image' : annonce.type === 'image_only' ? '📷 Image uniquement' : annonce.type === 'video' ? '🎥 Vidéo' : '🎙️ Audio'}</span>
+                            </div>
+                            ${annonce.description ? `<p class="annonce-description">${annonce.description}</p>` : ''}
+                            ${annonce.prix ? `<p class="annonce-prix"><strong>Prix:</strong> ${annonce.prix}</p>` : ''}
+                            <div class="annonce-item-footer">
+                                <span class="annonce-date">${new Date(annonce.dateCreation).toLocaleDateString('fr-FR')}</span>
+                                <span class="annonce-statut ${annonce.statut || 'active'}">${annonce.statut || 'Active'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                listeAnnonces.innerHTML = html;
+            }
+            
+            // Fonction pour charger les messages du vendeur
+            function chargerMessagesVendeur(vendeurId) {
+                const listeMessages = document.getElementById('liste-mes-messages');
+                if (!listeMessages) return;
+                
+                // Pour l'instant, pas de système de messages, on affiche un message vide
+                listeMessages.innerHTML = '<p class="dashboard-empty">Aucun message pour le moment.</p>';
+            }
+            
+            // Fonction pour charger les statistiques du vendeur
+            function chargerStatistiquesVendeur(vendeurId) {
+                const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+                const annoncesVendeur = annonces.filter(a => a.vendeurId === vendeurId);
+                
+                const statAnnonces = document.getElementById('stat-annonces-section');
+                const statMessages = document.getElementById('stat-messages-section');
+                const statVisibilite = document.getElementById('stat-visibilite-section');
+                
+                if (statAnnonces) statAnnonces.textContent = annoncesVendeur.length;
+                if (statMessages) statMessages.textContent = '0'; // À implémenter
+                if (statVisibilite) statVisibilite.textContent = '0'; // À implémenter
+            }
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    
+                    // Mettre à jour l'état actif
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Afficher la section correspondante
+                    afficherSection(section);
+                    
+                    // Charger les données selon la section
+                    if (section === 'parametres') {
+                        chargerDonneesParametres(session);
+                    } else if (section === 'annonces') {
+                        chargerAnnoncesVendeur(session.id);
+                    } else if (section === 'messages') {
+                        chargerMessagesVendeur(session.id);
+                    } else if (section === 'statistiques') {
+                        chargerStatistiquesVendeur(session.id);
+                    }
+                    
+                    // Sur mobile, fermer la sidebar après avoir cliqué sur un lien
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
+                });
+            });
+            
+            // Fonction pour charger les données dans le formulaire paramètres
+            function chargerDonneesParametres(session) {
+                if (!session) return;
+                
+                // Charger les données du vendeur depuis localStorage
+                const vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+                const vendeur = vendeursInscrits.find(v => v.id === session.id) || session;
+                
+                // Remplir le formulaire
+                const form = document.getElementById('form-parametres');
+                if (form) {
+                    const nomInput = document.getElementById('param-nom');
+                    const emailInput = document.getElementById('param-email');
+                    const telephoneInput = document.getElementById('param-telephone');
+                    const zoneSelect = document.getElementById('param-zone');
+                    const descriptionTextarea = document.getElementById('param-description');
+                    
+                    if (nomInput) nomInput.value = vendeur.nom || '';
+                    if (emailInput) emailInput.value = vendeur.email || session.email || '';
+                    if (telephoneInput) telephoneInput.value = vendeur.telephone || '';
+                    if (descriptionTextarea) descriptionTextarea.value = vendeur.description || '';
+                    
+                    // Charger les zones disponibles
+                    if (zoneSelect) {
+                        const zones = JSON.parse(localStorage.getItem('zones') || '[]');
+                        zoneSelect.innerHTML = '<option value="">Sélectionnez une zone</option>';
+                        zones.forEach(zone => {
+                            const option = document.createElement('option');
+                            option.value = zone;
+                            option.textContent = zone;
+                            if (vendeur.zone === zone) {
+                                option.selected = true;
+                            }
+                            zoneSelect.appendChild(option);
+                        });
+                    }
+                }
+            }
+            
+            // Gérer la soumission du formulaire paramètres
+            const formParametres = document.getElementById('form-parametres');
+            if (formParametres) {
+                formParametres.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const passwordActuel = formData.get('password-actuel');
+                    const passwordNouveau = formData.get('password-nouveau');
+                    const passwordConfirm = formData.get('password-confirm');
+                    
+                    // Vérifier les mots de passe si changement demandé
+                    if (passwordNouveau || passwordConfirm) {
+                        if (passwordNouveau.length < 6) {
+                            alert('Le nouveau mot de passe doit contenir au moins 6 caractères.');
+                            return;
+                        }
+                        if (passwordNouveau !== passwordConfirm) {
+                            alert('Les mots de passe ne correspondent pas.');
+                            return;
+                        }
+                        // Vérifier le mot de passe actuel si fourni
+                        if (passwordActuel && session.password !== passwordActuel) {
+                            alert('Le mot de passe actuel est incorrect.');
+                            return;
+                        }
+                    }
+                    
+                    // Mettre à jour les données du vendeur
+                    const vendeursInscrits = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+                    const vendeurIndex = vendeursInscrits.findIndex(v => v.id === session.id);
+                    
+                    const donneesMisesAJour = {
+                        nom: formData.get('nom'),
+                        email: formData.get('email'),
+                        telephone: formData.get('telephone'),
+                        zone: formData.get('zone'),
+                        description: formData.get('description')
+                    };
+                    
+                    if (vendeurIndex !== -1) {
+                        // Mettre à jour le vendeur existant
+                        Object.assign(vendeursInscrits[vendeurIndex], donneesMisesAJour);
+                        if (passwordNouveau) {
+                            vendeursInscrits[vendeurIndex].password = passwordNouveau;
+                        }
+                        localStorage.setItem('vendeurs_inscrits', JSON.stringify(vendeursInscrits));
+                    } else {
+                        // Créer un nouveau vendeur si nécessaire
+                        const nouveauVendeur = {
+                            id: session.id,
+                            ...donneesMisesAJour,
+                            password: passwordNouveau || session.password || '',
+                            statut: 'valide'
+                        };
+                        vendeursInscrits.push(nouveauVendeur);
+                        localStorage.setItem('vendeurs_inscrits', JSON.stringify(vendeursInscrits));
+                    }
+                    
+                    // Mettre à jour la session
+                    session.nom = donneesMisesAJour.nom;
+                    session.email = donneesMisesAJour.email;
+                    if (passwordNouveau) {
+                        session.password = passwordNouveau;
+                    }
+                    localStorage.setItem('user_session', JSON.stringify(session));
+                    
+                    alert('✅ Vos informations ont été mises à jour avec succès !');
+                    
+                    // Recharger les données affichées
+                    chargerDonneesVendeur(session.id);
+                    
+                    // Retourner au dashboard
+                    const dashboardNav = document.querySelector('[data-section="dashboard"]');
+                    if (dashboardNav) {
+                        dashboardNav.click();
+                    }
+                });
+            }
+            
+            // Bouton annuler dans les paramètres
+            const btnAnnulerParametres = document.getElementById('btn-annuler-parametres');
+            if (btnAnnulerParametres) {
+                btnAnnulerParametres.addEventListener('click', function() {
+                    const dashboardNav = document.querySelector('[data-section="dashboard"]');
+                    if (dashboardNav) {
+                        dashboardNav.click();
+                    }
+                });
             }
             
             // Charger les données du vendeur
             chargerDonneesVendeur(session.id);
             
-            // Gérer la déconnexion
-            const btnDeconnexion = document.getElementById('btn-deconnexion');
-            if (btnDeconnexion) {
-                btnDeconnexion.addEventListener('click', function() {
+            // Gérer la déconnexion (sidebar)
+            const btnDeconnexionSidebar = document.getElementById('btn-deconnexion-sidebar');
+            if (btnDeconnexionSidebar) {
+                btnDeconnexionSidebar.addEventListener('click', function() {
                     if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
                         localStorage.removeItem('user_session');
                         window.location.href = 'index.html';
@@ -111,7 +1079,417 @@
             if (typeof initialiserBoutonRetour === 'function') {
                 initialiserBoutonRetour();
             }
+            
+            // Initialiser les boutons d'action
+            initialiserBoutonsAction(session);
+            
+            // Vérifier si on doit ouvrir la modale avec un type prédéfini (depuis sessionStorage)
+            const openModalWithType = sessionStorage.getItem('openModalWithType');
+            if (openModalWithType) {
+                sessionStorage.removeItem('openModalWithType');
+                // Attendre un peu que la page soit complètement chargée
+                setTimeout(() => {
+                    ouvrirModalCreerAnnonce(session, openModalWithType);
+                }, 500);
+            }
         });
+        
+        function initialiserBoutonsAction(session) {
+            // Bouton créer annonce (header)
+            const btnCreerAnnonceHeader = document.getElementById('btn-creer-annonce-header');
+            if (btnCreerAnnonceHeader) {
+                btnCreerAnnonceHeader.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'image');
+                });
+            }
+            
+            // Bouton créer annonce (carte principale)
+            const btnCreerAnnonce = document.getElementById('btn-creer-annonce');
+            if (btnCreerAnnonce) {
+                btnCreerAnnonce.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'image');
+                });
+            }
+            
+            // Bouton créer annonce dans la section annonces
+            const btnCreerAnnonceSection = document.getElementById('btn-creer-annonce-section');
+            if (btnCreerAnnonceSection) {
+                btnCreerAnnonceSection.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'image');
+                });
+            }
+            
+            // Bouton voir messagerie dans la section messages
+            const btnVoirMessagerieSection = document.getElementById('btn-voir-messagerie-section');
+            if (btnVoirMessagerieSection) {
+                btnVoirMessagerieSection.addEventListener('click', function() {
+                    alert('Fonctionnalité de messagerie à venir !');
+                });
+            }
+            
+            // Bouton voir messagerie
+            const btnVoirMessagerie = document.getElementById('btn-voir-messagerie');
+            if (btnVoirMessagerie) {
+                btnVoirMessagerie.addEventListener('click', function() {
+                    // Pour l'instant, juste afficher un message
+                    alert('La messagerie sera bientôt disponible.');
+                });
+            }
+            
+            // Actions rapides
+            const btnActionCreer = document.getElementById('btn-action-creer');
+            const btnActionImage = document.getElementById('btn-action-image');
+            const btnActionVideo = document.getElementById('btn-action-video');
+            const btnActionAudio = document.getElementById('btn-action-audio');
+            
+            if (btnActionCreer) {
+                btnActionCreer.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'image');
+                });
+            }
+            
+            if (btnActionImage) {
+                btnActionImage.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'image_only');
+                });
+            }
+            
+            if (btnActionVideo) {
+                btnActionVideo.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'video');
+                });
+            }
+            
+            if (btnActionAudio) {
+                btnActionAudio.addEventListener('click', function() {
+                    ouvrirModalCreerAnnonce(session, 'audio');
+                });
+            }
+        }
+        
+        function ouvrirModalCreerAnnonce(session, typePredefini = null) {
+            const modal = document.getElementById('modal-creer-annonce');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                // Charger les catégories et zones
+                chargerCategoriesZones();
+                
+                // Pré-remplir le téléphone avec les données du vendeur
+                const vendeur = trouverVendeur(session.id);
+                if (vendeur && vendeur.telephone) {
+                    const telInput = document.getElementById('annonce-telephone');
+                    if (telInput) {
+                        telInput.value = vendeur.telephone;
+                    }
+                }
+                
+                // Si un type est prédéfini, le sélectionner, sinon utiliser le type par défaut "image"
+                if (typePredefini) {
+                    const typeInput = document.querySelector(`input[name="annonce-type"][value="${typePredefini}"]`);
+                    if (typeInput) {
+                        typeInput.checked = true;
+                        gererChangementTypeAnnonce(typePredefini);
+                    }
+                } else {
+                    // Initialiser avec le type par défaut "image"
+                    const defaultTypeInput = document.querySelector('input[name="annonce-type"][value="image"]');
+                    if (defaultTypeInput) {
+                        defaultTypeInput.checked = true;
+                        gererChangementTypeAnnonce('image');
+                    }
+                }
+                
+                // Gérer le changement de type d'annonce
+                const typeInputs = document.querySelectorAll('input[name="annonce-type"]');
+                typeInputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        gererChangementTypeAnnonce(this.value);
+                    });
+                });
+                
+                // Gérer la prévisualisation d'image
+                const imageInput = document.getElementById('annonce-image');
+                if (imageInput) {
+                    imageInput.addEventListener('change', function(e) {
+                        afficherApercuImage(e.target.files[0]);
+                    });
+                }
+            }
+        }
+        
+        function fermerModalCreerAnnonce() {
+            const modal = document.getElementById('modal-creer-annonce');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                const form = document.getElementById('form-creer-annonce');
+                if (form) {
+                    form.reset();
+                    document.getElementById('image-preview').style.display = 'none';
+                    // Réinitialiser le type par défaut à "image"
+                    const defaultTypeInput = document.querySelector('input[name="annonce-type"][value="image"]');
+                    if (defaultTypeInput) {
+                        defaultTypeInput.checked = true;
+                        gererChangementTypeAnnonce('image');
+                    }
+                }
+            }
+        }
+        
+        function gererChangementTypeAnnonce(type) {
+            const groupImage = document.getElementById('group-image');
+            const groupVideo = document.getElementById('group-video');
+            const groupAudio = document.getElementById('group-audio');
+            const groupDescription = document.getElementById('group-description');
+            const groupPrix = document.getElementById('group-prix');
+            const inputImage = document.getElementById('annonce-image');
+            const inputVideo = document.getElementById('annonce-video');
+            const inputAudio = document.getElementById('annonce-audio');
+            
+            // Réinitialiser les champs
+            if (inputImage) inputImage.required = false;
+            if (inputVideo) inputVideo.required = false;
+            if (inputAudio) inputAudio.required = false;
+            
+            // Masquer tous les groupes par défaut
+            if (groupImage) groupImage.style.display = 'none';
+            if (groupVideo) groupVideo.style.display = 'none';
+            if (groupAudio) groupAudio.style.display = 'none';
+            if (groupDescription) groupDescription.style.display = 'block'; // Par défaut visible
+            if (groupPrix) groupPrix.style.display = 'none';
+            
+            if (type === 'image') {
+                // Type image classique : image + description + tous les champs
+                if (groupImage) groupImage.style.display = 'block';
+                if (groupVideo) groupVideo.style.display = 'none';
+                if (groupAudio) groupAudio.style.display = 'none';
+                if (groupDescription) groupDescription.style.display = 'block';
+                if (groupPrix) groupPrix.style.display = 'none';
+                if (inputImage) inputImage.required = true;
+            } else if (type === 'image_only') {
+                // Type image uniquement : image + titre + prix optionnel + localisation, sans description
+                if (groupImage) groupImage.style.display = 'block';
+                if (groupVideo) groupVideo.style.display = 'none';
+                if (groupAudio) groupAudio.style.display = 'none';
+                if (groupDescription) groupDescription.style.display = 'none'; // Masquer description
+                if (groupPrix) groupPrix.style.display = 'block'; // Afficher prix
+                if (inputImage) inputImage.required = true;
+            } else if (type === 'video') {
+                if (groupImage) groupImage.style.display = 'none';
+                if (groupVideo) groupVideo.style.display = 'block';
+                if (groupAudio) groupAudio.style.display = 'none';
+                if (groupDescription) groupDescription.style.display = 'block';
+                if (groupPrix) groupPrix.style.display = 'none';
+                if (inputVideo) inputVideo.required = true;
+            } else if (type === 'audio') {
+                if (groupImage) groupImage.style.display = 'block';
+                if (groupVideo) groupVideo.style.display = 'none';
+                if (groupAudio) groupAudio.style.display = 'block';
+                if (groupDescription) groupDescription.style.display = 'block';
+                if (groupPrix) groupPrix.style.display = 'none';
+                if (inputImage) inputImage.required = true;
+                if (inputAudio) inputAudio.required = true;
+            }
+        }
+        
+        function afficherApercuImage(file) {
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('image-preview');
+                const previewImg = document.getElementById('image-preview-img');
+                if (preview && previewImg) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function chargerCategoriesZones() {
+            // Charger les catégories
+            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            const selectCategorie = document.getElementById('annonce-categorie');
+            if (selectCategorie) {
+                selectCategorie.innerHTML = '<option value="">Choisir une catégorie</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    selectCategorie.appendChild(option);
+                });
+            }
+            
+            // Charger les zones
+            const zones = JSON.parse(localStorage.getItem('zones') || '[]');
+            const selectZone = document.getElementById('annonce-zone');
+            if (selectZone) {
+                selectZone.innerHTML = '<option value="">Choisir une zone</option>';
+                zones.forEach(zone => {
+                    const option = document.createElement('option');
+                    option.value = zone;
+                    option.textContent = zone;
+                    selectZone.appendChild(option);
+                });
+            }
+        }
+        
+        // Gestion du formulaire de création d'annonce
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('form-creer-annonce');
+            const modal = document.getElementById('modal-creer-annonce');
+            const overlay = document.getElementById('modal-creer-annonce-overlay');
+            const btnClose = document.getElementById('modal-creer-annonce-close');
+            const btnAnnuler = document.getElementById('btn-annuler-annonce');
+            
+            if (overlay) {
+                overlay.addEventListener('click', fermerModalCreerAnnonce);
+            }
+            
+            if (btnClose) {
+                btnClose.addEventListener('click', fermerModalCreerAnnonce);
+            }
+            
+            if (btnAnnuler) {
+                btnAnnuler.addEventListener('click', fermerModalCreerAnnonce);
+            }
+            
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    creerAnnonce();
+                });
+            }
+        });
+        
+        function creerAnnonce() {
+            const form = document.getElementById('form-creer-annonce');
+            const formData = new FormData(form);
+            const typeAnnonce = formData.get('annonce-type');
+            const messageDiv = document.getElementById('message-creer-annonce');
+            
+            // Validation
+            if (typeAnnonce === 'image' && !formData.get('annonce-image').name) {
+                afficherMessageAnnonce('Veuillez sélectionner une image.', 'error');
+                return;
+            }
+            
+            if (typeAnnonce === 'image_only' && !formData.get('annonce-image').name) {
+                afficherMessageAnnonce('Veuillez sélectionner une image.', 'error');
+                return;
+            }
+            
+            if (typeAnnonce === 'video' && !formData.get('annonce-video').name) {
+                afficherMessageAnnonce('Veuillez sélectionner une vidéo.', 'error');
+                return;
+            }
+            
+            if (typeAnnonce === 'audio' && (!formData.get('annonce-image').name || !formData.get('annonce-audio').name)) {
+                afficherMessageAnnonce('Veuillez sélectionner une image et un fichier audio.', 'error');
+                return;
+            }
+            
+            if (!formData.get('annonce-telephone')) {
+                afficherMessageAnnonce('Veuillez entrer votre numéro de téléphone.', 'error');
+                return;
+            }
+            
+            if (!formData.get('annonce-categorie')) {
+                afficherMessageAnnonce('Veuillez choisir une catégorie.', 'error');
+                return;
+            }
+            
+            // Récupérer la session
+            const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+            if (!session) {
+                afficherMessageAnnonce('Session expirée. Veuillez vous reconnecter.', 'error');
+                return;
+            }
+            
+            // Créer l'objet annonce
+            const annonce = {
+                id: Date.now(),
+                type: typeAnnonce,
+                titre: formData.get('annonce-titre') || '',
+                description: formData.get('annonce-description') || '',
+                contact: formData.get('annonce-telephone'),
+                categorie: formData.get('annonce-categorie'),
+                zone: formData.get('annonce-zone') || '',
+                vendeurId: session.id,
+                dateCreation: new Date().toISOString(),
+                statut: 'en_attente'
+            };
+            
+            // Ajouter le prix si présent (pour image_only)
+            if (typeAnnonce === 'image_only') {
+                const prix = formData.get('annonce-prix');
+                if (prix) {
+                    annonce.prix = prix;
+                }
+            }
+            
+            // Gérer les fichiers (pour l'instant, on stocke juste le nom)
+            if (typeAnnonce === 'image' || typeAnnonce === 'audio' || typeAnnonce === 'image_only') {
+                const imageFile = formData.get('annonce-image');
+                if (imageFile && imageFile.name) {
+                    annonce.image = imageFile.name;
+                }
+            }
+            
+            if (typeAnnonce === 'video') {
+                const videoFile = formData.get('annonce-video');
+                if (videoFile && videoFile.name) {
+                    annonce.video = videoFile.name;
+                }
+            }
+            
+            if (typeAnnonce === 'audio') {
+                const audioFile = formData.get('annonce-audio');
+                if (audioFile && audioFile.name) {
+                    annonce.audio = audioFile.name;
+                }
+            }
+            
+            // Sauvegarder dans localStorage
+            try {
+                const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+                annonces.push(annonce);
+                localStorage.setItem('annonces_locales', JSON.stringify(annonces));
+                
+                afficherMessageAnnonce('Annonce créée avec succès ! Elle sera publiée après validation par l\'administrateur.', 'success');
+                
+                // Recharger les données après 2 secondes
+                setTimeout(() => {
+                    fermerModalCreerAnnonce();
+                    const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+                    if (session) {
+                        chargerDonneesVendeur(session.id);
+                    }
+                    window.location.reload();
+                }, 2000);
+            } catch (e) {
+                console.error('Erreur création annonce:', e);
+                afficherMessageAnnonce('Une erreur est survenue. Veuillez réessayer.', 'error');
+            }
+        }
+        
+        function afficherMessageAnnonce(message, type) {
+            const messageDiv = document.getElementById('message-creer-annonce');
+            if (messageDiv) {
+                messageDiv.textContent = message;
+                messageDiv.className = `message-creer-annonce message-${type}`;
+                messageDiv.style.display = 'block';
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        }
         
         function chargerDonneesVendeur(vendeurId) {
             // Charger les annonces du vendeur
@@ -148,6 +1526,12 @@
                 if (statAnnonces) {
                     statAnnonces.textContent = annoncesVendeur.length;
                 }
+                
+                // Mettre à jour la visibilité
+                const statVisibilite = document.getElementById('stat-visibilite');
+                if (statVisibilite) {
+                    statVisibilite.textContent = annoncesVendeur.length * 10;
+                }
             } catch (e) {
                 console.error('Erreur chargement annonces:', e);
             }
@@ -179,6 +1563,27 @@
                 }
             } catch (e) {
                 console.error('Erreur chargement messages:', e);
+            }
+            
+            // Mettre à jour la visibilité (simulation - à adapter selon vos besoins)
+            const statVisibilite = document.getElementById('stat-visibilite');
+            if (statVisibilite) {
+                // Pour l'instant, on simule avec le nombre d'annonces * 10
+                try {
+                    const annonces = JSON.parse(localStorage.getItem('annonces_locales') || '[]');
+                    const annoncesVendeur = annonces.filter(a => {
+                        const vendeur = trouverVendeur(vendeurId);
+                        if (vendeur) {
+                            const contactVendeur = vendeur.telephone || vendeur.email || '';
+                            const contactAnnonce = a.contact || '';
+                            return contactAnnonce.replace(/\s/g, '') === contactVendeur.replace(/\s/g, '');
+                        }
+                        return false;
+                    });
+                    statVisibilite.textContent = annoncesVendeur.length * 10;
+                } catch (e) {
+                    statVisibilite.textContent = '0';
+                }
             }
         }
     </script>

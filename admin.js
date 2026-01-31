@@ -4,6 +4,157 @@
 
 // admin.js chargé
 
+// ===== GESTION INDEXEDDB POUR VIDÉOS ET AUDIOS =====
+const DB_NAME = 'TerangaBioMedia';
+const DB_VERSION = 1;
+const STORE_NAME = 'media';
+
+// Ouvrir la base de données IndexedDB
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME);
+            }
+        };
+    });
+}
+
+// Récupérer un blob depuis IndexedDB
+function getBlobFromIndexedDB(id) {
+    return openDB().then(db => {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.get(id);
+            
+            request.onsuccess = () => {
+                if (request.result) {
+                    resolve(request.result);
+                } else {
+                    reject(new Error('Blob non trouvé: ' + id));
+                }
+            };
+            request.onerror = () => reject(request.error);
+        });
+    });
+}
+
+// Créer une URL blob depuis IndexedDB
+function createMediaUrlFromIndexedDB(mediaId, format) {
+    if (!mediaId || (!mediaId.startsWith('video_') && !mediaId.startsWith('audio_'))) {
+        return null;
+    }
+    
+    return getBlobFromIndexedDB(mediaId).then(blob => {
+        return URL.createObjectURL(blob);
+    }).catch(error => {
+        console.error('Erreur chargement média depuis IndexedDB:', error);
+        return null;
+    });
+}
+
+// ============================================
+// FONCTIONS POUR L'ONGLET MOTS DE PASSE
+// ============================================
+
+function afficherMotsDePasseVendeurs() {
+    const container = document.getElementById('admin-vendeurs-passwords');
+    const countBadge = document.getElementById('count-vendeurs-passwords');
+    
+    if (!container) return;
+    
+    try {
+        const vendeurs = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+        
+        if (countBadge) {
+            countBadge.textContent = vendeurs.length;
+        }
+        
+        if (vendeurs.length === 0) {
+            container.innerHTML = '<p class="admin-empty-message">Aucun vendeur inscrit trouvé dans localStorage.</p>';
+            return;
+        }
+        
+        let html = '<table class="admin-passwords-table"><thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Mot de passe</th><th>Statut</th></tr></thead><tbody>';
+        
+        vendeurs.forEach(vendeur => {
+            html += `<tr>
+                <td>${vendeur.id || 'N/A'}</td>
+                <td><strong>${vendeur.nom || 'N/A'}</strong></td>
+                <td>${vendeur.email || 'N/A'}</td>
+                <td>${vendeur.telephone || 'N/A'}</td>
+                <td><span class="admin-password-display">${vendeur.password || 'N/A'}</span></td>
+                <td><span class="admin-badge admin-badge-${vendeur.statut || 'valide'}">${vendeur.statut || 'valide'}</span></td>
+            </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    } catch (e) {
+        console.error('Erreur affichage mots de passe vendeurs:', e);
+        container.innerHTML = '<p class="admin-error-message">Erreur lors du chargement des données.</p>';
+    }
+}
+
+function afficherMotsDePassePartenaires() {
+    const container = document.getElementById('admin-partenaires-passwords');
+    const countBadge = document.getElementById('count-partenaires-passwords');
+    
+    if (!container) return;
+    
+    try {
+        const partenaires = JSON.parse(localStorage.getItem('demandesPartenaires') || '[]');
+        
+        if (countBadge) {
+            countBadge.textContent = partenaires.length;
+        }
+        
+        if (partenaires.length === 0) {
+            container.innerHTML = '<p class="admin-empty-message">Aucun partenaire trouvé dans localStorage.</p>';
+            return;
+        }
+        
+        let html = '<table class="admin-passwords-table"><thead><tr><th>ID</th><th>Nom/Organisation</th><th>Email</th><th>Mot de passe</th><th>Statut</th></tr></thead><tbody>';
+        
+        partenaires.forEach(partenaire => {
+            html += `<tr>
+                <td>${partenaire.id || 'N/A'}</td>
+                <td><strong>${partenaire.nom || partenaire.nomOrganisation || 'N/A'}</strong></td>
+                <td>${partenaire.email || 'N/A'}</td>
+                <td><span class="admin-password-display">${partenaire.password || 'N/A'}</span></td>
+                <td><span class="admin-badge admin-badge-${partenaire.statut || 'valide'}">${partenaire.statut || 'valide'}</span></td>
+            </tr>`;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    } catch (e) {
+        console.error('Erreur affichage mots de passe partenaires:', e);
+        container.innerHTML = '<p class="admin-error-message">Erreur lors du chargement des données.</p>';
+    }
+}
+
+function actualiserMotsDePasse() {
+    afficherMotsDePasseVendeurs();
+    afficherMotsDePassePartenaires();
+}
+
+function initialiserGestionMotsDePasse() {
+    const btnRefresh = document.getElementById('btn-refresh-passwords');
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', function() {
+            actualiserMotsDePasse();
+        });
+    }
+}
+
 // Constantes
 // Utiliser des constantes différentes pour éviter les conflits avec script.js
 const ADMIN_PASSWORD_ADMIN = 'admin123'; // À changer en production
@@ -157,7 +308,22 @@ window.adminSwitchTab = function(tabName, filter = null) {
                 }
                 break;
             case 'annonces':
-                if (filter) {
+                // Réinitialiser les filtres si pas de filtre spécifique
+                if (!filter) {
+                    const selectStatut = document.getElementById('filter-annonces-statut');
+                    const selectFormat = document.getElementById('filter-annonces-format');
+                    const selectOrigine = document.getElementById('filter-annonces-origine');
+                    const selectCategorie = document.getElementById('filter-annonces-categorie');
+                    const selectZone = document.getElementById('filter-annonces-zone');
+                    const searchInput = document.getElementById('filter-annonces-search');
+                    
+                    if (selectStatut) selectStatut.value = '';
+                    if (selectFormat) selectFormat.value = '';
+                    if (selectOrigine) selectOrigine.value = '';
+                    if (selectCategorie) selectCategorie.value = '';
+                    if (selectZone) selectZone.value = '';
+                    if (searchInput) searchInput.value = '';
+                } else {
                     const selectStatut = document.getElementById('filter-annonces-statut');
                     if (selectStatut) {
                         selectStatut.value = filter;
@@ -178,6 +344,11 @@ window.adminSwitchTab = function(tabName, filter = null) {
             case 'categories':
                 if (typeof actualiserCategoriesZones === 'function') {
                     actualiserCategoriesZones();
+                }
+                break;
+            case 'passwords':
+                if (typeof actualiserMotsDePasse === 'function') {
+                    actualiserMotsDePasse();
                 }
                 break;
         }
@@ -522,6 +693,7 @@ function initialiserAdmin() {
         initialiserGestionCampagnes();
         initialiserGestionCategories();
         initialiserBoutonClearHistory();
+        initialiserGestionMotsDePasse();
     } else {
         // Si pas connecté, initialiser les onglets quand même (pour le cas où ils existent)
         initialiserOnglets();
@@ -690,15 +862,21 @@ function actualiserDashboard() {
     
         // Statistiques annonces
         const toutesAnnonces = chargerToutesAnnonces();
-        const annoncesVideo = toutesAnnonces.filter(a => a.format === 'video');
-        const annoncesAudio = toutesAnnonces.filter(a => a.format === 'audio');
+        const annoncesVideo = toutesAnnonces.filter(a => a.format === 'video' || a.type === 'video');
+        const annoncesAudio = toutesAnnonces.filter(a => a.format === 'audio' || a.type === 'audio');
+        const annoncesImage = toutesAnnonces.filter(a => a.format === 'image' || a.type === 'image' || a.type === 'image_only');
         
         const statAnnoncesTotales = document.getElementById('stat-annonces-totales');
         const statAnnoncesDetail = document.getElementById('stat-annonces-detail');
         
         if (statAnnoncesTotales) statAnnoncesTotales.textContent = toutesAnnonces.length;
-        if (statAnnoncesDetail) statAnnoncesDetail.textContent = 
-            `${annoncesVideo.length} vidéos, ${annoncesAudio.length} audios`;
+        if (statAnnoncesDetail) {
+            const details = [];
+            if (annoncesVideo.length > 0) details.push(`${annoncesVideo.length} vidéo${annoncesVideo.length > 1 ? 's' : ''}`);
+            if (annoncesAudio.length > 0) details.push(`${annoncesAudio.length} audio${annoncesAudio.length > 1 ? 's' : ''}`);
+            if (annoncesImage.length > 0) details.push(`${annoncesImage.length} image${annoncesImage.length > 1 ? 's' : ''}`);
+            statAnnoncesDetail.textContent = details.length > 0 ? details.join(', ') : 'Aucune annonce';
+        }
         
         // Statistiques campagnes
         const toutesCampagnes = chargerToutesCampagnes();
@@ -769,10 +947,11 @@ function actualiserKPI(toutesAnnonces, tousVendeurs) {
     const kpiVendeursActifs = document.getElementById('kpi-vendeurs-actifs');
     if (kpiVendeursActifs) kpiVendeursActifs.textContent = vendeursActifs.length;
     
-    // Répartition vidéo/audio
-    const annoncesVideo = toutesAnnonces.filter(a => a.format === 'video');
-    const annoncesAudio = toutesAnnonces.filter(a => a.format === 'audio');
-    const totalMedia = annoncesVideo.length + annoncesAudio.length;
+    // Répartition vidéo/audio/image
+    const annoncesVideo = toutesAnnonces.filter(a => a.format === 'video' || a.type === 'video');
+    const annoncesAudio = toutesAnnonces.filter(a => a.format === 'audio' || a.type === 'audio');
+    const annoncesImage = toutesAnnonces.filter(a => a.format === 'image' || a.type === 'image' || a.type === 'image_only');
+    const totalMedia = annoncesVideo.length + annoncesAudio.length + annoncesImage.length;
     
     const kpiVideoAudio = document.getElementById('kpi-video-audio');
     const kpiVideoAudioDetail = document.getElementById('kpi-video-audio-detail');
@@ -780,11 +959,17 @@ function actualiserKPI(toutesAnnonces, tousVendeurs) {
     if (totalMedia > 0) {
         const pctVideo = Math.round((annoncesVideo.length / totalMedia) * 100);
         const pctAudio = Math.round((annoncesAudio.length / totalMedia) * 100);
-        if (kpiVideoAudio) kpiVideoAudio.textContent = `${pctVideo}% / ${pctAudio}%`;
-        if (kpiVideoAudioDetail) kpiVideoAudioDetail.textContent = 
-            `📹 ${annoncesVideo.length} vidéos • 🎙️ ${annoncesAudio.length} audios`;
+        const pctImage = Math.round((annoncesImage.length / totalMedia) * 100);
+        if (kpiVideoAudio) kpiVideoAudio.textContent = `${pctVideo}% / ${pctAudio}% / ${pctImage}%`;
+        if (kpiVideoAudioDetail) {
+            const parts = [];
+            if (annoncesVideo.length > 0) parts.push(`📹 ${annoncesVideo.length} vidéo${annoncesVideo.length > 1 ? 's' : ''}`);
+            if (annoncesAudio.length > 0) parts.push(`🎙️ ${annoncesAudio.length} audio${annoncesAudio.length > 1 ? 's' : ''}`);
+            if (annoncesImage.length > 0) parts.push(`🖼️ ${annoncesImage.length} image${annoncesImage.length > 1 ? 's' : ''}`);
+            kpiVideoAudioDetail.textContent = parts.length > 0 ? parts.join(' • ') : 'Aucune annonce média';
+        }
     } else {
-        if (kpiVideoAudio) kpiVideoAudio.textContent = '0% / 0%';
+        if (kpiVideoAudio) kpiVideoAudio.textContent = '0% / 0% / 0%';
         if (kpiVideoAudioDetail) kpiVideoAudioDetail.textContent = 'Aucune annonce média';
     }
     
@@ -842,8 +1027,8 @@ function afficherAnnoncesRecentes() {
     const toutesAnnonces = chargerToutesAnnonces();
     const recentes = toutesAnnonces
         .sort((a, b) => {
-            const dateA = a.dateCreated ? new Date(a.dateCreated) : new Date(0);
-            const dateB = b.dateCreated ? new Date(b.dateCreated) : new Date(0);
+            const dateA = a.dateCreated || a.dateCreation ? new Date(a.dateCreated || a.dateCreation) : new Date(0);
+            const dateB = b.dateCreated || b.dateCreation ? new Date(b.dateCreated || b.dateCreation) : new Date(0);
             return dateB - dateA;
         })
         .slice(0, 5);
@@ -856,18 +1041,28 @@ function afficherAnnoncesRecentes() {
         return;
     }
     
-    container.innerHTML = recentes.map(annonce => `
+    container.innerHTML = recentes.map(annonce => {
+        let formatIcon = '📢';
+        if (annonce.format === 'video' || annonce.type === 'video') {
+            formatIcon = '📹';
+        } else if (annonce.format === 'audio' || annonce.type === 'audio') {
+            formatIcon = '🎙️';
+        } else if (annonce.format === 'image' || annonce.type === 'image' || annonce.type === 'image_only') {
+            formatIcon = '🖼️';
+        }
+        return `
         <div class="admin-recent-item">
             <div class="admin-recent-info">
                 <strong>${annonce.product || 'Sans catégorie'}</strong>
-                <span class="admin-recent-format">${annonce.format === 'video' ? '📹' : '🎙️'}</span>
+                <span class="admin-recent-format">${formatIcon}</span>
                 <span class="admin-recent-location">${annonce.location || 'Non spécifié'}</span>
             </div>
             <div class="admin-recent-date">
-                ${annonce.dateCreated ? new Date(annonce.dateCreated).toLocaleDateString('fr-FR') : 'Date inconnue'}
+                ${annonce.dateCreated || annonce.dateCreation ? new Date(annonce.dateCreated || annonce.dateCreation).toLocaleDateString('fr-FR') : 'Date inconnue'}
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 // ============================================
@@ -1384,6 +1579,8 @@ function initialiserGestionAnnonces() {
 
 function actualiserListeAnnonces() {
     const toutesAnnonces = chargerToutesAnnonces();
+    console.log('📢 Annonces chargées:', toutesAnnonces.length, toutesAnnonces);
+    // Afficher toutes les annonces sans filtre par défaut
     afficherListeAnnoncesAdmin(toutesAnnonces);
 }
 
@@ -1414,7 +1611,11 @@ function filtrerAnnonces() {
             (annonce.location && annonce.location.toLowerCase().includes(search)) ||
             (annonce.contact && annonce.contact.toLowerCase().includes(search));
         
-        const matchFormat = !format || annonce.format === format;
+        // Gérer le format : vérifier format ET type
+        const matchFormat = !format || 
+            annonce.format === format || 
+            annonce.type === format ||
+            (format === 'image' && (annonce.type === 'image_only' || annonce.format === 'image'));
         const matchCategorie = !categorie || annonce.product === categorie;
         const matchZone = !zone || annonce.location === zone;
         
@@ -1439,38 +1640,98 @@ function filtrerAnnonces() {
 
 function afficherListeAnnoncesAdmin(annonces) {
     const container = document.getElementById('admin-annonces-list');
-    if (!container) return;
+    if (!container) {
+        console.error('❌ Container admin-annonces-list non trouvé dans le DOM');
+        return;
+    }
+    
+    console.log('📋 Affichage de', annonces.length, 'annonce(s) dans admin');
+    console.log('📋 Détails des annonces:', annonces);
     
     if (annonces.length === 0) {
         container.innerHTML = '<p class="admin-empty">Aucune annonce trouvée.</p>';
+        console.log('⚠️ Aucune annonce à afficher');
         return;
     }
     
     container.innerHTML = annonces.map(annonce => {
-        const formatIcon = annonce.format === 'video' ? '📹' : '🎙️';
+        // Déterminer l'icône et le format selon le type/format de l'annonce
+        let formatIcon = '📢';
+        let formatLabel = 'Annonce';
+        if (annonce.format === 'video' || annonce.type === 'video') {
+            formatIcon = '📹';
+            formatLabel = 'Vidéo';
+        } else if (annonce.format === 'audio' || annonce.type === 'audio') {
+            formatIcon = '🎙️';
+            formatLabel = 'Audio';
+        } else if (annonce.format === 'image' || annonce.type === 'image' || annonce.type === 'image_only') {
+            formatIcon = '🖼️';
+            formatLabel = 'Image';
+        }
+        
         const isPartenaire = annonce.isSponsored || false;
+        const statut = annonce.statut || 'en_attente';
+        const statutLabel = statut === 'en_attente' ? '⏳ En attente' : statut === 'publiee' ? '✓ Publiée' : statut === 'refusee' ? '✗ Refusée' : statut;
         
         return `
             <div class="admin-annonce-card">
                 <div class="admin-annonce-header">
                     <h4>${annonce.product || 'Sans catégorie'}</h4>
-                    <span class="admin-annonce-format">${formatIcon}</span>
+                    <span class="admin-annonce-format">${formatIcon} ${formatLabel}</span>
                     ${isPartenaire ? '<span class="admin-badge admin-badge-info">Partenaire</span>' : ''}
+                    <span class="admin-badge admin-badge-${statut === 'publiee' ? 'success' : statut === 'refusee' ? 'danger' : 'warning'}">${statutLabel}</span>
                 </div>
                 <div class="admin-annonce-body">
                     <p><strong>Lieu:</strong> ${annonce.location || 'Non spécifié'}</p>
                     <p><strong>Contact:</strong> ${annonce.contact || 'Non spécifié'}</p>
-                    <p><strong>Date:</strong> ${annonce.dateCreated ? new Date(annonce.dateCreated).toLocaleDateString('fr-FR') : 'Inconnue'}</p>
-                    ${annonce.mediaUrl ? `
-                        <div class="admin-annonce-media">
-                            ${annonce.format === 'video' ? 
-                                `<video src="${annonce.mediaUrl}" controls style="max-width: 100%; max-height: 200px;"></video>` :
-                                `<audio src="${annonce.mediaUrl}" controls style="width: 100%;"></audio>`
+                    <p><strong>Date:</strong> ${annonce.dateCreated || annonce.dateCreation ? new Date(annonce.dateCreated || annonce.dateCreation).toLocaleDateString('fr-FR') : 'Inconnue'}</p>
+                    ${(() => {
+                        const isVideo = annonce.format === 'video' || annonce.type === 'video';
+                        const isAudio = annonce.format === 'audio' || annonce.type === 'audio';
+                        const isImage = annonce.format === 'image' || annonce.type === 'image' || annonce.type === 'image_only';
+                        const mediaId = annonce.videoId || annonce.audioId;
+                        const mediaUrl = annonce.mediaUrl || annonce.imageUrl;
+                        
+                        if (isImage && annonce.imageUrl) {
+                            return `<div class="admin-annonce-media">
+                                <img src="${annonce.imageUrl}" alt="Image annonce" style="max-width: 100%; max-height: 200px; border-radius: 5px;">
+                            </div>`;
+                        } else if (isVideo) {
+                            const videoId = mediaId || (mediaUrl && mediaUrl.startsWith('video_') ? mediaUrl : null);
+                            if (videoId && videoId.startsWith('video_')) {
+                                return `<div class="admin-annonce-media">
+                                    <video id="admin-video-${annonce.id}" controls style="max-width: 100%; max-height: 200px;"></video>
+                                </div>`;
+                            } else if (mediaUrl && mediaUrl.startsWith('data:')) {
+                                return `<div class="admin-annonce-media">
+                                    <video src="${mediaUrl}" controls style="max-width: 100%; max-height: 200px;"></video>
+                                </div>`;
                             }
-                        </div>
-                    ` : ''}
+                        } else if (isAudio) {
+                            const audioId = mediaId || (mediaUrl && mediaUrl.startsWith('audio_') ? mediaUrl : null);
+                            if (audioId && audioId.startsWith('audio_')) {
+                                return `<div class="admin-annonce-media">
+                                    <audio id="admin-audio-${annonce.id}" controls style="width: 100%;"></audio>
+                                </div>`;
+                            } else if (mediaUrl && mediaUrl.startsWith('data:')) {
+                                return `<div class="admin-annonce-media">
+                                    <audio src="${mediaUrl}" controls style="width: 100%;"></audio>
+                                </div>`;
+                            }
+                        } else if (annonce.image || annonce.video || annonce.audio) {
+                            return `<div class="admin-annonce-media">
+                                <p><strong>Fichier:</strong> ${annonce.image || annonce.video || annonce.audio}</p>
+                                ${isImage ? '<p class="admin-note">📷 Annonce avec image</p>' : ''}
+                            </div>`;
+                        }
+                        return '';
+                    })()}
                 </div>
                 <div class="admin-annonce-actions">
+                    ${statut === 'en_attente' ? `
+                        <button class="btn btn-success" onclick="validerAnnonce(${annonce.id})">✓ Valider</button>
+                        <button class="btn btn-danger" onclick="refuserAnnonce(${annonce.id})">✗ Refuser</button>
+                    ` : ''}
                     ${!annonce.isSponsored ? `<button class="btn btn-info" onclick="marquerAnnoncePartenaire(${annonce.id})">⭐ Marquer partenaire</button>` : ''}
                     ${!annonce.isFeatured ? `<button class="btn btn-warning" onclick="marquerAnnonceFeatured(${annonce.id})">⭐ Mettre en avant</button>` : ''}
                     <button class="btn btn-danger" onclick="supprimerAnnonce(${annonce.id})">🗑 Supprimer</button>
@@ -1478,6 +1739,30 @@ function afficherListeAnnoncesAdmin(annonces) {
             </div>
         `;
     }).join('');
+    
+    // Charger les médias depuis IndexedDB après insertion du HTML
+    setTimeout(() => {
+        annonces.forEach(annonce => {
+            const isVideo = annonce.format === 'video' || annonce.type === 'video';
+            const isAudio = annonce.format === 'audio' || annonce.type === 'audio';
+            const mediaId = annonce.videoId || annonce.audioId;
+            
+            if ((isVideo || isAudio) && mediaId && (mediaId.startsWith('video_') || mediaId.startsWith('audio_'))) {
+                const mediaElement = document.getElementById(`admin-${isVideo ? 'video' : 'audio'}-${annonce.id}`);
+                if (mediaElement && typeof getBlobFromIndexedDB === 'function') {
+                    getBlobFromIndexedDB(mediaId).then(blob => {
+                        mediaElement.src = URL.createObjectURL(blob);
+                        mediaElement.load();
+                    }).catch(err => {
+                        console.error('Erreur chargement média depuis IndexedDB:', err);
+                        if (mediaElement) {
+                            mediaElement.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        });
+    }, 100);
 }
 
 function marquerAnnoncePartenaire(id) {
@@ -1501,6 +1786,38 @@ function marquerAnnonceFeatured(id) {
         enregistrerActionAdmin('annonce', 'mise en avant', annonce.product || `Annonce #${id}`);
         afficherMessage('message-annonces', 'Annonce mise en avant.', 'success');
         actualiserListeAnnonces();
+    }
+}
+
+function validerAnnonce(id) {
+    const annonces = lireLocalStorage('annonces_locales', []);
+    const annonce = annonces.find(a => a.id === id);
+    if (annonce) {
+        annonce.statut = 'publiee';
+        annonce.dateValidation = new Date().toISOString();
+        ecrireLocalStorage('annonces_locales', annonces);
+        enregistrerActionAdmin('annonce', 'validée', annonce.product || `Annonce #${id}`);
+        afficherMessage('message-annonces', 'Annonce validée et publiée.', 'success');
+        actualiserListeAnnonces();
+        actualiserDashboard();
+    }
+}
+
+function refuserAnnonce(id) {
+    if (!confirm('Êtes-vous sûr de vouloir refuser cette annonce ?')) {
+        return;
+    }
+    
+    const annonces = lireLocalStorage('annonces_locales', []);
+    const annonce = annonces.find(a => a.id === id);
+    if (annonce) {
+        annonce.statut = 'refusee';
+        annonce.dateRefus = new Date().toISOString();
+        ecrireLocalStorage('annonces_locales', annonces);
+        enregistrerActionAdmin('annonce', 'refusée', annonce.product || `Annonce #${id}`);
+        afficherMessage('message-annonces', 'Annonce refusée.', 'warning');
+        actualiserListeAnnonces();
+        actualiserDashboard();
     }
 }
 

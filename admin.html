@@ -49,6 +49,7 @@
                 <button class="admin-tab" data-tab="annonces">📢 Annonces</button>
                 <button class="admin-tab" data-tab="campagnes">⭐ Campagnes</button>
                 <button class="admin-tab" data-tab="categories">📁 Catégories & Zones</button>
+                <button class="admin-tab" data-tab="passwords">🔐 Mots de passe</button>
             </nav>
 
             <!-- Onglet : Tableau de bord -->
@@ -302,6 +303,7 @@
                         <option value="">Tous les formats</option>
                         <option value="video">📹 Vidéo</option>
                         <option value="audio">🎙️ Audio</option>
+                        <option value="image">🖼️ Image</option>
                     </select>
                     <select id="filter-annonces-origine" class="admin-filter-select">
                         <option value="">Toutes les origines</option>
@@ -372,6 +374,41 @@
                         </div>
                         <div id="admin-zones-list" class="admin-items-list">
                             <!-- Liste générée par JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Onglet : Mots de passe -->
+            <section id="tab-passwords" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>🔐 Visualisation des mots de passe</h2>
+                    <button id="btn-refresh-passwords" class="btn-secondary">🔄 Actualiser</button>
+                </div>
+
+                <div class="admin-warning" style="margin-bottom: 20px;">
+                    <h3>⚠️ Attention : Sécurité</h3>
+                    <p>Cette section affiche les mots de passe en clair stockés dans localStorage. Les mots de passe ne sont pas cryptés. Cette fonctionnalité est uniquement à des fins d'administration et de développement.</p>
+                </div>
+
+                <div class="admin-passwords-grid">
+                    <div class="admin-passwords-section">
+                        <div class="admin-section-header">
+                            <h3>👥 Vendeurs inscrits</h3>
+                            <span id="count-vendeurs-passwords" class="admin-count-badge">0</span>
+                        </div>
+                        <div id="admin-vendeurs-passwords" class="admin-passwords-table-container">
+                            <!-- Tableau généré par JS -->
+                        </div>
+                    </div>
+
+                    <div class="admin-passwords-section">
+                        <div class="admin-section-header">
+                            <h3>🤝 Partenaires</h3>
+                            <span id="count-partenaires-passwords" class="admin-count-badge">0</span>
+                        </div>
+                        <div id="admin-partenaires-passwords" class="admin-passwords-table-container">
+                            <!-- Tableau généré par JS -->
                         </div>
                     </div>
                 </div>

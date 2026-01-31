@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voir les mots de passe - Teranga Bio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #1e6b3a;
+            text-align: center;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #2e8b57;
+            border-bottom: 2px solid #1e6b3a;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #1e6b3a;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .password {
+            font-family: monospace;
+            background-color: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1e6b3a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #2e8b57;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 Visualisation des mots de passe - Teranga Bio</h1>
+    
+    <div class="warning">
+        <strong>⚠️ Attention :</strong> Cette page affiche les mots de passe en clair stockés dans localStorage. 
+        Les mots de passe ne sont pas cryptés. Cette fonctionnalité est uniquement à des fins de développement et d'administration.
+    </div>
+    
+    <div class="section">
+        <h2>👥 Vendeurs inscrits</h2>
+        <button class="btn" onclick="afficherVendeurs()">Actualiser la liste</button>
+        <div id="vendeurs-container"></div>
+    </div>
+    
+    <div class="section">
+        <h2>🤝 Partenaires</h2>
+        <button class="btn" onclick="afficherPartenaires()">Actualiser la liste</button>
+        <div id="partenaires-container"></div>
+    </div>
+    
+    <script>
+        function afficherVendeurs() {
+            const container = document.getElementById('vendeurs-container');
+            const vendeurs = JSON.parse(localStorage.getItem('vendeurs_inscrits') || '[]');
+            
+            if (vendeurs.length === 0) {
+                container.innerHTML = '<p class="no-data">Aucun vendeur inscrit trouvé dans localStorage.</p>';
+                return;
+            }
+            
+            let html = '<table><thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Mot de passe</th><th>Statut</th></tr></thead><tbody>';
+            
+            vendeurs.forEach(vendeur => {
+                html += `<tr>
+                    <td>${vendeur.id || 'N/A'}</td>
+                    <td><strong>${vendeur.nom || 'N/A'}</strong></td>
+                    <td>${vendeur.email || 'N/A'}</td>
+                    <td>${vendeur.telephone || 'N/A'}</td>
+                    <td><span class="password">${vendeur.password || 'N/A'}</span></td>
+                    <td>${vendeur.statut || 'Non défini'}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            html += `<p style="margin-top: 15px;"><strong>Total :</strong> ${vendeurs.length} vendeur(s)</p>`;
+            container.innerHTML = html;
+        }
+        
+        function afficherPartenaires() {
+            const container = document.getElementById('partenaires-container');
+            const partenaires = JSON.parse(localStorage.getItem('demandesPartenaires') || '[]');
+            
+            if (partenaires.length === 0) {
+                container.innerHTML = '<p class="no-data">Aucun partenaire trouvé dans localStorage.</p>';
+                return;
+            }
+            
+            let html = '<table><thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Mot de passe</th><th>Statut</th></tr></thead><tbody>';
+            
+            partenaires.forEach(partenaire => {
+                html += `<tr>
+                    <td>${partenaire.id || 'N/A'}</td>
+                    <td><strong>${partenaire.nom || partenaire.nomOrganisation || 'N/A'}</strong></td>
+                    <td>${partenaire.email || 'N/A'}</td>
+                    <td><span class="password">${partenaire.password || 'N/A'}</span></td>
+                    <td>${partenaire.statut || 'Non défini'}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            html += `<p style="margin-top: 15px;"><strong>Total :</strong> ${partenaires.length} partenaire(s)</p>`;
+            container.innerHTML = html;
+        }
+        
+        // Afficher automatiquement au chargement
+        window.addEventListener('DOMContentLoaded', function() {
+            afficherVendeurs();
+            afficherPartenaires();
+        });
+    </script>
+</body>
+</html>
+

@@ -201,6 +201,20 @@ function initModalLogic() {
                 selectedFormat = 'audio';
             } else if (selectedMode === 'import') {
                 selectedFormat = null;
+            } else if (selectedMode === 'image-only') {
+                // Rediriger vers le dashboard vendeur avec le type image_only
+                const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+                if (session) {
+                    window.location.href = 'vendeur-dashboard.html';
+                    // Stocker le mode pour l'utiliser après redirection
+                    sessionStorage.setItem('openModalWithType', 'image_only');
+                    return;
+                } else {
+                    // Si pas de session, rediriger vers la page de connexion
+                    alert('Veuillez vous connecter pour publier une annonce.');
+                    window.location.href = 'vendeur-login.html';
+                    return;
+                }
             }
             
             formData.format = selectedFormat;
@@ -209,7 +223,7 @@ function initModalLogic() {
             document.querySelectorAll('.format-btn').forEach(b => {
                 b.style.borderColor = '#e0e0e0';
                 b.style.background = '#f8f9fa';
-            });
+        });
             
             if (selectedMode === 'record-video') {
                 this.style.borderColor = '#1e6b3a';
@@ -217,6 +231,9 @@ function initModalLogic() {
             } else if (selectedMode === 'record-audio') {
                 this.style.borderColor = '#FF8C00';
                 this.style.background = 'rgba(255, 140, 0, 0.1)';
+            } else if (selectedMode === 'image-only') {
+                this.style.borderColor = '#1e6b3a';
+                this.style.background = 'rgba(30, 107, 58, 0.1)';
             } else {
                 this.style.borderColor = '#2d8f4f';
                 this.style.background = 'rgba(45, 143, 79, 0.1)';
@@ -228,7 +245,7 @@ function initModalLogic() {
                     setupImport();
                 } else {
                     setupRecording();
-                }
+            }
             }, 300);
         });
     });
@@ -399,8 +416,8 @@ function initModalLogic() {
             } else {
                 if (locationInput) locationInput.style.display = 'block';
                 if (btnLocation) btnLocation.style.display = 'none';
-            }
-        });
+                }
+            });
     }
     
     document.querySelectorAll('.product-btn').forEach(btn => {
@@ -441,8 +458,8 @@ function initModalLogic() {
                 window.location.href = 'annonces.html';
             }, 500);
         });
-    }
-    
+}
+
     function updateFinalPreview() {
         if (!recordedBlob) return;
         
@@ -457,6 +474,6 @@ function initModalLogic() {
             finalAudio.src = URL.createObjectURL(recordedBlob);
             finalAudio.style.display = 'block';
             if (finalVideo) finalVideo.style.display = 'none';
-        }
     }
+}
 }
